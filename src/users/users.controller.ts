@@ -9,13 +9,11 @@ export class UsersController {
 
   @Post()
   create(@Body() createUserDto: CreateUserDto) {
-    console.log("creating user");
     return this.usersService.create(createUserDto);
   }
 
   @Get()
   findAll() {
-    console.log("hello world")
     return this.usersService.findAll();
   }
 
