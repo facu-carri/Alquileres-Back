@@ -6,7 +6,13 @@ export class User {
     id: number
 
     @Column({ unique: true })
-    username: string
+    email: string
+
+    @Column()
+    nombre: string
+
+    @Column()
+    apellido: string
     
     @Column()
     password: string
