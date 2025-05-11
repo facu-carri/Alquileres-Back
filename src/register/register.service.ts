@@ -7,8 +7,9 @@ export class RegisterService {
     constructor(private readonly clientService: ClientService){}
     
     async register(clientData: ClientDto) {
-        const clientExist = !!this.clientService.findOneByEmail(clientData.email)
-        if (clientExist) {
+        console.log(clientData)
+        const client = await this.clientService.findOneByEmail(clientData.email)
+        if (client) {
             throw new BadRequestException('El mail ya se encuentra registrado')
         }
         return await this.clientService.create(clientData)
