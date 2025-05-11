@@ -1,19 +1,19 @@
 import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
 
-@Entity({ name: 'usuario' })
-export class User {
+@Entity({ name: 'cliente' })
+export class Client {
     @PrimaryGeneratedColumn()
     id: number
 
     @Column({ unique: true })
     email: string
 
-    @Column()
+    @Column({ nullable: false })
     nombre: string
 
     @Column()
     apellido: string
     
-    @Column()
+    @Column({ nullable: false })
     password: string
 }

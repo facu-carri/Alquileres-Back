@@ -1,14 +1,14 @@
 import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
-import { UsersService } from './users.service';
-import { CreateUserDto } from './dto/create-user.dto';
-import { UpdateUserDto } from './dto/update-user.dto';
+import { ClientService } from './client.service';
+import { ClientDto } from './dto/client.dto';
+import { UpdateClientDto } from './dto/update-client.dto';
 
-@Controller('users')
-export class UsersController {
-  constructor(private readonly usersService: UsersService) {}
+@Controller('client')
+export class ClientController {
+  constructor(private readonly usersService: ClientService) {}
 
   @Post()
-  create(@Body() createUserDto: CreateUserDto) {
+  create(@Body() createUserDto: ClientDto) {
     return this.usersService.create(createUserDto);
   }
 
@@ -24,7 +24,7 @@ export class UsersController {
 
   // Falta implementar el service y el dto
   @Patch(':id')
-  update(@Param('id') id: number, @Body() updateUserDto: UpdateUserDto) {
+  update(@Param('id') id: number, @Body() updateUserDto: UpdateClientDto) {
     return this.usersService.update(id, updateUserDto);
   }
 
