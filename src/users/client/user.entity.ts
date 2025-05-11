@@ -1,7 +1,9 @@
 import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
 
-@Entity({ name: 'cliente' })
-export class Client {
+export type UserRoles = 'cliente' | 'empleado' | 'admin'
+
+@Entity({ name: 'users' })
+export class User {
     @PrimaryGeneratedColumn()
     id: number
 
@@ -16,4 +18,7 @@ export class Client {
     
     @Column({ nullable: false })
     password: string
+
+    @Column({ nullable: false, default: 'client' })
+    rol: UserRoles
 }

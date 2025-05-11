@@ -1,5 +1,5 @@
 import { Injectable, UnauthorizedException } from '@nestjs/common';
-import { ClientService } from 'src/users/client/client.service';
+import { UserService } from 'src/users/client/user.service';
 import { LoginDto } from './dto/login.dto';
 import { JwtService } from '@nestjs/jwt';
 
@@ -7,17 +7,17 @@ import { JwtService } from '@nestjs/jwt';
 export class AuthService {
 
     constructor(
-        private readonly clientService: ClientService,
+        private readonly UserService: UserService,
         private readonly jwtService: JwtService
     ) { }
 
     async login(loginData: LoginDto) {
-        const client = await this.clientService.findOneByEmail(loginData.email)
-        if (!client) {
+        const user = await this.UserService.findOneByEmail(loginData.email)
+        if (!user) {
             throw new UnauthorizedException("El mail no se encuentra registrado")
         }
 
-        const isPasswordValid = client.password == loginData.password
+        const isPasswordValid = user.password == loginData.password
         if (!isPasswordValid) {
             throw new UnauthorizedException("La contrasenia es incorrecta")
         }
@@ -27,7 +27,7 @@ export class AuthService {
         }
 
         const jwtToken = await this.jwtService.signAsync(payload)
-        const rol = 'client'//client.rol
+        const rol = user.rol
 
         return { jwtToken, rol }
     }

@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { ClientModule } from './users/client/client.module';
+import { UserModule } from './users/client/user.module';
 import { AuthModule } from './auth/auth.module';
 import { DatabaseModule } from './database/database.module';
 import { RegisterModule } from './register/register.module';
@@ -9,7 +9,7 @@ import { RegisterModule } from './register/register.module';
 @Module({
   imports: [
     DatabaseModule,
-    ClientModule,
+    UserModule,
     AuthModule,
     RegisterModule
   ],

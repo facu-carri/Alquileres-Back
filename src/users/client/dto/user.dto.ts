@@ -1,7 +1,7 @@
 import { IsString, IsEmail, IsNotEmpty, MinLength, Validator } from 'class-validator';
 import { validationMessage, ValidatorTypes } from 'src/utils/ValidatorMessages';
 
-export class ClientDto {
+export class UserDto {
   @IsString(validationMessage(ValidatorTypes.IsString))
   @IsNotEmpty(validationMessage(ValidatorTypes.isNotEmpty))
   readonly nombre: string;
