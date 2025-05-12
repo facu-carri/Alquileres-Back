@@ -11,7 +11,6 @@ export enum ValidatorTypes {
 
 const messages = {
     [ValidatorTypes.IsEmail]: "Mail invalido",
-
     [ValidatorTypes.isNotEmpty]: "El parametro '${p}' no debe ser nulo",
     [ValidatorTypes.IsString]: "El parametro '${p}' debe ser un string",
     [ValidatorTypes.MinLength]: "El parametro '${p}' debe ser mayor o igual a ${0} caracteres",
