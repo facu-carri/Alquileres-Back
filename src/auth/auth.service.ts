@@ -1,18 +1,27 @@
 import { Injectable, UnauthorizedException } from '@nestjs/common';
-import { UserService } from 'src/users/client/user.service';
+import { UserService } from 'src/user/user.service';
 import { LoginDto } from './dto/login.dto';
 import { JwtService } from '@nestjs/jwt';
+import { User, UserRole } from 'src/user/user.entity';
+import { sendMail } from 'src/mailer/Mailer';
+import { randomBytes } from 'crypto';
+import { InjectRepository } from '@nestjs/typeorm';
+import { AuthCode } from './dto/authCode.entity';
+import { Repository } from 'typeorm';
+import { AuthCodeDto } from './dto/authCode.dto';
 
 @Injectable()
 export class AuthService {
 
     constructor(
-        private readonly UserService: UserService,
+        @InjectRepository(AuthCode)
+        private readonly authRepository: Repository<AuthCode>,
+        private readonly userService: UserService,
         private readonly jwtService: JwtService
     ) { }
 
     async login(loginData: LoginDto) {
-        const user = await this.UserService.findOneByEmail(loginData.email)
+        const user: User = await this.userService.findOneByEmail(loginData.email)
         if (!user) {
             throw new UnauthorizedException("El mail no se encuentra registrado")
         }
@@ -22,13 +31,53 @@ export class AuthService {
             throw new UnauthorizedException("La contrasenia es incorrecta")
         }
 
-        const payload = {
-            email: loginData.email
+        const rol = user.rol
+        const requireAuth = rol == UserRole.Admin || rol == UserRole.Empleado
+        let token = null
+
+        if (requireAuth) this.sendAuthCode(user.email)
+        else {
+            token = await this.generateToken(user)
         }
 
-        const jwtToken = await this.jwtService.signAsync(payload)
+        return { token, rol }
+    }
+
+    private async generateToken(user:User) {
+        const payload = {
+            email: user.email,
+            rol: user.rol
+        }
+        return await this.jwtService.signAsync(payload)
+    }
+
+    private generateCode(length: number) {
+        return randomBytes(Math.ceil(length / 2)).toString('hex').slice(0, length);
+    }
+
+    async sendAuthCode(email: string) {
+        const code = this.generateCode(4)
+        const authCodeDto: AuthCodeDto = {
+            code: code,
+            email: email
+        }
+
+        try { await this.authRepository.save(authCodeDto) }
+        catch { await this.authRepository.update({ email }, { code: code }) }
+
+        sendMail(email, 'Codigo de autenticacion', `El codigo de autenticacion es ${code}`)
+        console.log('Auth code:', code)
+    }
+
+    async authenticate(authCodeDto: AuthCodeDto) {
+        const authData = await this.authRepository.findOneBy({ email: authCodeDto.email })
+
+        if (!authData || authCodeDto.code != authData.code) throw new UnauthorizedException()
+        
+        const user = await this.userService.findOneByEmail(authData.email)
+        const token = await this.generateToken(user)
         const rol = user.rol
 
-        return { jwtToken, rol }
+        return { token, rol }
     }
 }
