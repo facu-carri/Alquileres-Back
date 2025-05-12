@@ -1,4 +1,4 @@
-import { IsString, IsNotEmpty, Validator } from 'class-validator';
+import { IsString, IsNumber, IsNotEmpty, Validator } from 'class-validator';
 import { validationMessage, ValidatorTypes } from 'src/utils/ValidatorMessages';
 
 export class ItemDto {
@@ -14,13 +14,13 @@ export class ItemDto {
   @IsNotEmpty(validationMessage(ValidatorTypes.isNotEmpty))
   readonly modelo: string;
 
-  // @IsNumber(validationMessage(ValidatorTypes.IsNumber))
+  @IsNumber({}, validationMessage(ValidatorTypes.IsNumber))
   @IsNotEmpty(validationMessage(ValidatorTypes.isNotEmpty))
   readonly precio: number;
 
-  // @IsNumber(validationMessage(ValidatorTypes.IsNumber))
+  @IsNumber({}, validationMessage(ValidatorTypes.IsNumber))
   @IsNotEmpty(validationMessage(ValidatorTypes.isNotEmpty))
-  readonly anio_adquisicion: number;
+  readonly año_adquisicion: number;
 
   // Ver cómo mapear la elección al tipo de dato. Comentado para que compile
 
