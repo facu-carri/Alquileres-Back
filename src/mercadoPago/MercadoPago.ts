@@ -33,24 +33,27 @@ export class MercadoPago {
 	private createExampleItem(): Items { // Item Example
 		return {
 			id: 'product',
-			title: 'Producto',
+			title: 'Mani maquinarias',
 			description: 'this is just a test',
 			quantity: 1,
-			unit_price: 2000,
+			unit_price: 100,
 			currency_id: 'ARS',
 			picture_url: 'https://www.mercadopago.com/org-img/MP3/home/logomp3.gif'
 		}
 	}
 
 	async createPreference(item: Items): Promise<PreferenceResponse> {
-		const preferenceRes: PreferenceResponse = await this.preference.create({
-			body: {
-				items: [item],
-				back_urls: this.backUrls,
-				binary_mode: true,
-				auto_return: 'all'
-			}
-		})
-		return preferenceRes
+		try {
+			
+			return await this.preference.create({
+				body: {
+					items: [item],
+					back_urls: this.backUrls,
+					binary_mode: true
+				}
+			})
+		} catch (err) {
+			console.log(err)
+		}
 	}
 }
