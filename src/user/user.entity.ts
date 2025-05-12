@@ -1,6 +1,10 @@
 import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
 
-export type UserRoles = 'cliente' | 'empleado' | 'admin'
+export enum UserRole {
+  Cliente = 'cliente',
+  Empleado = 'empleado',
+  Admin = 'admin',
+}
 
 @Entity({ name: 'users' })
 export class User {
@@ -20,7 +24,7 @@ export class User {
     password: string
 
     @Column({ nullable: false, default: 'client' })
-    rol: UserRoles
+    rol: UserRole
 
     @Column({ nullable: true })
     telefono: string
