@@ -1,14 +1,15 @@
 import { Controller, Post, Body } from '@nestjs/common';
 import { RegisterService } from './register.service';
 import { UserDto } from 'src/user/dto/user.dto';
+import { UserRole } from 'src/user/user.entity';
 
 @Controller('register')
 export class RegisterController {
     constructor(private readonly registerService: RegisterService) {
-        this.registerAdmin()
+        this.initAdminUser()
     }
 
-    async registerAdmin() {
+    async initAdminUser() {
         const userAdminData: UserDto = {
             nombre: 'admin',
             apellido: '',
@@ -19,7 +20,7 @@ export class RegisterController {
             nacimiento: ''
         }
         try {
-            await this.registerService.register(userAdminData)
+            await this.registerService.register(userAdminData, UserRole.Admin)
         } catch {
             console.log('El usuario administrador ya se encuentra registrado')
         }
@@ -27,6 +28,6 @@ export class RegisterController {
 
     @Post()
     async register(@Body() clientData: UserDto) {
-        return await this.registerService.register(clientData)
+        return await this.registerService.register(clientData, UserRole.Cliente)
     }
 }
