@@ -5,6 +5,7 @@ declare namespace NodeJS {
         JWT_SECRET: string,
         GMAIL_APP_PASSWORD: string,
         GMAIL_USER: string,
-        MAILER_PORT: string
+        MAILER_PORT: string,
+        MERCADO_PAGO_TOKEN: string
     }
 }
