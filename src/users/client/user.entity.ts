@@ -21,4 +21,13 @@ export class User {
 
     @Column({ nullable: false, default: 'client' })
     rol: UserRoles
+
+    @Column({ nullable: true })
+    telefono: string
+
+    @Column()
+    dni: string
+
+    @Column()
+    nacimiento: string
 }

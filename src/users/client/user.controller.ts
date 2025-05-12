@@ -1,7 +1,14 @@
-import { Controller } from '@nestjs/common';
+import { Controller, Post } from '@nestjs/common';
 import { UserService } from './user.service';
+import { UserDto } from './dto/user.dto';
 
-@Controller('client')
+@Controller('user')
 export class UserController {
-  constructor(private readonly usersService: UserService) {}
+
+    constructor(private readonly userService: UserService) { }
+    
+    @Post()
+    async update(userDto: UserDto) {
+        //this.userService.update(userDto)
+    }
 }

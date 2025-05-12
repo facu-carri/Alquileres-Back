@@ -13,7 +13,10 @@ export class RegisterController {
             nombre: 'admin',
             apellido: '',
             password: '12345678',
-            email: 'mannimaquinarias@gmail.com'
+            email: 'mannimaquinarias@gmail.com',
+            telefono: '',
+            dni: '',
+            nacimiento: ''
         }
         try {
             await this.registerService.register(userAdminData)
