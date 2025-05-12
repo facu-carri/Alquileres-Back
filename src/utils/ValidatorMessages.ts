@@ -5,15 +5,18 @@ export enum ValidatorTypes {
     "isNotEmpty",
     "IsString",
     "MinLength",
+    "IsNumber",
     "IsPhoneNumber",
 }
 
 const messages = {
     [ValidatorTypes.IsEmail]: "Mail invalido",
+
     [ValidatorTypes.isNotEmpty]: "El parametro '${p}' no debe ser nulo",
-    [ValidatorTypes.IsString]: "El parametro '${p}' debe ser un string debe ser un string",
+    [ValidatorTypes.IsString]: "El parametro '${p}' debe ser un string",
     [ValidatorTypes.MinLength]: "El parametro '${p}' debe ser mayor o igual a ${0} caracteres",
     [ValidatorTypes.IsPhoneNumber]: "Numero telefono invalido",
+    [ValidatorTypes.IsNumber]: "El parametro '${p}' debe ser un numero"
 }
 
 function processArguments(type: ValidatorTypes, validationArguments: ValidationArguments): string {
@@ -29,7 +32,6 @@ function processArguments(type: ValidatorTypes, validationArguments: ValidationA
     if (ret.includes('${v}') && property && object[property]) {
         ret = ret.replace('${v}', object[property])   
     }
-    
     return ret
 }
 
