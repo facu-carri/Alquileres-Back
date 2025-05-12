@@ -5,23 +5,29 @@ export enum ValidatorTypes {
     "isNotEmpty",
     "IsString",
     "MinLength",
-    "IsPhoneNumber"
+    "IsPhoneNumber",
 }
 
 const messages = {
     [ValidatorTypes.IsEmail]: "Mail invalido",
-    [ValidatorTypes.isNotEmpty]: 'El nombre de usuario no debe ser nulo',
-    [ValidatorTypes.IsString]: "El nombre de usuario debe ser un string",
-    [ValidatorTypes.MinLength]: "La contrasenia debe ser mayor o igual a ${0} caracteres",
-    [ValidatorTypes.IsPhoneNumber]: "El numero telefono es invalido"
+    [ValidatorTypes.isNotEmpty]: "El parametro '${p}' no debe ser nulo",
+    [ValidatorTypes.IsString]: "El parametro '${p}' debe ser un string debe ser un string",
+    [ValidatorTypes.MinLength]: "El parametro '${p}' debe ser mayor o igual a ${0} caracteres",
+    [ValidatorTypes.IsPhoneNumber]: "Numero telefono invalido",
 }
 
 function processArguments(type: ValidatorTypes, validationArguments: ValidationArguments): string {
-    const { constraints } = validationArguments
+    const { constraints, property, object } = validationArguments
     let ret = messages[type]
 
     if (ret.includes('${0}') && constraints.length > 0) {
         constraints.forEach((value, index) => ret = String(ret).replace("${" + index + "}", value))
+    }
+    if (ret.includes('${p}') && property) {
+        ret = ret.replace('${p}', property)
+    }
+    if (ret.includes('${v}') && property && object[property]) {
+        ret = ret.replace('${v}', object[property])   
     }
     
     return ret
