@@ -26,9 +26,7 @@ function processArguments(type: ValidatorTypes, validationArguments: ValidationA
 
     if (type === ValidatorTypes.IsEnum && constraints?.[0]) {
         const enumObj = constraints[0];
-        console.log(enumObj)
         const enumValues = Object.values(enumObj).filter(v => typeof v === 'string').join(', ');
-        console.log(enumValues)
         ret = ret.replace('${0}', enumValues);
     }
 
