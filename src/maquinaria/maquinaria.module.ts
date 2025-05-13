@@ -10,4 +10,4 @@ import { MaquinariaController } from './maquinaria.controller';
     providers: [MaquinariaService],
     exports: [MaquinariaService]
 })
-export class ItemModule {}
+export class MaquinariaModule {}

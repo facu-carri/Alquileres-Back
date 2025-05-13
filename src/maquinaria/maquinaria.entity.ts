@@ -1,8 +1,8 @@
 import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
 
-export type ItemStates = 'Disponible' | 'Reservado' | 'Mantenimiento' | 'Eliminado'
+export type MaquinariaStates = 'Disponible' | 'Reservado' | 'Mantenimiento' | 'Eliminado'
 export type ReturnPolicy = '0_devolucion' | '20_devolucion' | '100_devolucion'
-export type ItemCategory = 'Jardinería' | 'Construcción' | 'Agricultura' | 'Minería' | 'Logística' | 'Transporte' | 'Otro'
+export type MaquinariaCategory = 'Jardinería' | 'Construcción' | 'Agricultura' | 'Minería' | 'Logística' | 'Transporte' | 'Otro'
 export type Location = 'La Plata' | 'Tandil' | 'Ensenada' | 'Bahía Blanca'
 
 @Entity({ name: 'maquinarias' })
@@ -37,10 +37,10 @@ export class Maquinaria {
     sucursal : Location
 
     @Column({ nullable: false, default: 'Otro' })
-    categoria: ItemCategory
+    categoria: MaquinariaCategory
 
     @Column({ nullable: false, default: 'Disponible' })
-    state: ItemStates
+    state: MaquinariaStates
 
     @Column({ nullable: false, default: '100_devolucion' })
     politica: ReturnPolicy

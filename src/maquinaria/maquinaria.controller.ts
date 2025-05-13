@@ -6,20 +6,20 @@ import { MaquinariaService } from './maquinaria.service';
 @Controller('maquinaria')
 export class MaquinariaController {
 
-    constructor(private readonly itemsService: MaquinariaService) {}
+    constructor(private readonly maquinariaService: MaquinariaService) {}
 
     @Get()
     findAll(): Promise<Maquinaria[]> {
-        return this.itemsService.findAll();
+        return this.maquinariaService.findAll();
     }
 
     @Get(':id')
     findOne(@Param('id') id: number): Promise<Maquinaria> {
-        return this.itemsService.findOne(id);
+        return this.maquinariaService.findOne(id);
     }
 
     @Post()
-    create(@Body() itemDto: MaquinariaDto): Promise<Maquinaria> {
-        return this.itemsService.create(itemDto);
+    create(@Body() maquinariaDto: MaquinariaDto): Promise<Maquinaria> {
+        return this.maquinariaService.create(maquinariaDto);
     }
 }
