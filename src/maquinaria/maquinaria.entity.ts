@@ -1,30 +1,33 @@
 import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
 
 export enum MaquinariaStates {
-    'Disponible',
-    'Reservado',
-    'Mantenimiento',
-    'Eliminado'
+    Disponible = 'Disponible',
+    Reservado = 'Reservado',
+    Mantenimiento = 'Mantenimiento',
+    Eliminado = 'Eliminado'
 }
+
 export enum ReturnPolicy {
-    'devolucion_0',
-    'devolucion_20',
-    'devolucion_100'
+    devolucion_0 = '0%',
+    devolucion_20 = '20%',
+    devolucion_100 = '100%'
 }
+
 export enum MaquinariaCategory {
-    'Jardinería',
-    'Construcción',
-    'Agricultura',
-    'Minería',
-    'Logística',
-    'Transporte',
-    'Otro'
+    Jardinería = 'Jardinería',
+    Construcción = 'Construcción',
+    Agricultura = 'Agricultura',
+    Minería = 'Minería',
+    Logística = 'Logística',
+    Transporte = 'Transporte',
+    Otro = 'Otro'
 }
+
 export enum Location {
-    'La Plata',
-    'Tandil',
-    'Ensenada',
-    'Bahía Blanca'
+    LaPlata = 'La Plata',
+    Tandil = 'Tandil',
+    Ensenada = 'Ensenada',
+    BahíaBlanca = 'Bahía Blanca'
 }
 
 @Entity({ name: 'maquinarias' })
@@ -47,23 +50,35 @@ export class Maquinaria {
     @Column({ nullable: false })
     año_adquisicion: number
 
-    // @Column({ nullable: false })
-    // imagen: string
+    @Column({ 
+        type: 'enum',
+        enum: Location,
+        default: Location.LaPlata,
+        nullable: false 
+    })
+    sucursal: Location
 
-    // Es probable que estas cuatro las modelemos de otra manera, dado que el Front va a querer hacer consultas de estos listados para hacer la interfaz
-    // Mi intuición es hacer una tabla de categorias, una tabla de estados, una tabla de políticas y una tabla de sucursales
-    // Alternativamente, puede haber un endpoint para (por ejemplo), mostrar las distintas categorias, y que se base en revisar qué categorías hay en la lista de maquinas 
-    // (suena re ineficiente, pero bueh)
-
-    @Column ({ nullable: false, default: Location["La Plata"] })
-    sucursal : Location
-
-    @Column({ nullable: false, default: MaquinariaCategory.Otro })
+    @Column({ 
+        type: 'enum',
+        enum: MaquinariaCategory,
+        default: MaquinariaCategory.Otro,
+        nullable: false 
+    })
     categoria: MaquinariaCategory
 
-    @Column({ nullable: false, default: MaquinariaStates.Disponible })
+    @Column({ 
+        type: 'enum',
+        enum: MaquinariaStates,
+        default: MaquinariaStates.Disponible,
+        nullable: false 
+    })
     state: MaquinariaStates
 
-    @Column({ nullable: false, default: ReturnPolicy.devolucion_100 })
+    @Column({ 
+        type: 'enum',
+        enum: ReturnPolicy,
+        default: ReturnPolicy.devolucion_100,
+        nullable: false 
+    })
     politica: ReturnPolicy
 }
