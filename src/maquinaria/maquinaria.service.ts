@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Location, Maquinaria, MaquinariaCategory, MaquinariaStates, ReturnPolicy } from './maquinaria.entity';
@@ -31,17 +31,70 @@ export class MaquinariaService {
         return maquinaria;
     }
 
+    async findByCategory(cat: string): Promise<Maquinaria[]> {
+        return await this.maquinariaRepository.findBy({ categoria: MaquinariaCategory[cat] });
+    }
+
+    async findByState(estado: string): Promise<Maquinaria[]> {
+        return await this.maquinariaRepository.findBy({ state: MaquinariaStates[estado] });
+    }
+
     async update(id: number, updatemaquinariaDto: UpdateMaquinariaDto): Promise<Maquinaria> {
         const maquinaria = await this.findOne(id);
         this.maquinariaRepository.merge(maquinaria, updatemaquinariaDto);
         return await this.maquinariaRepository.save(maquinaria);
     }
 
-    async remove(id: number): Promise<void> {
-        const result = await this.maquinariaRepository.delete(id);
-        if (result.affected === 0) {
-            throw new NotFoundException(`No se encontró el maquinaria con id ${id}`);
+    async remove(id: number): Promise<any> {
+        const item = await this.findOne(id);
+        if (!item) {
+            throw new NotFoundException(`No se encontró la maquinaria con id ${id}`);
         }
+        if (item.state === MaquinariaStates.Eliminado) {
+            throw new BadRequestException(`La maquinaria con id ${id} ya se encuentra eliminada`);
+        }
+        item.state = MaquinariaStates.Eliminado;
+        await this.maquinariaRepository.save(item);
+        return { message: `Maquinaria con id ${id} eliminada con éxito`, }
+    }
+
+    async restore(id: number): Promise<any> {
+        const item = await this.findOne(id);
+        if (!item) {
+            throw new NotFoundException(`No se encontró la maquinaria con id ${id}`);
+        }
+        if (item.state !== MaquinariaStates.Eliminado) {
+            throw new BadRequestException(`La maquinaria con id ${id} no se encuentra eliminada`);
+        }
+        item.state = MaquinariaStates.Disponible;
+        await this.maquinariaRepository.save(item);
+        return { message: `Maquinaria con id ${id} restaurada con éxito`, }
+    }
+
+    async show(id: number): Promise<any> {
+        const item = await this.findOne(id);
+        if (!item) {
+            throw new NotFoundException(`No se encontró la maquinaria con id ${id}`);
+        }
+        if (item.state !== MaquinariaStates.Mantenimiento) {
+            throw new BadRequestException(`La maquinaria con id ${id} no se encuentra en mantenimiento`);
+        }
+        item.state = MaquinariaStates.Disponible;
+        await this.maquinariaRepository.save(item);
+        return { message: `Maquinaria con id ${id} se vuelve a mostrar en el listado`, }
+    }
+
+    async hide(id: number): Promise<any> {
+        const item = await this.findOne(id);
+        if (!item) {
+            throw new NotFoundException(`No se encontró la maquinaria con id ${id}`);
+        }
+        if (item.state !== MaquinariaStates.Disponible) {
+            throw new BadRequestException(`La maquinaria con id ${id} no está disponible`);
+        }
+        item.state = MaquinariaStates.Mantenimiento;
+        await this.maquinariaRepository.save(item);
+        return { message: `Maquinaria con id ${id} se ocultó del listado`, }
     }
 
     getAllCategories(): string[] {
