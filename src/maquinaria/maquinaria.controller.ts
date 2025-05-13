@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Put, Body, Param } from '@nestjs/common';
+import { Controller, Get, Post, Put, Body, Param, Delete, Patch } from '@nestjs/common';
 import { Maquinaria } from './maquinaria.entity';
 import { MaquinariaDto } from './dto/maquinaria.dto';
 import { UpdateMaquinariaDto } from './dto/update-maquinaria.dto';
@@ -57,5 +57,25 @@ export class MaquinariaController {
     @Get(':id')
     findOne(@Param('id') id: number): Promise<Maquinaria> {
         return this.maquinariaService.findOne(id);
+    }
+
+    @Patch(':id/eliminar')
+    remove(@Param('id') id: number): Promise<void> {
+        return this.maquinariaService.remove(id);
+    }
+    
+    @Patch(':id/restaurar')
+    delete(@Param('id') id: number): Promise<void> {
+        return this.maquinariaService.restore(id);
+    }
+
+    @Patch(':id/esconder')
+    hardDelete(@Param('id') id: number): Promise<void> {
+        return this.maquinariaService.hide(id);
+    }
+
+    @Patch(':id/mostrar')
+    hide(@Param('id') id: number): Promise<void> {
+        return this.maquinariaService.show(id);
     }
 }
