@@ -3,12 +3,12 @@ import { UserService } from 'src/user/user.service';
 import { LoginDto } from './dto/login.dto';
 import { JwtService } from '@nestjs/jwt';
 import { User, UserRole } from 'src/user/user.entity';
-import { sendMail } from 'src/mailer/Mailer';
-import { randomBytes } from 'crypto';
+import { sendMail } from 'src/utils/Mailer';
 import { InjectRepository } from '@nestjs/typeorm';
 import { AuthCode } from './dto/authCode.entity';
 import { Repository } from 'typeorm';
 import { AuthCodeDto } from './dto/authCode.dto';
+import { generateCode } from 'src/utils/Utils';
 
 @Injectable()
 export class AuthService {
@@ -51,12 +51,8 @@ export class AuthService {
         return await this.jwtService.signAsync(payload)
     }
 
-    private generateCode(length: number) {
-        return randomBytes(Math.ceil(length / 2)).toString('hex').slice(0, length);
-    }
-
     async sendAuthCode(email: string) {
-        const code = this.generateCode(4)
+        const code = generateCode(4)
         const authCodeDto: AuthCodeDto = {
             code: code,
             email: email
