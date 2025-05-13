@@ -28,7 +28,7 @@ export class MaquinariaController {
         return this.maquinariaService.getAllPolitics()
     }
 
-    @Get('locaciones')
+    @Get('sucursales')
     getLocations(): string[] {
         return this.maquinariaService.getAllLocations()
     }
