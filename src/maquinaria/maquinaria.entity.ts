@@ -1,13 +1,12 @@
 import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
-import { ColumnMetadata } from "typeorm/metadata/ColumnMetadata";
 
 export type ItemStates = 'Disponible' | 'Reservado' | 'Mantenimiento' | 'Eliminado'
 export type ReturnPolicy = '0_devolucion' | '20_devolucion' | '100_devolucion'
 export type ItemCategory = 'Jardinería' | 'Construcción' | 'Agricultura' | 'Minería' | 'Logística' | 'Transporte' | 'Otro'
 export type Location = 'La Plata' | 'Tandil' | 'Ensenada' | 'Bahía Blanca'
 
-@Entity({ name: 'items' })
-export class Item {
+@Entity({ name: 'maquinarias' })
+export class Maquinaria {
     @PrimaryGeneratedColumn()
     id: number
 
