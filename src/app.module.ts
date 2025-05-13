@@ -6,6 +6,7 @@ import { UserModule } from './user/user.module';
 import { AuthModule } from './auth/auth.module';
 import { DatabaseModule } from './database/database.module';
 import { RegisterModule } from './register/register.module';
+import { RecoveryModule } from './recovery/recovery.module';
 
 @Module({
   imports: [
@@ -13,6 +14,7 @@ import { RegisterModule } from './register/register.module';
     UserModule,
     MaquinariaModule,
     AuthModule,
+    RecoveryModule,
     RegisterModule
   ],
   controllers: [
