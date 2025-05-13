@@ -21,9 +21,7 @@ export class RegisterController {
         }
         try {
             await this.registerService.register(userAdminData, UserRole.Admin)
-        } catch {
-            console.log('El usuario administrador ya se encuentra registrado')
-        }
+        } catch {}
     }
 
     @Post()
