@@ -24,6 +24,16 @@ export class MaquinariaController {
         return this.maquinariaService.update(id, updatemaquinariaDto);
     }
 
+    @Get('/estados/:estado')
+    findByState(@Param('estado') estado: string): Promise<Maquinaria[]> {
+        return this.maquinariaService.findByState(estado);
+    }
+
+    @Get('/categorias/:categoria')
+    findByCategory(@Param('categoria') categoria: string): Promise<Maquinaria[]> {
+        return this.maquinariaService.findByCategory(categoria);
+    }
+
     @Get('categorias')
     getCategories(): string[] {
         return this.maquinariaService.getAllCategories()

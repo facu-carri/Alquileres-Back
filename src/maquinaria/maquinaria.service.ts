@@ -31,6 +31,14 @@ export class MaquinariaService {
         return maquinaria;
     }
 
+    async findByCategory(cat: string): Promise<Maquinaria[]> {
+        return await this.maquinariaRepository.findBy({ categoria: MaquinariaCategory[cat] });
+    }
+
+    async findByState(estado: string): Promise<Maquinaria[]> {
+        return await this.maquinariaRepository.findBy({ state: MaquinariaStates[estado] });
+    }
+
     async update(id: number, updatemaquinariaDto: UpdateMaquinariaDto): Promise<Maquinaria> {
         const maquinaria = await this.findOne(id);
         this.maquinariaRepository.merge(maquinaria, updatemaquinariaDto);
