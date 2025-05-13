@@ -1,9 +1,10 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { Maquinaria } from './maquinaria.entity';
+import { Location, Maquinaria, MaquinariaCategory, MaquinariaStates, ReturnPolicy } from './maquinaria.entity';
 import { MaquinariaDto } from './dto/maquinaria.dto';
 import { UpdateMaquinariaDto } from './dto/update-maquinaria.dto';
+import { getEnumValues } from 'src/utils/EnumUtils';
 
 @Injectable()
 export class MaquinariaService {
@@ -41,5 +42,21 @@ export class MaquinariaService {
         if (result.affected === 0) {
             throw new NotFoundException(`No se encontró el maquinaria con id ${id}`);
         }
+    }
+
+    getAllCategories(): string[] {
+        return getEnumValues(MaquinariaCategory)
+    }
+
+    getAllPolitics(): string[] {
+        return getEnumValues(ReturnPolicy)
+    }
+
+    getAllLocations(): string[] {
+        return getEnumValues(Location)
+    }
+
+    getAllStates(): string[] {
+        return getEnumValues(MaquinariaStates)
     }
 }

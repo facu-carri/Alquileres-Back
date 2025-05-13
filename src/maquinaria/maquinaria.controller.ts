@@ -13,13 +13,33 @@ export class MaquinariaController {
         return this.maquinariaService.findAll();
     }
 
-    @Get(':id')
-    findOne(@Param('id') id: number): Promise<Maquinaria> {
-        return this.maquinariaService.findOne(id);
-    }
-
     @Post()
     create(@Body() maquinariaDto: MaquinariaDto): Promise<Maquinaria> {
         return this.maquinariaService.create(maquinariaDto);
+    }
+
+    @Get('categories')
+    getCategories(): string {
+        return this.maquinariaService.getAllCategories().toString()
+    }
+
+    @Get('politicas')
+    getPolitics(): string {
+        return this.maquinariaService.getAllPolitics().toString()
+    }
+
+    @Get('locaciones')
+    getLocations(): string {
+        return this.maquinariaService.getAllLocations().toString()
+    }
+
+    @Get('estados')
+    getStates(): string {
+        return this.maquinariaService.getAllStates().toString()
+    }
+
+    @Get(':id')
+    findOne(@Param('id') id: number): Promise<Maquinaria> {
+        return this.maquinariaService.findOne(id);
     }
 }

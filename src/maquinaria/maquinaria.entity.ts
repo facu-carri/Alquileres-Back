@@ -1,9 +1,31 @@
 import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
 
-export type MaquinariaStates = 'Disponible' | 'Reservado' | 'Mantenimiento' | 'Eliminado'
-export type ReturnPolicy = '0_devolucion' | '20_devolucion' | '100_devolucion'
-export type MaquinariaCategory = 'Jardinería' | 'Construcción' | 'Agricultura' | 'Minería' | 'Logística' | 'Transporte' | 'Otro'
-export type Location = 'La Plata' | 'Tandil' | 'Ensenada' | 'Bahía Blanca'
+export enum MaquinariaStates {
+    'Disponible',
+    'Reservado',
+    'Mantenimiento',
+    'Eliminado'
+}
+export enum ReturnPolicy {
+    'devolucion_0',
+    'devolucion_20',
+    'devolucion_100'
+}
+export enum MaquinariaCategory {
+    'Jardinería',
+    'Construcción',
+    'Agricultura',
+    'Minería',
+    'Logística',
+    'Transporte',
+    'Otro'
+}
+export enum Location {
+    'La Plata',
+    'Tandil',
+    'Ensenada',
+    'Bahía Blanca'
+}
 
 @Entity({ name: 'maquinarias' })
 export class Maquinaria {
@@ -33,15 +55,15 @@ export class Maquinaria {
     // Alternativamente, puede haber un endpoint para (por ejemplo), mostrar las distintas categorias, y que se base en revisar qué categorías hay en la lista de maquinas 
     // (suena re ineficiente, pero bueh)
 
-    @Column ({ nullable: false, default: 'La Plata' })
+    @Column ({ nullable: false, default: Location["La Plata"] })
     sucursal : Location
 
-    @Column({ nullable: false, default: 'Otro' })
+    @Column({ nullable: false, default: MaquinariaCategory.Otro })
     categoria: MaquinariaCategory
 
-    @Column({ nullable: false, default: 'Disponible' })
+    @Column({ nullable: false, default: MaquinariaStates.Disponible })
     state: MaquinariaStates
 
-    @Column({ nullable: false, default: '100_devolucion' })
+    @Column({ nullable: false, default: ReturnPolicy.devolucion_100 })
     politica: ReturnPolicy
 }
