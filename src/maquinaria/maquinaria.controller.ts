@@ -19,23 +19,23 @@ export class MaquinariaController {
     }
 
     @Get('categories')
-    getCategories(): string {
-        return this.maquinariaService.getAllCategories().toString()
+    getCategories(): string[] {
+        return this.maquinariaService.getAllCategories()
     }
 
     @Get('politicas')
-    getPolitics(): string {
-        return this.maquinariaService.getAllPolitics().toString()
+    getPolitics(): string[] {
+        return this.maquinariaService.getAllPolitics()
     }
 
     @Get('locaciones')
-    getLocations(): string {
-        return this.maquinariaService.getAllLocations().toString()
+    getLocations(): string[] {
+        return this.maquinariaService.getAllLocations()
     }
 
     @Get('estados')
-    getStates(): string {
-        return this.maquinariaService.getAllStates().toString()
+    getStates(): string[] {
+        return this.maquinariaService.getAllStates()
     }
 
     @Get(':id')
