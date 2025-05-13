@@ -9,6 +9,7 @@ import { AuthCode } from './dto/authCode.entity';
 import { Repository } from 'typeorm';
 import { AuthCodeDto } from './dto/authCode.dto';
 import { generateCode } from 'src/utils/Utils';
+import { JwtPayload } from './jwt/jwtPayload';
 
 @Injectable()
 export class AuthService {
@@ -44,7 +45,7 @@ export class AuthService {
     }
 
     private async generateToken(user:User) {
-        const payload = {
+        const payload: JwtPayload = {
             email: user.email,
             rol: user.rol
         }
