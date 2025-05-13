@@ -24,7 +24,7 @@ export class MaquinariaController {
         return this.maquinariaService.update(id, updatemaquinariaDto);
     }
 
-    @Get('categories')
+    @Get('categorias')
     getCategories(): string[] {
         return this.maquinariaService.getAllCategories()
     }
