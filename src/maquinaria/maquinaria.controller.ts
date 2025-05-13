@@ -1,6 +1,7 @@
-import { Controller, Get, Post, Body, Param } from '@nestjs/common';
+import { Controller, Get, Post, Put, Body, Param } from '@nestjs/common';
 import { Maquinaria } from './maquinaria.entity';
 import { MaquinariaDto } from './dto/maquinaria.dto';
+import { UpdateMaquinariaDto } from './dto/update-maquinaria.dto';
 import { MaquinariaService } from './maquinaria.service';
 
 @Controller('maquinaria')
@@ -16,6 +17,11 @@ export class MaquinariaController {
     @Post()
     create(@Body() maquinariaDto: MaquinariaDto): Promise<Maquinaria> {
         return this.maquinariaService.create(maquinariaDto);
+    }
+
+    @Put(':id')
+    update(@Param('id') id: number, @Body() updatemaquinariaDto: UpdateMaquinariaDto): Promise<Maquinaria> {
+        return this.maquinariaService.update(id, updatemaquinariaDto);
     }
 
     @Get('categories')
