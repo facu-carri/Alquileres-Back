@@ -7,6 +7,5 @@ import { UserModule } from 'src/user/user.module';
     imports: [UserModule],
     controllers: [RegisterController],
     providers: [RegisterService],
-    exports: [RegisterService]
 })
 export class RegisterModule {}

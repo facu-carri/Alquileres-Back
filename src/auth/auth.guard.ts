@@ -5,11 +5,11 @@ import { Request } from 'express';
 @Injectable()
 export class AuthGuard implements CanActivate {
 
-    constructor(protected jwtService:JwtService){}
+    constructor(private jwtService:JwtService){}
 
     async canActivate(context: ExecutionContext): Promise<boolean> {
         const req = context.switchToHttp().getRequest()
-        const token = this.getToken(context)
+        const token = this.extractTokenFromHeader(req)
 
         if (!token) {
             throw new UnauthorizedException()
@@ -23,11 +23,6 @@ export class AuthGuard implements CanActivate {
         }
 
         return true;
-    }
-
-    getToken(context: ExecutionContext): string | undefined {
-        const req = context.switchToHttp().getRequest()
-        return this.extractTokenFromHeader(req)
     }
 
     extractTokenFromHeader(req: Request): string | undefined {

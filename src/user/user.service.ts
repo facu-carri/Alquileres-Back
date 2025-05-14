@@ -33,12 +33,8 @@ export class UserService {
         return await this.userRepository.findOneBy({ email })
     }
 
-    async existBy(obj: Partial<User>): Promise<boolean> {
-        return !!(await this.userRepository.findOneBy(obj))
-    }
-
-    async update(obj: Partial<User>, updateUserDto: UpdateUserDto): Promise<void> {
-        await this.userRepository.update(obj, updateUserDto);
+    async update(id: number, updateUserDto: UpdateUserDto): Promise<void> {
+        await this.userRepository.update(id, updateUserDto);
     }
 
     async remove(id: number): Promise<void> {

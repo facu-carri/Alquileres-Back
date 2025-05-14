@@ -1,20 +1,18 @@
-import { BadRequestException, HttpStatus, Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { UserService } from 'src/user/user.service';
 import { UserDto } from 'src/user/dto/user.dto';
 import { UserRole } from 'src/user/user.entity';
-import { response } from 'express';
 
 @Injectable()
 export class RegisterService {
     
-    constructor(private readonly userService: UserService){}
+    constructor(private readonly UserService: UserService){}
     
-    async register(usertData: UserDto, rol: UserRole) {
-        const client = await this.userService.findOneByEmail(usertData.email)
+    async register(clientData: UserDto, rol: UserRole) {
+        const client = await this.UserService.findOneByEmail(clientData.email)
         if (client) {
             throw new BadRequestException('El mail ya se encuentra registrado')
         }
-        await this.userService.create(usertData, rol)
-        return response.status(200)
+        return await this.UserService.create(clientData, rol)
     }
 }

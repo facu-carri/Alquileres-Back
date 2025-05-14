@@ -5,7 +5,6 @@ import { Location, Maquinaria, MaquinariaCategory, MaquinariaStates, ReturnPolic
 import { MaquinariaDto } from './dto/maquinaria.dto';
 import { UpdateMaquinariaDto } from './dto/update-maquinaria.dto';
 import { FilterMaquinariaDto } from './dto/filter-maquinaria.dto';
-
 import { getEnumValues } from 'src/utils/EnumUtils';
 
 @Injectable()
@@ -59,7 +58,6 @@ export class MaquinariaService {
         }
         
         return query.getMany();
-
     }
 
     async findOne(id: number): Promise<Maquinaria> {

@@ -1,11 +1,6 @@
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { Module } from '@nestjs/common';
-import { DatabaseService } from './database.service';
-import { RegisterModule } from 'src/register/register.module';
 
-const initializeDB = false
-
-const DatabaseDynamicModule = TypeOrmModule.forRoot({
+export const DatabaseModule = TypeOrmModule.forRoot({
     type: 'mysql',
     host: 'localhost',
     port: 3306,
@@ -15,18 +10,5 @@ const DatabaseDynamicModule = TypeOrmModule.forRoot({
     entities: [
         __dirname + '/../**/*.entity{.ts,.js}',
     ],
-    synchronize: initializeDB, // Setear en false despues de la primera ejecucion para evitar errores
+    synchronize: false, // Setear en false despues de la primera ejecucion para evitar errores
 })
-
-@Module({
-    imports: [
-        DatabaseDynamicModule,
-        ...(initializeDB ? [
-            RegisterModule
-        ] : [])
-    ],
-    providers: [
-        ...(initializeDB ? [DatabaseService] : [])
-    ],
-})
-export class DatabaseModule {}
