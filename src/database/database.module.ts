@@ -3,6 +3,8 @@ import { Module } from '@nestjs/common';
 import { DatabaseService } from './database.service';
 import { RegisterModule } from 'src/register/register.module';
 
+const initializeDB = false
+
 const DatabaseDynamicModule = TypeOrmModule.forRoot({
     type: 'mysql',
     host: 'localhost',
@@ -13,14 +15,18 @@ const DatabaseDynamicModule = TypeOrmModule.forRoot({
     entities: [
         __dirname + '/../**/*.entity{.ts,.js}',
     ],
-    synchronize: false, // Setear en false despues de la primera ejecucion para evitar errores
+    synchronize: initializeDB, // Setear en false despues de la primera ejecucion para evitar errores
 })
 
 @Module({
     imports: [
         DatabaseDynamicModule,
-        RegisterModule
+        ...(initializeDB ? [
+            RegisterModule
+        ] : [])
     ],
-    providers: [DatabaseService],
+    providers: [
+        ...(initializeDB ? [DatabaseService] : [])
+    ],
 })
 export class DatabaseModule {}
