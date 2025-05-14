@@ -1,13 +1,53 @@
 import { PartialType } from '@nestjs/mapped-types';
 import { MaquinariaDto } from './maquinaria.dto';
-import { MaquinariaStates } from '../maquinaria.entity';
-import { IsEnum, IsOptional, IsString, isString, IsDefined } from 'class-validator';
+import { MaquinariaStates, ReturnPolicy, MaquinariaCategory, Location } from '../maquinaria.entity';
+import { IsEnum, IsOptional, IsString, IsDefined } from 'class-validator';
 import { validationMessage, ValidatorTypes } from 'src/utils/ValidatorMessages';
 
 export class FilterMaquinariaDto extends PartialType(MaquinariaDto) {
   @IsOptional()
   @IsDefined()
-  @IsEnum(MaquinariaStates, { ...validationMessage(ValidatorTypes.IsEnum), context: { constraints: [Object.values(MaquinariaStates)] } })
+  @IsString(validationMessage(ValidatorTypes.IsString))
+  readonly nombre?: string;
+
+  @IsOptional()
+  @IsDefined()
+  @IsString(validationMessage(ValidatorTypes.IsString))
+  readonly marca?: string;
+
+  @IsOptional()
+  @IsDefined()
+  @IsString(validationMessage(ValidatorTypes.IsString))
+  readonly modelo?: string;
+
+  @IsOptional()
+  @IsDefined()
+  @IsString(validationMessage(ValidatorTypes.IsString))
+  readonly precio?: number;
+
+  @IsOptional()
+  @IsDefined()
+  @IsString(validationMessage(ValidatorTypes.IsString))
+  readonly año_adquisicion?: number;
+
+  @IsOptional()
+  @IsDefined()
+  @IsString(validationMessage(ValidatorTypes.IsString))
+  readonly sucursal?: Location;
+
+  @IsOptional()
+  @IsDefined()
+  @IsString(validationMessage(ValidatorTypes.IsString))
+  readonly categoria?: MaquinariaCategory;
+
+  @IsOptional()
+  @IsDefined()
+  @IsString(validationMessage(ValidatorTypes.IsString))
+  readonly politica?: ReturnPolicy;
+
+  @IsOptional()
+  @IsDefined()
+  @IsString(validationMessage(ValidatorTypes.IsString))
   readonly state?: MaquinariaStates;
 
   @IsOptional()
