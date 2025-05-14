@@ -1,7 +1,7 @@
 import { PartialType } from '@nestjs/mapped-types';
 import { MaquinariaDto } from './maquinaria.dto';
 import { MaquinariaStates, ReturnPolicy, MaquinariaCategory, Location } from '../maquinaria.entity';
-import { IsEnum, IsOptional, IsString, isString, IsDefined } from 'class-validator';
+import { IsEnum, IsOptional, IsString, IsDefined } from 'class-validator';
 import { validationMessage, ValidatorTypes } from 'src/utils/ValidatorMessages';
 
 export class FilterMaquinariaDto extends PartialType(MaquinariaDto) {
