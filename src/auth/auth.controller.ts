@@ -3,6 +3,8 @@ import { AuthService } from './auth.service';
 import { LoginDto } from './dto/login.dto';
 import { AuthGuard } from './auth.guard';
 import { AuthCodeDto } from './dto/authCode.dto';
+import { UserRole } from 'src/user/user.entity';
+import { RoleGuard } from 'src/guards/role.guard';
 
 @Controller('login')
 export class AuthController {
@@ -21,6 +23,7 @@ export class AuthController {
     // Esto es un ejemplo de una ruta que necesita autorizacion (jwt)
     @Get('profile')
     @UseGuards(AuthGuard)
+    @UseGuards(RoleGuard.bind(RoleGuard, [UserRole.Admin, UserRole.Empleado]))
     async profile() {
         return 'Access to profile'
     }

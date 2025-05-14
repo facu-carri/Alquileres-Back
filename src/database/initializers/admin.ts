@@ -1,10 +1,9 @@
-import { Controller, Post, Body } from '@nestjs/common';
-import { RegisterService } from './register.service';
-import { UserDto } from 'src/user/dto/user.dto';
-import { UserRole } from 'src/user/user.entity';
+import { RegisterService } from "src/register/register.service"
+import { UserDto } from "src/user/dto/user.dto"
+import { UserRole } from "src/user/user.entity"
 
-@Controller('register')
-export class RegisterController {
+export class InitializeAdmin {
+
     constructor(private readonly registerService: RegisterService) {
         this.initAdminUser()
     }
@@ -22,10 +21,5 @@ export class RegisterController {
         try {
             await this.registerService.register(userAdminData, UserRole.Admin)
         } catch {}
-    }
-
-    @Post()
-    async register(@Body() clientData: UserDto) {
-        return await this.registerService.register(clientData, UserRole.Cliente)
     }
 }
