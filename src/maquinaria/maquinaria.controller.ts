@@ -12,6 +12,13 @@ export class MaquinariaController {
 
     @Get()
     findAll(@Query() filters: FilterMaquinariaDto): Promise<Maquinaria[]> {
+        // for each field in filters, if the field is empty, remove it
+        console.log (filters);
+        Object.keys(filters).forEach(key => {
+            if (filters[key] === '' || filters[key] === null) {
+                delete filters[key];
+            }
+        })
         return this.maquinariaService.findAll(filters);
     }
 
