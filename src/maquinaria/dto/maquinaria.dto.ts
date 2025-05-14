@@ -1,7 +1,9 @@
-import { IsString, IsNumber, IsNotEmpty, Validator } from 'class-validator';
+import { IsString, IsNumber, IsNotEmpty, IsEnum, Validator } from 'class-validator';
 import { validationMessage, ValidatorTypes } from 'src/utils/ValidatorMessages';
+import { MaquinariaStates, ReturnPolicy, MaquinariaCategory, Location } from '../maquinaria.entity';
 
-export class ItemDto {
+export class MaquinariaDto {
+
   @IsString(validationMessage(ValidatorTypes.IsString))
   @IsNotEmpty(validationMessage(ValidatorTypes.isNotEmpty))
   readonly nombre: string;
@@ -22,22 +24,18 @@ export class ItemDto {
   @IsNotEmpty(validationMessage(ValidatorTypes.isNotEmpty))
   readonly año_adquisicion: number;
 
-  // Ver cómo mapear la elección al tipo de dato. Comentado para que compile
+  @IsEnum(Location, { ...validationMessage(ValidatorTypes.IsEnum), context: { constraints: [Object.values(Location)] } })
+  @IsNotEmpty(validationMessage(ValidatorTypes.isNotEmpty))
+  readonly sucursal: Location;
 
-  // @IsString(validationMessage(ValidatorTypes.IsString))
-  // @IsNotEmpty(validationMessage(ValidatorTypes.isNotEmpty))
-  // readonly sucursal: string;
+  @IsEnum(ReturnPolicy, { ...validationMessage(ValidatorTypes.IsEnum), context: { constraints: [Object.values(ReturnPolicy)] } })
+  @IsNotEmpty(validationMessage(ValidatorTypes.isNotEmpty))
+  readonly politica: ReturnPolicy;
 
-  // @IsString(validationMessage(ValidatorTypes.IsString))
-  // @IsNotEmpty(validationMessage(ValidatorTypes.isNotEmpty))
-  // readonly politica: string;
-
-  // @IsString(validationMessage(ValidatorTypes.IsString))
-  // @IsNotEmpty(validationMessage(ValidatorTypes.isNotEmpty))
-  // readonly categoria: string;
+  @IsEnum(MaquinariaCategory, { ...validationMessage(ValidatorTypes.IsEnum), context: { constraints: [Object.values(MaquinariaCategory)] } })
+  @IsNotEmpty(validationMessage(ValidatorTypes.isNotEmpty))
+  readonly categoria: MaquinariaCategory;
 
   // readonly imagen: [TYPE];
   // Asumo que se pasa como base64 o algo por el estilo y se guarda asi en base, o se guarda localmente y se pone en base su ubicacion
-
-
 }

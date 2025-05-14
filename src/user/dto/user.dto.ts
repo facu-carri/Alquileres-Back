@@ -23,9 +23,9 @@ export class UserDto {
     @IsNotEmpty(validationMessage(ValidatorTypes.isNotEmpty))
     readonly apellido: string;
 
+    @IsString(validationMessage(ValidatorTypes.IsString))
     readonly nacimiento: string;
 
     @IsString(validationMessage(ValidatorTypes.IsString))
-    @IsPhoneNumber('AR', validationMessage(ValidatorTypes.IsEmail))
     readonly telefono: string
 }
