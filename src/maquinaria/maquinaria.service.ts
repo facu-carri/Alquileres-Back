@@ -1,9 +1,11 @@
 import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { Filter, Repository } from 'typeorm';
 import { Location, Maquinaria, MaquinariaCategory, MaquinariaStates, ReturnPolicy } from './maquinaria.entity';
 import { MaquinariaDto } from './dto/maquinaria.dto';
 import { UpdateMaquinariaDto } from './dto/update-maquinaria.dto';
+import { FilterMaquinariaDto } from './dto/filter-maquinaria.dto';
+
 import { getEnumValues } from 'src/utils/EnumUtils';
 
 @Injectable()
@@ -19,8 +21,45 @@ export class MaquinariaService {
         return await this.maquinariaRepository.save(maquinaria);
     }
 
-    async findAll(): Promise<Maquinaria[]> {
-        return await this.maquinariaRepository.find();
+    async findAll(filters: FilterMaquinariaDto): Promise<Maquinaria[]> {
+        const query = this.maquinariaRepository.createQueryBuilder('maquinaria');
+
+        if (filters.text) {
+            query.andWhere('maquinaria.nombre LIKE :text', { text: `%${filters.text}%` })
+            .orWhere('maquinaria.marca LIKE :text', { text: `%${filters.text}%` })
+            .orWhere('maquinaria.modelo LIKE :text', { text: `%${filters.text}%` });
+        }
+        
+        if (filters.nombre) {
+            query.andWhere('maquinaria.nombre LIKE :nombre', { nombre: `%${filters.nombre}%` });
+        }
+
+        if (filters.marca) {
+            query.andWhere('maquinaria.marca LIKE :marca', { marca: `%${filters.marca}%` });
+        }
+
+        if (filters.modelo) {
+            query.andWhere('maquinaria.modelo LIKE :modelo', { modelo: `%${filters.modelo}%` });
+        }
+
+        if (filters.categoria) {
+            query.andWhere('maquinaria.categoria = :categoria', { categoria: filters.categoria });
+        }
+        
+        if (filters.state) {
+            query.andWhere('maquinaria.state = :state', { state: filters.state });
+        }
+        
+        if (filters.sucursal) {
+            query.andWhere('maquinaria.sucursal = :sucursal', { sucursal: filters.sucursal });
+        }
+        
+        if (filters.politica) {
+            query.andWhere('maquinaria.politica = :politica', { politica: filters.politica });
+        }
+        
+        return query.getMany();
+
     }
 
     async findOne(id: number): Promise<Maquinaria> {

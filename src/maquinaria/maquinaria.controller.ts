@@ -1,6 +1,7 @@
-import { Controller, Get, Post, Put, Body, Param, Delete, Patch } from '@nestjs/common';
+import { Controller, Get, Post, Put, Body, Param, Delete, Patch, Query } from '@nestjs/common';
 import { Maquinaria } from './maquinaria.entity';
 import { MaquinariaDto } from './dto/maquinaria.dto';
+import { FilterMaquinariaDto } from './dto/filter-maquinaria.dto';
 import { UpdateMaquinariaDto } from './dto/update-maquinaria.dto';
 import { MaquinariaService } from './maquinaria.service';
 
@@ -10,8 +11,8 @@ export class MaquinariaController {
     constructor(private readonly maquinariaService: MaquinariaService) {}
 
     @Get()
-    findAll(): Promise<Maquinaria[]> {
-        return this.maquinariaService.findAll();
+    findAll(@Query() filters: FilterMaquinariaDto): Promise<Maquinaria[]> {
+        return this.maquinariaService.findAll(filters);
     }
 
     @Post()
