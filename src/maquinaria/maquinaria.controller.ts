@@ -25,7 +25,6 @@ export class MaquinariaController {
         @Body() maquinariaDto: MaquinariaDto,
         @UploadedFile() image: Express.Multer.File
     ): Promise<Maquinaria> {
-        console.log('Try create maquinaria')
         maquinariaDto.imagen = getImageLink(image)
         return this.maquinariaService.create(maquinariaDto);
     }
