@@ -27,17 +27,17 @@ function processArguments(type: ValidatorTypes, validationArguments: ValidationA
     if (type === ValidatorTypes.IsEnum && constraints?.[0]) {
         const enumObj = constraints[0];
         const enumValues = Object.values(enumObj).filter(v => typeof v === 'string').join(', ');
-        ret = ret.replace('${0}', enumValues);
+        ret = ret.replaceAll('${0}', enumValues);
     }
 
     if (ret.includes('${0}') && constraints.length > 0) {
-        constraints.forEach((value, index) => ret = String(ret).replace("${" + index + "}", value))
+        constraints.forEach((value, index) => ret = String(ret).replaceAll("${" + index + "}", value))
     }
     if (ret.includes('${p}') && property) {
-        ret = ret.replace('${p}', property)
+        ret = ret.replaceAll('${p}', property)
     }
     if (ret.includes('${v}') && property && object[property]) {
-        ret = ret.replace('${v}', object[property])   
+        ret = ret.replaceAll('${v}', object[property])   
     }
     return ret
 }
