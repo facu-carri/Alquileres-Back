@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Post, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Post, Req, UseGuards } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { LoginDto } from './dto/login.dto';
 import { AuthGuard } from './auth.guard';
@@ -22,9 +22,9 @@ export class AuthController {
 
     // Esto es un ejemplo de una ruta que necesita autorizacion (jwt)
     @Get('profile')
-    @UseGuards(AuthGuard)
     @UseGuards(RoleGuard.bind(RoleGuard, [UserRole.Admin, UserRole.Empleado]))
-    async profile() {
+    async profile(@Req() req) {
+        console.log(req['user'])
         return 'Access to profile'
     }
 }

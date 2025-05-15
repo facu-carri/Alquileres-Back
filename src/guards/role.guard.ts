@@ -12,12 +12,11 @@ export class RoleGuard extends AuthGuard {
     }
 
     async canActivate(context: ExecutionContext): Promise<boolean> {
+        const req = context.switchToHttp().getRequest()
         const isValidToken = await super.canActivate(context)
         if (!isValidToken) return false
         
-        const token = this.getToken(context)
-        const decode: JwtPayload = this.jwtService.decode(token) // Trae mas datos, pero en este caso solo importan estos
-
-        return this.roles.includes(decode.rol)
+        const payload: JwtPayload = req['user']
+        return this.roles.includes(payload.rol)
     }
 }
