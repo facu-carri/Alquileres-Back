@@ -22,7 +22,6 @@ export const setRoute = (...args: argsParams): any => {
     const proxyBody: Function = (typeof(args.at(-1)) == 'function' ? args.at(-1) : null) as Function
     const route: any[] = proxyBody ? args.slice(0, -1) : args
     let dest = path.join(baseDir, ...route)
-    console.log('setRoute')
     return {
         destination: ({ body }, file, cb) => {
             if (body) {
