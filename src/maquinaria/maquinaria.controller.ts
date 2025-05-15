@@ -1,9 +1,12 @@
-import { Controller, Get, Post, Put, Body, Param, Delete, Patch, Query } from '@nestjs/common';
+import { Controller, Get, Post, Put, Body, Param, Delete, Patch, Query, UseInterceptors, UploadedFile } from '@nestjs/common';
 import { Maquinaria } from './maquinaria.entity';
 import { MaquinariaDto } from './dto/maquinaria.dto';
 import { FilterMaquinariaDto } from './dto/filter-maquinaria.dto';
 import { UpdateMaquinariaDto } from './dto/update-maquinaria.dto';
 import { MaquinariaService } from './maquinaria.service';
+import { FileInterceptor } from '@nestjs/platform-express';
+import { setFilename, setImgOpts, setRoute } from 'src/images/images.module';
+import { getImageLink } from 'src/utils/Utils';
 
 @Controller('maquinaria')
 export class MaquinariaController {
@@ -16,7 +19,14 @@ export class MaquinariaController {
     }
 
     @Post()
-    create(@Body() maquinariaDto: MaquinariaDto): Promise<Maquinaria> {
+    // Si se redefinen las opciones, se debe volver a setear la ruta usada en el module (en este caso, "maquinaria")
+    @UseInterceptors(FileInterceptor('image', setImgOpts(setRoute('maquinaria', '{nombre}'), setFilename('foto'))))
+    create(
+        @Body() maquinariaDto: MaquinariaDto,
+        @UploadedFile() image: Express.Multer.File
+    ): Promise<Maquinaria> {
+        console.log('Try create maquinaria')
+        maquinariaDto.imagen = getImageLink(image)
         return this.maquinariaService.create(maquinariaDto);
     }
 

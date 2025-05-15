@@ -1,6 +1,6 @@
-import { IsString, IsNumber, IsNotEmpty, IsEnum, Validator } from 'class-validator';
+import { IsString, IsNotEmpty, IsEnum } from 'class-validator';
 import { validationMessage, ValidatorTypes } from 'src/utils/ValidatorMessages';
-import { MaquinariaStates, ReturnPolicy, MaquinariaCategory, Location } from '../maquinaria.entity';
+import { ReturnPolicy, MaquinariaCategory, Location } from '../maquinaria.entity';
 
 export class MaquinariaDto {
 
@@ -16,13 +16,11 @@ export class MaquinariaDto {
   @IsNotEmpty(validationMessage(ValidatorTypes.isNotEmpty))
   readonly modelo: string;
 
-  @IsNumber({}, validationMessage(ValidatorTypes.IsNumber))
   @IsNotEmpty(validationMessage(ValidatorTypes.isNotEmpty))
   readonly precio: number;
 
-  @IsNumber({}, validationMessage(ValidatorTypes.IsNumber))
   @IsNotEmpty(validationMessage(ValidatorTypes.isNotEmpty))
-  readonly año_adquisicion: number;
+  readonly anio_adquisicion: number;
 
   @IsEnum(Location, { ...validationMessage(ValidatorTypes.IsEnum), context: { constraints: [Object.values(Location)] } })
   @IsNotEmpty(validationMessage(ValidatorTypes.isNotEmpty))
@@ -36,6 +34,5 @@ export class MaquinariaDto {
   @IsNotEmpty(validationMessage(ValidatorTypes.isNotEmpty))
   readonly categoria: MaquinariaCategory;
 
-  // readonly imagen: [TYPE];
-  // Asumo que se pasa como base64 o algo por el estilo y se guarda asi en base, o se guarda localmente y se pone en base su ubicacion
+  imagen: string
 }

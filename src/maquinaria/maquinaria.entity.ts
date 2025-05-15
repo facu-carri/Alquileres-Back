@@ -41,6 +41,9 @@ export class Maquinaria {
     @Column()
     marca: string
     
+    @Column({ nullable: true })
+    imagen: string
+
     @Column()
     modelo: string
 
@@ -48,7 +51,7 @@ export class Maquinaria {
     precio: number
 
     @Column({ nullable: false })
-    año_adquisicion: number
+    anio_adquisicion: number
 
     @Column({ 
         type: 'enum',
