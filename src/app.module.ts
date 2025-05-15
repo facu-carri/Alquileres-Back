@@ -7,6 +7,7 @@ import { AuthModule } from './auth/auth.module';
 import { DatabaseModule } from './database/database.module';
 import { RegisterModule } from './register/register.module';
 import { RecoveryModule } from './recovery/recovery.module';
+import { ImagesController } from './images/images.controller';
 
 @Module({
   imports: [
@@ -18,7 +19,8 @@ import { RecoveryModule } from './recovery/recovery.module';
     RegisterModule
   ],
   controllers: [
-    AppController
+    AppController,
+    ImagesController
   ],
   providers: [
     AppService
