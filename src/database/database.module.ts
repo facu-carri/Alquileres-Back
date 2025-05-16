@@ -9,6 +9,10 @@ const DatabaseDynamicModule = TypeOrmModule.forRoot({
     type: 'mysql',
     host: 'localhost',
     port: 3306,
+    // para MongoDB
+    // type: 'mongodb',
+    // host: 'localhost',
+    // port: 27017,
     username: 'root',
     password: process.env.DB_PASSWORD,
     database: process.env.DB_NAME,

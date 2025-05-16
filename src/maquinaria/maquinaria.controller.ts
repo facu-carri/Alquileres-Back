@@ -25,6 +25,7 @@ export class MaquinariaController {
 
     @Post()
     // Si se redefinen las opciones, se debe volver a setear la ruta usada en el module (en este caso, "maquinaria")
+    @UseGuards(RoleGuard.bind(RoleGuard, [UserRole.Admin]))
     @UseInterceptors(FileInterceptor('image', setImgOpts(setRoute('maquinaria', '{nombre}'), setFilename('foto'))))
     create(
         @Body() maquinariaDto: MaquinariaDto,
@@ -34,6 +35,7 @@ export class MaquinariaController {
         return this.maquinariaService.create(maquinariaDto);
     }
 
+    @UseGuards(RoleGuard.bind(RoleGuard, [UserRole.Admin]))
     @Put(':id')
     update(@Param('id') id: number, @Body() updatemaquinariaDto: UpdateMaquinariaDto): Promise<Maquinaria> {
         return this.maquinariaService.update(id, updatemaquinariaDto);
@@ -65,21 +67,25 @@ export class MaquinariaController {
         return this.maquinariaService.findOne(id);
     }
 
+    @UseGuards(RoleGuard.bind(RoleGuard, [UserRole.Admin]))
     @Patch(':id/eliminar')
     remove(@Param('id') id: number): Promise<void> {
         return this.maquinariaService.remove(id);
     }
     
+    @UseGuards(RoleGuard.bind(RoleGuard, [UserRole.Admin]))
     @Patch(':id/restaurar')
     delete(@Param('id') id: number): Promise<void> {
         return this.maquinariaService.restore(id);
     }
 
+    @UseGuards(RoleGuard.bind(RoleGuard, [UserRole.Admin, UserRole.Empleado]))
     @Patch(':id/esconder')
     hardDelete(@Param('id') id: number): Promise<void> {
         return this.maquinariaService.hide(id);
     }
 
+    @UseGuards(RoleGuard.bind(RoleGuard, [UserRole.Admin, UserRole.Empleado]))
     @Patch(':id/mostrar')
     hide(@Param('id') id: number): Promise<void> {
         return this.maquinariaService.show(id);
