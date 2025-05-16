@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Put, Body, Param, Delete, Patch, Query, UseInterceptors, UploadedFile } from '@nestjs/common';
+import { Controller, Get, Post, Put, Body, Param, Delete, Patch, Query, UseInterceptors, UploadedFile, Req, UseGuards } from '@nestjs/common';
 import { Maquinaria } from './maquinaria.entity';
 import { MaquinariaDto } from './dto/maquinaria.dto';
 import { FilterMaquinariaDto } from './dto/filter-maquinaria.dto';
@@ -7,6 +7,10 @@ import { MaquinariaService } from './maquinaria.service';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { setFilename, setImgOpts, setRoute } from 'src/images/images.module';
 import { getImageLink } from 'src/utils/Utils';
+import { UserInterceptor } from 'src/interceptors/user-interceptor';
+import { RoleGuard } from 'src/guards/role.guard';
+import { UserRole } from 'src/user/user.entity';
+import { User } from 'mercadopago';
 
 @Controller('maquinaria')
 export class MaquinariaController {
@@ -14,8 +18,9 @@ export class MaquinariaController {
     constructor(private readonly maquinariaService: MaquinariaService) {}
 
     @Get()
-    findAll(@Query() filters: FilterMaquinariaDto): Promise<Maquinaria[]> {
-        return this.maquinariaService.findAll(filters);
+    @UseInterceptors(UserInterceptor)
+    findAll(@Query() filters: FilterMaquinariaDto, @Req() req): Promise<Maquinaria[]> {
+        return this.maquinariaService.findAll(filters, req.user);
     }
 
     @Post()
@@ -34,16 +39,6 @@ export class MaquinariaController {
         return this.maquinariaService.update(id, updatemaquinariaDto);
     }
 
-    @Get('/estados/:estado')
-    findByState(@Param('estado') estado: string): Promise<Maquinaria[]> {
-        return this.maquinariaService.findByState(estado);
-    }
-
-    @Get('/categorias/:categoria')
-    findByCategory(@Param('categoria') categoria: string): Promise<Maquinaria[]> {
-        return this.maquinariaService.findByCategory(categoria);
-    }
-
     @Get('categorias')
     getCategories(): string[] {
         return this.maquinariaService.getAllCategories()
@@ -60,8 +55,9 @@ export class MaquinariaController {
     }
 
     @Get('estados')
-    getStates(): string[] {
-        return this.maquinariaService.getAllStates()
+    @UseInterceptors(UserInterceptor)
+    getStates(@Req() req): string[] {
+        return this.maquinariaService.getValidStates(req.user.rol)
     }
 
     @Get(':id')

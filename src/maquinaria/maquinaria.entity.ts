@@ -2,7 +2,6 @@ import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
 
 export enum MaquinariaStates {
     Disponible = 'Disponible',
-    Reservado = 'Reservado',
     Mantenimiento = 'Mantenimiento',
     Eliminado = 'Eliminado'
 }

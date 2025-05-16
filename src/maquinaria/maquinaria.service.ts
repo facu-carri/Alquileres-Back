@@ -21,8 +21,10 @@ export class MaquinariaService {
         return await this.maquinariaRepository.save(maquinaria);
     }
 
-    async findAll(filters: FilterMaquinariaDto): Promise<Maquinaria[]> {
+    async findAll(filters: FilterMaquinariaDto, rol: string): Promise<Maquinaria[]> {
         const query = this.maquinariaRepository.createQueryBuilder('maquinaria');
+
+        const validStates = this.getValidStates(rol)
 
         if (filters.text) {
             query.andWhere('maquinaria.nombre LIKE :text', { text: `%${filters.text}%` })
@@ -46,8 +48,11 @@ export class MaquinariaService {
             query.andWhere('maquinaria.categoria = :categoria', { categoria: filters.categoria });
         }
         
-        if (filters.state) {
+        if (filters.state && validStates.includes(filters.state) ) {
             query.andWhere('maquinaria.state = :state', { state: filters.state });
+        }
+        else {
+            query.andWhere('maquinaria.state IN (:...states)', { states: validStates });
         }
         
         if (filters.sucursal) {
@@ -68,14 +73,6 @@ export class MaquinariaService {
             throw new NotFoundException(`No se encontró la maquinaria con id ${id}`);
         }
         return maquinaria;
-    }
-
-    async findByCategory(cat: string): Promise<Maquinaria[]> {
-        return await this.maquinariaRepository.findBy({ categoria: MaquinariaCategory[cat] });
-    }
-
-    async findByState(estado: string): Promise<Maquinaria[]> {
-        return await this.maquinariaRepository.findBy({ state: MaquinariaStates[estado] });
     }
 
     async update(id: number, updatemaquinariaDto: UpdateMaquinariaDto): Promise<Maquinaria> {
@@ -148,7 +145,15 @@ export class MaquinariaService {
         return getEnumValues(Location)
     }
 
-    getAllStates(): string[] {
-        return getEnumValues(MaquinariaStates)
+    getValidStates(rol: string): string[] {
+        const states = getEnumValues(MaquinariaStates)
+        console.log(rol)
+        if (rol !== 'admin') {
+            states.splice(states.indexOf(MaquinariaStates.Eliminado), 1)
+            if (rol !== 'empleado') {
+                states.splice(states.indexOf(MaquinariaStates.Mantenimiento), 1)
+            }
+        }
+        return states
     }
 }
