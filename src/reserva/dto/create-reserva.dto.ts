@@ -4,15 +4,15 @@ export class CreateReservaDto {
 
     @IsNumber( { allowInfinity: false, allowNaN: false } )
     @IsNotEmpty()
-    maquinariaId: number;
+    id_maquinaria: number;
 
     // @IsNumber()
     // @IsNotEmpty()
-    // usuarioId: number;
+    // id_usuario: number;
 
     @IsString()
     @IsNotEmpty()
-    usuarioEmail: string;
+    email_usuario: string;
 
     @IsString()
     // @IsDateString()
