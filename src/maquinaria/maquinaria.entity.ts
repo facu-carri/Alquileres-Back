@@ -37,13 +37,13 @@ export class Maquinaria {
     @Column({ nullable: false })
     nombre: string
 
-    @Column()
+    @Column({ nullable: false })
     marca: string
-    
+
     @Column({ nullable: true })
     imagen: string
 
-    @Column()
+    @Column({ nullable: false })
     modelo: string
 
     @Column({ nullable: false })
