@@ -27,18 +27,18 @@ export class MaquinariaController {
     // Si se redefinen las opciones, se debe volver a setear la ruta usada en el module (en este caso, "maquinaria")
     @UseGuards(RoleGuard.bind(RoleGuard, [UserRole.Admin]))
     @UseInterceptors(FileInterceptor('image', setImgOpts(setRoute('maquinaria', '{nombre}'), setFilename('foto'))))
-    create(
+    async create(
         @Body() maquinariaDto: MaquinariaDto,
         @UploadedFile() image: Express.Multer.File
     ): Promise<Maquinaria> {
         maquinariaDto.imagen = getImageLink(image)
-        return this.maquinariaService.create(maquinariaDto);
+        return await this.maquinariaService.create(maquinariaDto);
     }
 
     @UseGuards(RoleGuard.bind(RoleGuard, [UserRole.Admin]))
     @Put(':id')
-    update(@Param('id') id: number, @Body() updatemaquinariaDto: UpdateMaquinariaDto): Promise<Maquinaria> {
-        return this.maquinariaService.update(id, updatemaquinariaDto);
+    async update(@Param('id') id: number, @Body() updatemaquinariaDto: UpdateMaquinariaDto): Promise<Maquinaria> {
+        return await this.maquinariaService.update(id, updatemaquinariaDto);
     }
 
     @Get('categorias')
@@ -63,31 +63,31 @@ export class MaquinariaController {
     }
 
     @Get(':id')
-    findOne(@Param('id') id: number): Promise<Maquinaria> {
-        return this.maquinariaService.findOne(id);
+    async findOne(@Param('id') id: number): Promise<Maquinaria> {
+        return await this.maquinariaService.findOne(id);
     }
 
     @UseGuards(RoleGuard.bind(RoleGuard, [UserRole.Admin]))
     @Patch(':id/eliminar')
-    remove(@Param('id') id: number): Promise<void> {
-        return this.maquinariaService.remove(id);
+    async remove(@Param('id') id: number): Promise<void> {
+        return await this.maquinariaService.remove(id);
     }
     
     @UseGuards(RoleGuard.bind(RoleGuard, [UserRole.Admin]))
     @Patch(':id/restaurar')
-    delete(@Param('id') id: number): Promise<void> {
-        return this.maquinariaService.restore(id);
+    async delete(@Param('id') id: number): Promise<void> {
+        return await this.maquinariaService.restore(id);
     }
 
     @UseGuards(RoleGuard.bind(RoleGuard, [UserRole.Admin, UserRole.Empleado]))
     @Patch(':id/esconder')
-    hardDelete(@Param('id') id: number): Promise<void> {
-        return this.maquinariaService.hide(id);
+    async hardDelete(@Param('id') id: number): Promise<void> {
+        return await this.maquinariaService.hide(id);
     }
 
     @UseGuards(RoleGuard.bind(RoleGuard, [UserRole.Admin, UserRole.Empleado]))
     @Patch(':id/mostrar')
-    hide(@Param('id') id: number): Promise<void> {
-        return this.maquinariaService.show(id);
+    async hide(@Param('id') id: number): Promise<void> {
+        return await this.maquinariaService.show(id);
     }
 }

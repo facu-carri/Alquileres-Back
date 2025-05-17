@@ -7,6 +7,8 @@ import { UpdateMaquinariaDto } from './dto/update-maquinaria.dto';
 import { FilterMaquinariaDto } from './dto/filter-maquinaria.dto';
 
 import { getEnumValues } from 'src/utils/EnumUtils';
+import { response } from 'express';
+import { UserRole } from 'src/user/user.entity';
 
 @Injectable()
 export class MaquinariaService {
@@ -21,50 +23,27 @@ export class MaquinariaService {
         return await this.maquinariaRepository.save(maquinaria);
     }
 
-    async findAll(filters: FilterMaquinariaDto, rol: string): Promise<Maquinaria[]> {
+    async findAll(filters: FilterMaquinariaDto, rol: UserRole): Promise<Maquinaria[]> {
+        const filterNames = ['like_nombre', 'like_marca', 'like_modelo', 'categoria', 'sucursal', 'politica']
         const query = this.maquinariaRepository.createQueryBuilder('maquinaria');
-
         const validStates = this.getValidStates(rol)
-
+        
+        if(filters.state && validStates.includes(filters.state)) filterNames.push('state')
+        else query.andWhere('maquinaria.state IN (:...states)', { states: validStates });
+        
         if (filters.text) {
             query.andWhere('maquinaria.nombre LIKE :text', { text: `%${filters.text}%` })
             .orWhere('maquinaria.marca LIKE :text', { text: `%${filters.text}%` })
             .orWhere('maquinaria.modelo LIKE :text', { text: `%${filters.text}%` });
         }
-        
-        if (filters.nombre) {
-            query.andWhere('maquinaria.nombre LIKE :nombre', { nombre: `%${filters.nombre}%` });
-        }
 
-        if (filters.marca) {
-            query.andWhere('maquinaria.marca LIKE :marca', { marca: `%${filters.marca}%` });
-        }
-
-        if (filters.modelo) {
-            query.andWhere('maquinaria.modelo LIKE :modelo', { modelo: `%${filters.modelo}%` });
-        }
-
-        if (filters.categoria) {
-            query.andWhere('maquinaria.categoria = :categoria', { categoria: filters.categoria });
-        }
-        
-        if (filters.state && validStates.includes(filters.state) ) {
-            query.andWhere('maquinaria.state = :state', { state: filters.state });
-        }
-        else {
-            query.andWhere('maquinaria.state IN (:...states)', { states: validStates });
-        }
-        
-        if (filters.sucursal) {
-            query.andWhere('maquinaria.sucursal = :sucursal', { sucursal: filters.sucursal });
-        }
-        
-        if (filters.politica) {
-            query.andWhere('maquinaria.politica = :politica', { politica: filters.politica });
+        for (let filter of filterNames) {
+            const useLike = filter.includes('like_')
+            if(useLike) filter = filter.substring(5)
+            if (filters[filter]) query.andWhere(`maquinaria.${filter} ${useLike ? 'LIKE' : '='} :${filter}`, { [filter]: `%${filters[filter]}%` });
         }
         
         return query.getMany();
-
     }
 
     async findOne(id: number): Promise<Maquinaria> {
@@ -91,7 +70,7 @@ export class MaquinariaService {
         }
         item.state = MaquinariaStates.Eliminado;
         await this.maquinariaRepository.save(item);
-        return { message: `Maquinaria con id ${id} eliminada con éxito`, }
+        return response.status(200)
     }
 
     async restore(id: number): Promise<any> {
@@ -104,7 +83,7 @@ export class MaquinariaService {
         }
         item.state = MaquinariaStates.Disponible;
         await this.maquinariaRepository.save(item);
-        return { message: `Maquinaria con id ${id} restaurada con éxito`, }
+        return response.status(200)
     }
 
     async show(id: number): Promise<any> {
@@ -117,7 +96,7 @@ export class MaquinariaService {
         }
         item.state = MaquinariaStates.Disponible;
         await this.maquinariaRepository.save(item);
-        return { message: `Maquinaria con id ${id} se vuelve a mostrar en el listado`, }
+        return response.status(200)
     }
 
     async hide(id: number): Promise<any> {
@@ -130,7 +109,7 @@ export class MaquinariaService {
         }
         item.state = MaquinariaStates.Mantenimiento;
         await this.maquinariaRepository.save(item);
-        return { message: `Maquinaria con id ${id} se ocultó del listado`, }
+        return response.status(200)
     }
 
     getAllCategories(): string[] {
@@ -145,15 +124,19 @@ export class MaquinariaService {
         return getEnumValues(Location)
     }
 
-    getValidStates(rol: string): string[] {
+    getValidStates(rol: UserRole): string[] {
         const states = getEnumValues(MaquinariaStates)
-        console.log(rol)
-        if (rol !== 'admin') {
-            states.splice(states.indexOf(MaquinariaStates.Eliminado), 1)
-            if (rol !== 'empleado') {
-                states.splice(states.indexOf(MaquinariaStates.Mantenimiento), 1)
-            }
+        
+        if (rol == UserRole.Admin) return states
+
+        const e_index = states.indexOf(MaquinariaStates.Eliminado)
+        states.splice(e_index, 1)
+
+        if (rol !== UserRole.Empleado) {
+            const m_index = states.indexOf(MaquinariaStates.Mantenimiento)
+            states.splice(m_index, 1)
         }
+        
         return states
     }
 }
