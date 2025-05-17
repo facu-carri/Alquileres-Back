@@ -34,6 +34,9 @@ export class Maquinaria {
     @PrimaryGeneratedColumn()
     id: number
 
+    @Column({ nullable: false , unique: true})
+    inventario: number
+
     @Column({ nullable: false })
     nombre: string
 

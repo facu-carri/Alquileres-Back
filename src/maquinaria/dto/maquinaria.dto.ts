@@ -1,8 +1,12 @@
-import { IsString, IsNotEmpty, IsEnum } from 'class-validator';
+import { IsString, IsNotEmpty, IsEnum, IsNumber } from 'class-validator';
 import { validationMessage, ValidatorTypes } from 'src/utils/ValidatorMessages';
 import { ReturnPolicy, MaquinariaCategory, Location } from '../maquinaria.entity';
 
 export class MaquinariaDto {
+
+  @IsNumber({ allowInfinity: false, allowNaN: false }, validationMessage(ValidatorTypes.IsNumber))
+  @IsNotEmpty(validationMessage(ValidatorTypes.isNotEmpty))
+  readonly inventario: number;
 
   @IsString(validationMessage(ValidatorTypes.IsString))
   @IsNotEmpty(validationMessage(ValidatorTypes.isNotEmpty))
