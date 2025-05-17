@@ -6,15 +6,11 @@ import { RegisterModule } from 'src/register/register.module';
 const initializeDB = false
 
 const DatabaseDynamicModule = TypeOrmModule.forRoot({
-    type: 'mysql',
-    host: 'localhost',
-    port: 3306,
-    // para MongoDB
-    // type: 'mongodb',
-    // host: 'localhost',
-    // port: 27017,
-    username: 'root',
-    password: process.env.DB_PASSWORD,
+    type: process.env.DB_TYPE as any,
+    host: process.env.DB_HOST,
+    port: parseInt(process.env.DB_PORT),
+    username: process.env.DB_USER_NAME,
+    password: process.env.DB_USER_PASSWORD,
     database: process.env.DB_NAME,
     entities: [
         __dirname + '/../**/*.entity{.ts,.js}',
