@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Put, Body, Param, Delete, Patch, Query, UseInterceptors, UploadedFile, Req, UseGuards } from '@nestjs/common';
+import { Controller, Get, Post, Put, Body, Param, Delete, Patch, Query, UseInterceptors, UploadedFile, Req, UseGuards, ParseIntPipe } from '@nestjs/common';
 import { Maquinaria } from './maquinaria.entity';
 import { MaquinariaDto } from './dto/maquinaria.dto';
 import { FilterMaquinariaDto } from './dto/filter-maquinaria.dto';
@@ -10,7 +10,6 @@ import { getImageLink } from 'src/utils/Utils';
 import { UserInterceptor } from 'src/interceptors/user-interceptor';
 import { RoleGuard } from 'src/guards/role.guard';
 import { UserRole } from 'src/user/user.entity';
-import { User } from 'mercadopago';
 
 @Controller('maquinaria')
 export class MaquinariaController {
@@ -37,7 +36,7 @@ export class MaquinariaController {
 
     @UseGuards(RoleGuard.bind(RoleGuard, [UserRole.Admin]))
     @Put(':id')
-    async update(@Param('id') id: number, @Body() updatemaquinariaDto: UpdateMaquinariaDto): Promise<Maquinaria> {
+    async update(@Param('id', ParseIntPipe) id: number, @Body() updatemaquinariaDto: UpdateMaquinariaDto): Promise<Maquinaria> {
         return await this.maquinariaService.update(id, updatemaquinariaDto);
     }
 
@@ -63,31 +62,31 @@ export class MaquinariaController {
     }
 
     @Get(':id')
-    async findOne(@Param('id') id: number): Promise<Maquinaria> {
+    async findOne(@Param('id', ParseIntPipe) id: number): Promise<Maquinaria> {
         return await this.maquinariaService.findOne(id);
     }
 
     @UseGuards(RoleGuard.bind(RoleGuard, [UserRole.Admin]))
     @Patch(':id/eliminar')
-    async remove(@Param('id') id: number): Promise<void> {
+    async remove(@Param('id', ParseIntPipe) id: number): Promise<void> {
         return await this.maquinariaService.remove(id);
     }
     
     @UseGuards(RoleGuard.bind(RoleGuard, [UserRole.Admin]))
     @Patch(':id/restaurar')
-    async delete(@Param('id') id: number): Promise<void> {
+    async delete(@Param('id', ParseIntPipe) id: number): Promise<void> {
         return await this.maquinariaService.restore(id);
     }
 
     @UseGuards(RoleGuard.bind(RoleGuard, [UserRole.Admin, UserRole.Empleado]))
     @Patch(':id/esconder')
-    async hardDelete(@Param('id') id: number): Promise<void> {
+    async hardDelete(@Param('id', ParseIntPipe) id: number): Promise<void> {
         return await this.maquinariaService.hide(id);
     }
 
     @UseGuards(RoleGuard.bind(RoleGuard, [UserRole.Admin, UserRole.Empleado]))
     @Patch(':id/mostrar')
-    async hide(@Param('id') id: number): Promise<void> {
+    async hide(@Param('id', ParseIntPipe) id: number): Promise<void> {
         return await this.maquinariaService.show(id);
     }
 }

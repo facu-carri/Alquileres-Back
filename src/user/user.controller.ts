@@ -1,4 +1,4 @@
-import { BadRequestException, Body, Controller, Delete, Get, Param, Put, Req, UseGuards } from '@nestjs/common';
+import { BadRequestException, Body, Controller, Delete, Get, Param, ParseIntPipe, Put, Req, UseGuards } from '@nestjs/common';
 import { UserService } from './user.service';
 import { User, UserRole } from './user.entity';
 import { UserDto } from './dto/user.dto';
@@ -12,14 +12,14 @@ export class UserController {
     constructor(private readonly userService: UserService) { }
 
     @Get(':id')
-    async getUser(@Param('id') id: number): Promise<User> {
+    async getUser(@Param('id', ParseIntPipe) id: number): Promise<User> {
         return await this.userService.getUserById(id)
     }
 
     @Put(':id')
     @UseGuards(AuthGuard)
     async modifyUser(
-        @Param('id') id: number,
+        @Param('id', ParseIntPipe) id: number,
         @Body() userDto: UpdateUserDto,
         @Req() req: Request
     ) {
@@ -30,7 +30,7 @@ export class UserController {
     @Delete(':id')
     @UseGuards(AuthGuard)
     async deleteUser(
-        @Param('id') id: number,
+        @Param('id', ParseIntPipe) id: number,
         @Req() req: Request
     ) {
         const { email, rol } = req['user']
