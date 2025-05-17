@@ -18,12 +18,12 @@ export class ReservaService {
     ) {}
 
     async create(dto: CreateReservaDto): Promise<Reserva> {
-        const maquinaria = await this.maquinariaRepository.findOneBy({ id: dto.maquinariaId });
+        const maquinaria = await this.maquinariaRepository.findOneBy({ id: dto.id_maquinaria });
         if (!maquinaria) {
             throw new NotFoundException('Maquinaria not found');
         }
 
-        const usuario = await this.userRepository.findOneBy({ email: dto.usuarioEmail });
+        const usuario = await this.userRepository.findOneBy({ email: dto.email_usuario });
         if (!usuario) {
             throw new NotFoundException('Usuario not found');
         }
