@@ -7,5 +7,5 @@ export function generateCode(length: number) {
 
 export function getImageLink(image: Express.Multer.File) {
     const baseDir = path.resolve('')
-    return `http://localhost:3000${image.path.substring(baseDir.length)}`.replaceAll("\\", "/")
+    return `${process.env.FRONT_URL}${image.path.substring(baseDir.length)}`.replaceAll("\\", "/")
 }
