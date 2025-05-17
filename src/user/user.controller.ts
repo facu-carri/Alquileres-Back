@@ -1,7 +1,6 @@
-import { BadRequestException, Body, Controller, Delete, Get, Param, ParseIntPipe, Put, Req, UseGuards } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, ParseIntPipe, Put, Req, UseGuards } from '@nestjs/common';
 import { UserService } from './user.service';
-import { User, UserRole } from './user.entity';
-import { UserDto } from './dto/user.dto';
+import { User } from './user.entity';
 import { JwtPayload } from 'src/auth/jwt/jwtPayload';
 import { AuthGuard } from 'src/auth/auth.guard';
 import { UpdateUserDto } from './dto/update-user.dto';
@@ -12,8 +11,10 @@ export class UserController {
     constructor(private readonly userService: UserService) { }
 
     @Get(':id')
-    async getUser(@Param('id', ParseIntPipe) id: number): Promise<User> {
-        return await this.userService.getUserById(id)
+    @UseGuards(AuthGuard)
+    async getUser(@Param('id', ParseIntPipe) id: number): Promise<Partial<User>> {
+        const { email, dni, telefono, nacimiento, nombre, apellido } = await this.userService.getUserById(id)
+        return { email, dni, telefono, nacimiento, nombre, apellido }
     }
 
     @Put(':id')

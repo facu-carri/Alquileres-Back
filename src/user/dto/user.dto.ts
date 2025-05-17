@@ -8,8 +8,6 @@ export class UserDto {
     @IsEmail({}, validationMessage(ValidatorTypes.IsEmail))
     readonly email: string;
 
-    @IsString(validationMessage(ValidatorTypes.IsString))
-    @MinLength(8, validationMessage(ValidatorTypes.MinLength))
     readonly password: string;
 
     @IsString(validationMessage(ValidatorTypes.IsString))
