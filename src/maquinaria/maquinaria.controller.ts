@@ -6,7 +6,7 @@ import { UpdateMaquinariaDto } from './dto/update-maquinaria.dto';
 import { MaquinariaService } from './maquinaria.service';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { setFilename, setImgOpts, setRoute } from 'src/images/images.module';
-import { getImageLink } from 'src/utils/Utils';
+import { generateCode, getImageLink } from 'src/utils/Utils';
 import { UserInterceptor } from 'src/interceptors/user-interceptor';
 import { RoleGuard } from 'src/guards/role.guard';
 import { UserRole } from 'src/user/user.entity';
@@ -25,7 +25,7 @@ export class MaquinariaController {
     @Post()
     // Si se redefinen las opciones, se debe volver a setear la ruta usada en el module (en este caso, "maquinaria")
     @UseGuards(RoleGuard.bind(RoleGuard, [UserRole.Admin]))
-    @UseInterceptors(FileInterceptor('image', setImgOpts(setRoute('maquinaria', '{nombre}'), setFilename('foto'))))
+    @UseInterceptors(FileInterceptor('image', setImgOpts(setRoute('maquinaria', '{nombre}'), setFilename(`foto_${generateCode(8)}`))))
     async create(
         @Body() maquinariaDto: MaquinariaDto,
         @UploadedFile() image: Express.Multer.File
