@@ -8,12 +8,14 @@ import { DatabaseModule } from './database/database.module';
 import { RegisterModule } from './register/register.module';
 import { RecoveryModule } from './recovery/recovery.module';
 import { ImagesController } from './images/images.controller';
+import { ReservaModule } from 'src/reserva/reserva.module';
 
 @Module({
   imports: [
     DatabaseModule,
     UserModule,
     MaquinariaModule,
+    ReservaModule,
     AuthModule,
     RecoveryModule,
     RegisterModule

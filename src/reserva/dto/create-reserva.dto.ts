@@ -1,13 +1,17 @@
-import { IsInt, IsNotEmpty, IsDateString, IsEnum } from 'class-validator';
+import { IsInt, IsNotEmpty, IsDateString, IsEnum, IsString } from 'class-validator';
 
 export class CreateReservaDto {
     @IsInt()
     @IsNotEmpty()
     maquinariaId: number;
 
-    @IsInt()
+    // @IsInt()
+    // @IsNotEmpty()
+    // usuarioId: number;
+
+    @IsString()
     @IsNotEmpty()
-    usuarioId: number;
+    usuarioEmail: string;
 
     @IsDateString()
     @IsNotEmpty()
