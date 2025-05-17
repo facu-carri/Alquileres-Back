@@ -57,8 +57,6 @@ export class RecoveryService {
                 throw new BadRequestException()
             }
         }
-        
-        this.userService.update({ email: data.email }, { password: data.newPassword })
-        return response.status(200)
+        return this.userService.update({ email: data.email }, { password: data.newPassword })
     }
 }

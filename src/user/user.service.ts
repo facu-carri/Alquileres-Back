@@ -1,9 +1,10 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { User, UserRole } from './user.entity';
 import { UserDto } from './dto/user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
+import { response } from 'express';
 
 @Injectable()
 export class UserService {
@@ -26,7 +27,7 @@ export class UserService {
     }
 
     async findOne(id: number): Promise<User> {
-        return this.userRepository.findOneBy({ id });
+        return await this.userRepository.findOneBy({ id });
     }
     
     async findOneByEmail(email: string): Promise<User> {
@@ -37,11 +38,48 @@ export class UserService {
         return !!(await this.userRepository.findOneBy(obj))
     }
 
-    async update(obj: Partial<User>, updateUserDto: UpdateUserDto): Promise<void> {
-        await this.userRepository.update(obj, updateUserDto);
+    async getUserById(id: number): Promise<User> {
+        const user = await this.findOne(id);
+        if(!user) throw new NotFoundException()
+        return user
     }
 
-    async remove(id: number): Promise<void> {
-        await this.userRepository.delete(id);
+    async sameUserById(email: string, id: number): Promise<boolean> {
+        const userByEmail = await this.findOneByEmail(email)
+        const userById = await this.getUserById(id)
+        return userByEmail && userById ? userByEmail.id == userById.id : false
+    }
+
+    async update(obj: Partial<User>, updateUserDto: UpdateUserDto): Promise<any> {
+        if (!this.existBy(obj)) throw new NotFoundException()
+        await this.userRepository.update(obj, updateUserDto);
+        return response.status(200)
+    }
+
+    // El email enviado en obj suele ser el cargado en payload
+    // si se quiere modificar un usuario mediante un rol
+    // El email debe ser cambiado por el del usuario target (se lo busca segun el id)
+    async getTargetEmail(obj: Partial<User>, role: UserRole, wantedRoles: UserRole[]): Promise<void> {
+        if (wantedRoles.includes(role)) {
+            const user = await this.getUserById(obj.id ?? 0)
+            if (user) obj.email = user.email
+            else obj.email = ''
+        }
+    }
+
+    async modifyUser(obj: Partial<User>, updateUserDto: UpdateUserDto, role: UserRole): Promise<any> {
+        await this.getTargetEmail(obj, role, [UserRole.Admin])
+        return await this.update(obj, updateUserDto)
+    }
+
+    async deleteUser(obj: Partial<User>, role: UserRole): Promise<any> {
+        await this.getTargetEmail(obj, role, [UserRole.Admin])
+        return this.remove(obj)
+    }
+
+    async remove(obj: Partial<User>): Promise<any> {
+        if (!this.existBy(obj)) throw new NotFoundException()
+        await this.userRepository.delete(obj);
+        return response.status(200)
     }
 }
