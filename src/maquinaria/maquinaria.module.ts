@@ -1,12 +1,13 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Maquinaria } from './maquinaria.entity';
+import { Reserva } from 'src/reserva/reserva.entity';
 import { MaquinariaService } from './maquinaria.service';
 import { MaquinariaController } from './maquinaria.controller';
 import { ImagesModule, ImagesModuleByRoute } from 'src/images/images.module';
 
 @Module({
-    imports: [TypeOrmModule.forFeature([Maquinaria]), ImagesModuleByRoute('maquinaria')],
+    imports: [TypeOrmModule.forFeature([Maquinaria, Reserva]), ImagesModuleByRoute('maquinaria')],
     controllers: [MaquinariaController],
     providers: [MaquinariaService],
     exports: [MaquinariaService]

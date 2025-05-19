@@ -44,6 +44,39 @@ export class ReservaService {
         return this.reservaRepository.find({ relations: ['maquinaria', 'usuario'] });
     }
 
+    async confirmarReserva(id: number): Promise<Reserva> {
+        const reserva = await this.reservaRepository.findOneBy({ id });
+        if (!reserva) {
+            throw new NotFoundException('Reserva not found');
+        }
+        // Logica de confirmar reserva (entregar maquina en alquiler)
+        // Crear alquiler en base a la reserva
+        // Eliminar/Archivar reserva
+        return reserva;
+    }
+
+    async cancelarReservaUser(id: number): Promise<Reserva> {
+        const reserva = await this.reservaRepository.findOneBy({ id });
+        if (!reserva) {
+            throw new NotFoundException('Reserva not found');
+        }
+        // Logica de cancelar reserva
+        // Notificar empleados?
+        // Eliminar/Archivar reserva
+        return reserva;
+    }
+
+    async cancelarReservaAdmin(id: number): Promise<Reserva> {
+        const reserva = await this.reservaRepository.findOneBy({ id });
+        if (!reserva) {
+            throw new NotFoundException('Reserva not found');
+        }
+        // Logica de cancelar reserva
+        // Notificar usuarios y empleados?
+        // Eliminar/Archivar reserva
+        return reserva;
+    }
+
     async findOne(id: number): Promise<Reserva | null> {
         const reserva = await this.reservaRepository.findOne({
             where: { id },

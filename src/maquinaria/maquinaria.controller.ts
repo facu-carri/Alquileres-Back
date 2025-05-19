@@ -1,8 +1,9 @@
-import { Controller, Get, Post, Put, Body, Param, Delete, Patch, Query, UseInterceptors, UploadedFile, Req, UseGuards, ParseIntPipe } from '@nestjs/common';
+import { Controller, Get, Post, Put, Body, Param, Delete, Patch, Query, UseInterceptors, UploadedFile, Req, UseGuards, ParseIntPipe, BadRequestException } from '@nestjs/common';
 import { Maquinaria } from './maquinaria.entity';
 import { MaquinariaDto } from './dto/maquinaria.dto';
 import { FilterMaquinariaDto } from './dto/filter-maquinaria.dto';
 import { UpdateMaquinariaDto } from './dto/update-maquinaria.dto';
+import { CheckAvailabilityDto } from './dto/check-availability.dto';
 import { MaquinariaService } from './maquinaria.service';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { setFilename, setImgOpts, setRoute } from 'src/images/images.module';
@@ -38,6 +39,16 @@ export class MaquinariaController {
     @Put(':id')
     async update(@Param('id', ParseIntPipe) id: number, @Body() updatemaquinariaDto: UpdateMaquinariaDto): Promise<Maquinaria> {
         return await this.maquinariaService.update(id, updatemaquinariaDto);
+    }
+
+    @Get('/:id/disponibilidad')
+    async checkAvailability(@Param('id', ParseIntPipe) id: number, @Query() query: CheckAvailabilityDto): Promise<boolean> {
+        return await this.maquinariaService.checkAvailability(id, query.fecha_inicio, query.fecha_fin);
+    }
+
+    @Get(':id/fechasOcupadas')
+    async getOccupiedDates(@Param('id', ParseIntPipe) id: number): Promise<{ fecha_inicio: string, fecha_fin: string }[]> {
+        return await this.maquinariaService.getOccupiedDates(id);
     }
 
     @Get('categorias')

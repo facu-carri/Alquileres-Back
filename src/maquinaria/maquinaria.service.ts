@@ -1,10 +1,11 @@
 import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Filter, Repository } from 'typeorm';
+import { Filter, LessThanOrEqual, MoreThanOrEqual, Repository } from 'typeorm';
 import { Location, Maquinaria, MaquinariaCategory, MaquinariaStates, ReturnPolicy } from './maquinaria.entity';
 import { MaquinariaDto } from './dto/maquinaria.dto';
 import { UpdateMaquinariaDto } from './dto/update-maquinaria.dto';
 import { FilterMaquinariaDto } from './dto/filter-maquinaria.dto';
+import { Reserva } from 'src/reserva/reserva.entity';
 
 import { getEnumValues } from 'src/utils/EnumUtils';
 import { response } from 'express';
@@ -16,6 +17,8 @@ export class MaquinariaService {
     constructor(
         @InjectRepository(Maquinaria)
         private readonly maquinariaRepository: Repository<Maquinaria>,
+        @InjectRepository(Reserva)
+        private readonly reservaRepository: Repository<Reserva>,
     ) {}
 
     async create(maquinariaDto: MaquinariaDto): Promise<Maquinaria> {
@@ -44,6 +47,53 @@ export class MaquinariaService {
         }
         
         return query.getMany();
+    }
+
+    async checkAvailability(id: number, fecha_inicio: string, fecha_fin: string): Promise<boolean> {
+        const maquinaria = await this.maquinariaRepository.findOneBy({ id });
+        if (!maquinaria) {
+            throw new NotFoundException(`No se encontró la maquinaria con id ${id}`);
+        }
+        if (maquinaria.state !== MaquinariaStates.Disponible) {
+            throw new BadRequestException(`La maquinaria con id ${id} no está Disponible`);
+        }
+
+        // Logica de negocio: 3 dias de diferencia
+        const bufferInicio = new Date(fecha_inicio);
+        bufferInicio.setDate(bufferInicio.getDate() - 3);
+
+        const bufferFin = new Date(fecha_fin);
+        bufferFin.setDate(bufferFin.getDate() + 3);
+
+        // Implementar lógica para verificar disponibilidad
+        const reservas = await this.reservaRepository.find({
+            where: {
+                maquinaria: { id },
+                fecha_inicio: LessThanOrEqual(bufferFin),
+                fecha_fin: MoreThanOrEqual(bufferInicio),
+            },
+        });
+        return reservas.length === 0;
+    }
+
+    async getOccupiedDates(id: number): Promise<{ fecha_inicio: string, fecha_fin: string }[]> {
+        const maquinaria = await this.maquinariaRepository.findOneBy({ id });
+        if (!maquinaria) {
+            throw new NotFoundException(`No se encontró la maquinaria con id ${id}`);
+        }
+        if (maquinaria.state !== MaquinariaStates.Disponible) {
+            throw new BadRequestException(`La maquinaria con id ${id} no está Disponible`);
+        }
+        const reservas = await this.reservaRepository.find({
+            where: {
+                maquinaria: { id },
+            },
+        });
+        
+        return reservas.map((reserva) => ({
+            fecha_inicio: reserva.fecha_inicio.toISOString(),
+            fecha_fin: reserva.fecha_fin.toISOString(),
+        }));
     }
 
     async findOne(id: number): Promise<Maquinaria> {
