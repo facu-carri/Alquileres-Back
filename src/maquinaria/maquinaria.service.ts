@@ -1,6 +1,6 @@
 import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Filter, LessThanOrEqual, MoreThanOrEqual, Repository } from 'typeorm';
+import { Brackets, Filter, LessThanOrEqual, MoreThanOrEqual, Repository } from 'typeorm';
 import { Location, Maquinaria, MaquinariaCategory, MaquinariaStates, ReturnPolicy } from './maquinaria.entity';
 import { MaquinariaDto } from './dto/maquinaria.dto';
 import { UpdateMaquinariaDto } from './dto/update-maquinaria.dto';
@@ -35,15 +35,26 @@ export class MaquinariaService {
         else query.andWhere('maquinaria.state IN (:...states)', { states: validStates });
         
         if (filters.text) {
-            query.andWhere('maquinaria.nombre LIKE :text', { text: `%${filters.text}%` })
-            .orWhere('maquinaria.marca LIKE :text', { text: `%${filters.text}%` })
-            .orWhere('maquinaria.modelo LIKE :text', { text: `%${filters.text}%` });
+            query.andWhere(
+                new Brackets(qb => {
+                    qb.where('maquinaria.nombre LIKE :text', { text: `%${filters.text}%` })
+                    .orWhere('maquinaria.marca LIKE :text', { text: `%${filters.text}%` })
+                    .orWhere('maquinaria.modelo LIKE :text', { text: `%${filters.text}%` });
+                })
+            );
         }
 
         for (let filter of filterNames) {
-            const useLike = filter.includes('like_')
-            if(useLike) filter = filter.substring(5)
-            if (filters[filter]) query.andWhere(`maquinaria.${filter} ${useLike ? 'LIKE' : '='} :${filter}`, { [filter]: `%${filters[filter]}%` });
+            const useLike = filter.startsWith('like_');
+            const field = useLike ? filter.replace(/^like_/, '') : filter;
+            const value = filters[field];
+            if (value !== undefined && value !== null && value !== '') {
+                if (useLike) {
+                    query.andWhere(`maquinaria.${field} LIKE :${field}`, { [field]: `%${value}%` });
+                } else {
+                    query.andWhere(`maquinaria.${field} = :${field}`, { [field]: value });
+                }
+            }
         }
         
         return query.getMany();
