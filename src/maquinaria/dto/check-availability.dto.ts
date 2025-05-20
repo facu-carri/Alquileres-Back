@@ -4,10 +4,10 @@ export class CheckAvailabilityDto {
   @IsDateString()
   @IsString()
   @IsNotEmpty()
-  fecha_inicio: string;
+  fecha_inicio: Date;
 
   @IsDateString()
   @IsString()
   @IsNotEmpty()
-  fecha_fin: string;
+  fecha_fin: Date;
 }

@@ -1,6 +1,8 @@
-import { Controller, Get, Post, Put, Delete, Param, Body, NotFoundException } from '@nestjs/common';
+import { Controller, Get, Post, Put, Delete, Param, Body, NotFoundException, UseGuards } from '@nestjs/common';
 import { CreateReservaDto } from './dto/create-reserva.dto';
 import { ReservaService } from './reserva.service';
+import { UserRole } from 'src/user/user.entity';
+import { RoleGuard } from 'src/guards/role.guard';
 
 @Controller('reserva')
 export class ReservaController {
@@ -19,6 +21,7 @@ export class ReservaController {
     }
 
     @Post()
+    @UseGuards(RoleGuard.bind(RoleGuard, [UserRole.Cliente, UserRole.Empleado]))
     create(@Body() createReservaDto: CreateReservaDto) {
         return this.reservaService.create(createReservaDto);
     }
