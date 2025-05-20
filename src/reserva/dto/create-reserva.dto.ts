@@ -15,12 +15,12 @@ export class CreateReservaDto {
     email_usuario: string;
 
     @IsString()
-    // @IsDateString()
+    @IsDateString()
     @IsNotEmpty()
     fecha_inicio: Date;
 
     @IsString()
-    // @IsDateString()
+    @IsDateString()
     @IsNotEmpty()
     fecha_fin: Date;
 

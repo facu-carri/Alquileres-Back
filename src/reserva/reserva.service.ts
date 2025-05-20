@@ -28,6 +28,10 @@ export class ReservaService {
             throw new NotFoundException('Usuario not found');
         }
 
+        if (dto.fecha_inicio >= dto.fecha_fin) {
+            throw new BadRequestException('La fecha de inicio debe ser menor que la fecha de fin');
+        }
+
         const reserva = this.reservaRepository.create({
             fecha_inicio: dto.fecha_inicio,
             fecha_fin: dto.fecha_fin,

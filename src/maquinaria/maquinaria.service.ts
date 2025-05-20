@@ -56,17 +56,41 @@ export class MaquinariaService {
                 }
             }
         }
+
+        if (filters.fecha_inicio && filters.fecha_fin) {
+            const fechaInicio = new Date(filters.fecha_inicio);
+            const fechaFin = new Date(filters.fecha_fin);
+
+            fechaInicio.setDate(fechaInicio.getDate() - 3);
+            fechaFin.setDate(fechaFin.getDate() + 3);
+
+            query.andWhere(qb => {
+                const subQuery = qb.subQuery()
+                    .select('1')
+                    .from(Reserva, 'reserva')
+                    .where('reserva.id_maquinaria = maquinaria.id')
+                    .andWhere('reserva.fecha_inicio <= :fechaFin')
+                    .andWhere('reserva.fecha_fin >= :fechaInicio')
+                    .getQuery();
+                return `NOT EXISTS ${subQuery}`;
+            }, { fechaInicio: fechaInicio.toISOString(), fechaFin: fechaFin.toISOString() });
+        }
         
         return query.getMany();
     }
 
-    async checkAvailability(id: number, fecha_inicio: string, fecha_fin: string): Promise<boolean> {
+    async checkAvailability(id: number, fecha_inicio: Date, fecha_fin: Date): Promise<boolean> {
         const maquinaria = await this.maquinariaRepository.findOneBy({ id });
         if (!maquinaria) {
             throw new NotFoundException(`No se encontró la maquinaria con id ${id}`);
         }
         if (maquinaria.state !== MaquinariaStates.Disponible) {
             throw new BadRequestException(`La maquinaria con id ${id} no está Disponible`);
+        }
+
+        // Validar fechas
+        if (fecha_inicio >= fecha_fin) {
+            throw new BadRequestException('La fecha de inicio debe ser menor que la fecha de fin');
         }
 
         // Logica de negocio: 3 dias de diferencia
