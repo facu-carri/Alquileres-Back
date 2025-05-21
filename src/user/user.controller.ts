@@ -1,9 +1,9 @@
-import { BadRequestException, Body, Controller, Delete, Get, Param, ParseIntPipe, Put, Req, UseGuards } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, ParseIntPipe, Put, Req, UseGuards } from '@nestjs/common';
 import { UserService } from './user.service';
 import { User } from './user.entity';
 import { JwtPayload } from 'src/auth/jwt/jwtPayload';
 import { AuthGuard } from 'src/auth/auth.guard';
-import { UpdateUserDto } from './dto/update-user.dto';
+import { UpdateUserDtoWithoutPassword } from './dto/update-user.dto';
 
 @Controller('user')
 export class UserController {
@@ -21,11 +21,10 @@ export class UserController {
     @UseGuards(AuthGuard)
     async modifyUser(
         @Param('id', ParseIntPipe) id: number,
-        @Body() userDto: UpdateUserDto,
+        @Body() userDto: UpdateUserDtoWithoutPassword,
         @Req() req: Request
     ) {
         const { email, rol }: JwtPayload = req['user']
-        if(userDto.password) throw new BadRequestException()
         return await this.userService.modifyUser({ email, id }, userDto, rol)
     }
 
