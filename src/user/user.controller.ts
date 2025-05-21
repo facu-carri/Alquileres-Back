@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, Param, ParseIntPipe, Put, Req, UseGuards } from '@nestjs/common';
+import { BadRequestException, Body, Controller, Delete, Get, Param, ParseIntPipe, Put, Req, UseGuards } from '@nestjs/common';
 import { UserService } from './user.service';
 import { User } from './user.entity';
 import { JwtPayload } from 'src/auth/jwt/jwtPayload';
@@ -25,6 +25,7 @@ export class UserController {
         @Req() req: Request
     ) {
         const { email, rol }: JwtPayload = req['user']
+        if(userDto.password) throw new BadRequestException()
         return await this.userService.modifyUser({ email, id }, userDto, rol)
     }
 
