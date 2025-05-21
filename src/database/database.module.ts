@@ -3,7 +3,7 @@ import { Module } from '@nestjs/common';
 import { DatabaseService } from './database.service';
 import { RegisterModule } from 'src/register/register.module';
 
-const initializeDB = false
+const initializeDB = true
 
 const DatabaseDynamicModule = TypeOrmModule.forRoot({
     type: process.env.DB_TYPE as any,
@@ -16,6 +16,7 @@ const DatabaseDynamicModule = TypeOrmModule.forRoot({
         __dirname + '/../**/*.entity{.ts,.js}',
     ],
     synchronize: initializeDB, // Setear en false despues de la primera ejecucion para evitar errores
+    dropSchema: initializeDB
 })
 
 @Module({
