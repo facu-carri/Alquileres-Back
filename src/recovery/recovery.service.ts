@@ -39,7 +39,7 @@ export class RecoveryService {
         const token = generateCode(8)
         await this.recoveryTokenRepository.save({ token, email: data.email })
         console.log('Recovery Password token:', token)
-        sendMail(data.email, "Recuperar contraseña", `Ingrese a este enlace para recuperar su contraseña\nhttps://localhost:3000/recovery?token=${token}&email=${data.email}`)
+        sendMail(data.email, "Recuperar contraseña", `Ingrese a este enlace para recuperar su contraseña\n${process.env.FRONT_URL}/recovery?token=${token}&email=${data.email}`)
         return response.status(200)
     }
 
