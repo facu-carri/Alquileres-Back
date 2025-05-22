@@ -26,7 +26,10 @@ export enum Location {
     LaPlata = 'La Plata',
     Tandil = 'Tandil',
     Ensenada = 'Ensenada',
-    BahíaBlanca = 'Bahía Blanca'
+    BahíaBlanca = 'Bahía Blanca',
+    LosHornos = 'Los Hornos',
+    Quilmes = 'Quilmes',
+    Zarate = 'Zárate'
 }
 
 @Entity({ name: 'maquinarias' })
