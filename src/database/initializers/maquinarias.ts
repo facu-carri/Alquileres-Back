@@ -1,6 +1,6 @@
 import { MaquinariaDto } from "src/maquinaria/dto/maquinaria.dto"
 import { MaquinariaService } from "src/maquinaria/maquinaria.service";
-import { MaquinariaCategory, Location, ReturnPolicy } from "src/maquinaria/maquinaria.entity";
+import { MaquinariaCategory, Location, ReturnPolicy, MaquinariaStates } from "src/maquinaria/maquinaria.entity";
 
 
 export class InitializeMaquinarias {
@@ -69,7 +69,19 @@ export class InitializeMaquinarias {
             politica: ReturnPolicy.devolucion_20,
             categoria: MaquinariaCategory.Logística,
             imagen: 'https://th.bing.com/th/id/R.fb39018a7ff8d913a8fbbaafd0fadff3?rik=dOPdp3AMrJNDyw&pid=ImgRaw&r=0',
-            }
+            },
+            {
+            inventario: 678901,
+            nombre: 'Camión',
+            marca: 'Volvo',
+            modelo: 'FH 16',
+            precio: 2000,
+            anio_adquisicion: 2020,
+            sucursal: Location.Quilmes,
+            politica: ReturnPolicy.devolucion_100,
+            categoria: MaquinariaCategory.Transporte,
+            imagen: 'https://th.bing.com/th/id/OIP.WhwY-IeDw-sCdNMMchH7uwHaE6?rs=1&pid=ImgDetMain',
+            },
         ];
 
         for (const maquinariaData of maquinarias) {
@@ -80,5 +92,10 @@ export class InitializeMaquinarias {
                 console.warn(`Could not insert maquinaria: ${maquinariaData.nombre}`, e.message);
             }
         }
+
+        // Manipular estados
+        const maq = await this.maquinariaService.findByInventario(678901);
+        maq.state = MaquinariaStates.Mantenimiento;
+        await this.maquinariaService.update(maq.id, maq);
     }
 }
