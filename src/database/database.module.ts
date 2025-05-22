@@ -2,8 +2,9 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { Module } from '@nestjs/common';
 import { DatabaseService } from './database.service';
 import { RegisterModule } from 'src/register/register.module';
+import { MaquinariaModule } from 'src/maquinaria/maquinaria.module';
 
-const initializeDB = false
+const initializeDB = true
 
 const DatabaseDynamicModule = TypeOrmModule.forRoot({
     type: process.env.DB_TYPE as any,
@@ -23,7 +24,8 @@ const DatabaseDynamicModule = TypeOrmModule.forRoot({
     imports: [
         DatabaseDynamicModule,
         ...(initializeDB ? [
-            RegisterModule
+            RegisterModule,
+            MaquinariaModule
         ] : [])
     ],
     providers: [
