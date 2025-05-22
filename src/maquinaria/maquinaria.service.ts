@@ -139,6 +139,14 @@ export class MaquinariaService {
         return maquinaria;
     }
 
+    async findByInventario(inventario: number): Promise<Maquinaria> {
+        const maquinaria = await this.maquinariaRepository.findOneBy({ inventario });
+        if (!maquinaria) {
+            throw new NotFoundException(`No se encontró la maquinaria con inventario ${inventario}`);
+        }
+        return maquinaria;
+    }
+
     async update(id: number, updatemaquinariaDto: UpdateMaquinariaDto): Promise<Maquinaria> {
         const maquinaria = await this.findOne(id);
         this.maquinariaRepository.merge(maquinaria, updatemaquinariaDto);
@@ -211,6 +219,9 @@ export class MaquinariaService {
 
     getValidStates(rol: UserRole): string[] {
         const states = getEnumValues(MaquinariaStates)
+
+        // temp
+        // return states
         
         if (rol == UserRole.Admin) return states
 
