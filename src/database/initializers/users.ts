@@ -32,9 +32,13 @@ export class InitializeUsers {
 
 
     constructor(private readonly registerService: RegisterService) {
+        this.initUsers()
+    }
+
+    async initUsers() {
         for (const [rol, users] of Object.entries(this.users)) {
             if (users.length == 0) continue
-            users.forEach(user => this.inyectUser(user, rol as UserRole))
+            users.forEach(async(user) => await this.inyectUser(user, rol as UserRole))
         }
     }
 
