@@ -86,7 +86,7 @@ export class InitializeMaquinarias {
 
     async initMaquinarias() {
 
-        this.maquinarias.forEach(async(maq) => await this.inyectMaquinaria(maq))
+        await Promise.all(this.maquinarias.map(maq => this.inyectMaquinaria(maq)));
 
         // Manipular estados
         const maq = await this.maquinariaService.findByInventario(678901);
