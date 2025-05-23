@@ -17,6 +17,7 @@ export class InitializeMaquinarias {
             politica: ReturnPolicy.devolucion_0,
             categoria: MaquinariaCategory.Agricultura,
             imagen: 'https://www.ipesa.com.pe/blog/wp-content/uploads/2023/09/potencia-tractor-agricola-ipesa-768x554.jpg',
+            state: MaquinariaStates.Eliminado
         },
         {
             inventario: 234567,
@@ -29,6 +30,7 @@ export class InitializeMaquinarias {
             politica: ReturnPolicy.devolucion_100,
             categoria: MaquinariaCategory.Construcción,
             imagen: 'https://th.bing.com/th/id/OIP.UfCmJjOqZ-iLqRdV_LmT9QHaFj?rs=1&pid=ImgDetMain',
+            state: MaquinariaStates.Disponible
         },
         {
             inventario: 345678,
@@ -41,6 +43,7 @@ export class InitializeMaquinarias {
             politica: ReturnPolicy.devolucion_20,
             categoria: MaquinariaCategory.Agricultura,
             imagen: 'https://th.bing.com/th/id/OIP.Y9DnaZE9kv74B8qcOODWlgHaFi?rs=1&pid=ImgDetMain',
+            state: MaquinariaStates.Disponible
         },
         {
             inventario: 456789,
@@ -53,6 +56,7 @@ export class InitializeMaquinarias {
             politica: ReturnPolicy.devolucion_0,
             categoria: MaquinariaCategory.Construcción,
             imagen: 'https://th.bing.com/th/id/OIP.nnQJ7eLSER-mFlxVSU0AdAHaFj?rs=1&pid=ImgDetMain',
+            state: MaquinariaStates.Disponible
         },
         {
             inventario: 567890,
@@ -65,6 +69,7 @@ export class InitializeMaquinarias {
             politica: ReturnPolicy.devolucion_20,
             categoria: MaquinariaCategory.Logística,
             imagen: 'https://th.bing.com/th/id/R.fb39018a7ff8d913a8fbbaafd0fadff3?rik=dOPdp3AMrJNDyw&pid=ImgRaw&r=0',
+            state: MaquinariaStates.Mantenimiento
         },
         {
             inventario: 678901,
@@ -77,6 +82,7 @@ export class InitializeMaquinarias {
             politica: ReturnPolicy.devolucion_100,
             categoria: MaquinariaCategory.Transporte,
             imagen: 'https://th.bing.com/th/id/OIP.WhwY-IeDw-sCdNMMchH7uwHaE6?rs=1&pid=ImgDetMain',
+            state: MaquinariaStates.Mantenimiento
         },
     ]
 
@@ -85,13 +91,7 @@ export class InitializeMaquinarias {
     }
 
     async initMaquinarias() {
-
         await Promise.all(this.maquinarias.map(maq => this.inyectMaquinaria(maq)));
-
-        // Manipular estados
-        const maq = await this.maquinariaService.findByInventario(678901);
-        maq.state = MaquinariaStates.Mantenimiento;
-        await this.maquinariaService.update(maq.id, maq);
     }
 
     async inyectMaquinaria(maq:MaquinariaDto) {

@@ -1,6 +1,6 @@
 import { IsString, IsNotEmpty, IsEnum, IsNumber } from 'class-validator';
 import { validationMessage, ValidatorTypes } from 'src/utils/ValidatorMessages';
-import { ReturnPolicy, MaquinariaCategory, Location } from '../maquinaria.entity';
+import { ReturnPolicy, MaquinariaCategory, Location, MaquinariaStates } from '../maquinaria.entity';
 
 export class MaquinariaDto {
 
@@ -39,4 +39,5 @@ export class MaquinariaDto {
   readonly categoria: MaquinariaCategory;
 
   imagen: string
+  state?: MaquinariaStates
 }
