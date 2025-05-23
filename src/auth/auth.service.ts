@@ -41,7 +41,7 @@ export class AuthService {
             token = await this.generateToken(user)
         }
 
-        return { token, rol }
+        return { token, rol, id: user.id }
     }
 
     private async generateToken(user:User) {
@@ -75,6 +75,6 @@ export class AuthService {
         const token = await this.generateToken(user)
         const rol = user.rol
 
-        return { token, rol }
+        return { token, rol, id: user.id }
     }
 }

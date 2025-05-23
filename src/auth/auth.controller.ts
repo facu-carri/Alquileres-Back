@@ -19,12 +19,4 @@ export class AuthController {
     async authenticate(@Body() authData: AuthCodeDto) {
         return await this.authService.authenticate(authData)
     }
-
-    // Esto es un ejemplo de una ruta que necesita autorizacion (jwt)
-    @Get('profile')
-    @UseGuards(RoleGuard.bind(RoleGuard, [UserRole.Admin, UserRole.Empleado]))
-    async profile(@Req() req) {
-        console.log(req['user'])
-        return 'Access to profile'
-    }
 }
