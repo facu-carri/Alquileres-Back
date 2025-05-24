@@ -1,10 +1,10 @@
-import { Injectable, NotFoundException, BadRequestException } from '@nestjs/common';
+import { Injectable, NotFoundException, BadRequestException, UseGuards } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Maquinaria } from 'src/maquinaria/maquinaria.entity';
 import { User } from 'src/user/user.entity';
 import { CreateReservaDto } from './dto/create-reserva.dto';
 import { Repository } from 'typeorm';
-import { Reserva } from './reserva.entity';
+import { Reserva, ReservaStates } from './reserva.entity';
 
 @Injectable()
 export class ReservaService {
@@ -39,6 +39,8 @@ export class ReservaService {
             usuario,
             precio_dia: maquinaria.precio,
             politica: maquinaria.politica,
+            codigo_reserva: `${maquinaria.inventario}-${usuario.id}-${Date.now()}`,
+            estado: ReservaStates.Activa,
         });
 
         return this.reservaRepository.save(reserva);
@@ -48,26 +50,29 @@ export class ReservaService {
         return this.reservaRepository.find({ relations: ['maquinaria', 'usuario'] });
     }
 
-    async confirmarReserva(id: number): Promise<Reserva> {
+    async finalizarReserva(id: number): Promise<Reserva> {
         const reserva = await this.reservaRepository.findOneBy({ id });
         if (!reserva) {
             throw new NotFoundException('Reserva not found');
         }
-        // Logica de confirmar reserva (entregar maquina en alquiler)
-        // Crear alquiler en base a la reserva
-        // Eliminar/Archivar reserva
-        return reserva;
+        reserva.estado = ReservaStates.Finalizada;
+        return this.reservaRepository.save(reserva);
     }
 
-    async cancelarReservaUser(id: number): Promise<Reserva> {
+    async cancelarReservaUser(id: number, email: string): Promise<Reserva> {
         const reserva = await this.reservaRepository.findOneBy({ id });
         if (!reserva) {
             throw new NotFoundException('Reserva not found');
         }
-        // Logica de cancelar reserva
-        // Notificar empleados?
-        // Eliminar/Archivar reserva
-        return reserva;
+        if (reserva.usuario.email !== email) {
+            throw new BadRequestException('El usuario no tiene permisos para cancelar esta reserva');
+        }
+        if (reserva.estado !== ReservaStates.Activa) {
+            throw new BadRequestException('Reserva no se pudo cancelar');
+        }
+
+        reserva.estado = ReservaStates.Cancelada;
+        return this.reservaRepository.save(reserva);
     }
 
     async cancelarReservaAdmin(id: number): Promise<Reserva> {
@@ -75,10 +80,25 @@ export class ReservaService {
         if (!reserva) {
             throw new NotFoundException('Reserva not found');
         }
-        // Logica de cancelar reserva
-        // Notificar usuarios y empleados?
-        // Eliminar/Archivar reserva
-        return reserva;
+        if (reserva.estado !== ReservaStates.Finalizada) {
+            throw new BadRequestException('Reserva no se pudo cancelar');
+        }
+        // + Notificar al usuario
+        reserva.estado = ReservaStates.Cancelada;
+        return this.reservaRepository.save(reserva);
+    }
+
+    async confirmarDevolucion(id: number): Promise<Reserva> {
+        const reserva = await this.reservaRepository.findOneBy({ id });
+        if (!reserva) {
+            throw new NotFoundException('Reserva not found');
+        }
+        if (reserva.estado !== ReservaStates.Cancelada) {
+            throw new BadRequestException('La reserva no está esperando devolución');
+        }
+        // + Notificar al usuario
+        reserva.estado = ReservaStates.Finalizada;
+        return this.reservaRepository.save(reserva);
     }
 
     async findOne(id: number): Promise<Reserva | null> {

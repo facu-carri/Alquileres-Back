@@ -4,10 +4,23 @@ import { Maquinaria } from "src/maquinaria/maquinaria.entity";
 import { User } from "src/user/user.entity";
 import { ManyToOne, JoinColumn } from "typeorm";
 
+// Activa -> Cancelada -> Finalizada
+// Activa -> Finalizada
+// Finalizada implica que no quedan operaciones pendientes
+// Cancelada implica que hay que hacer una devolucion
+export enum ReservaStates {
+    Activa = 'Activa',
+    Cancelada = 'Cancelada',
+    Finalizada = 'Finalizada'
+}
+
 @Entity({ name: 'reservas' })
 export class Reserva {
     @PrimaryGeneratedColumn()
     id: number
+
+    @Column({ nullable: false, unique: true })
+    codigo_reserva: string
 
     @ManyToOne(() => Maquinaria, { nullable: false })
     @JoinColumn({ name: 'id_maquinaria' })
@@ -33,4 +46,12 @@ export class Reserva {
         nullable: false
     })
     politica: ReturnPolicy
+
+    @Column({ 
+        type: 'enum',
+        enum: ReservaStates,
+        default: ReservaStates.Activa,
+        nullable: false
+    })
+    estado: ReservaStates
 }
