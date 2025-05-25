@@ -40,7 +40,7 @@ export class UserService {
 
     async getUserById(id: number): Promise<User> {
         const user = await this.findOne(id);
-        if(!user) throw new NotFoundException()
+        if(!user) throw new NotFoundException('No se encontro el id')
         return user
     }
 
@@ -51,7 +51,7 @@ export class UserService {
     }
 
     async update(obj: Partial<User>, updateUserDto: UpdateUserDto): Promise<any> {
-        if (!this.existBy(obj)) throw new NotFoundException()
+        if (!this.existBy(obj)) throw new NotFoundException('No se encontro el usuario')
         await this.userRepository.update(obj, updateUserDto);
         return response.status(200)
     }
@@ -78,7 +78,7 @@ export class UserService {
     }
 
     async remove(obj: Partial<User>): Promise<any> {
-        if (!this.existBy(obj)) throw new NotFoundException()
+        if (!this.existBy(obj)) throw new NotFoundException('No se encontro el usuario')
         await this.userRepository.delete(obj);
         return response.status(200)
     }

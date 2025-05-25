@@ -1,4 +1,4 @@
-import { Injectable, UnauthorizedException } from '@nestjs/common';
+import { Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
 import { UserService } from 'src/user/user.service';
 import { LoginDto } from './dto/login.dto';
 import { JwtService } from '@nestjs/jwt';
@@ -69,7 +69,8 @@ export class AuthService {
     async authenticate(authCodeDto: AuthCodeDto) {
         const authData = await this.authRepository.findOneBy({ email: authCodeDto.email })
 
-        if (!authData || authCodeDto.code != authData.code) throw new UnauthorizedException()
+        if(!authData) throw new NotFoundException('No se encontro un token asociado al mail')
+        if (authCodeDto.code != authData.code) throw new UnauthorizedException('Token invalido')
         
         const user = await this.userService.findOneByEmail(authData.email)
         const token = await this.generateToken(user)

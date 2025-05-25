@@ -20,7 +20,7 @@ export class ImagesController {
     ) {
         const route = path.normalize(req.path.substring("/images/".length))
         const filePath = path.join(this.basePath, route)
-        if (!existsSync(filePath)) throw new NotFoundException()
+        if (!existsSync(filePath)) throw new NotFoundException('No se encontro la imagen')
         
         const file = createReadStream(path.join(this.basePath, route));
         file.pipe(res);
