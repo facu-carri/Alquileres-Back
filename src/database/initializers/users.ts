@@ -26,6 +26,16 @@ export class InitializeUsers {
                 dni: '19011452',
                 nacimiento: '02/02/1996'
             }
+            ,
+            {
+                nombre: 'Juan Manuel',
+                apellido: 'Sisti',
+                password: '12345678',
+                email: 'sistijuanmanuel@gmail.com',
+                telefono: '2213649785',
+                dni: '44519668 ',
+                nacimiento: '12/02/1996'
+            }
         ],
         [UserRole.Empleado]: [],
     }
