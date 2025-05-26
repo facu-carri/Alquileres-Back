@@ -23,7 +23,7 @@ export class RecoveryService {
     async checkToken(data: RecoveryTokenDto) {
         const tokenData = await this.recoveryTokenRepository.findOneBy({ email: data.email })
         if (!tokenData) {
-            throw new NotFoundException()
+            throw new NotFoundException('No se encontro una cuenta asociada al codigo')
         }
         if (data.token != tokenData.token) {
             throw new BadRequestException('El codigo es invalido')
@@ -34,11 +34,13 @@ export class RecoveryService {
     async recoveryPassword(data: RecoveryPasswordDto) {
         const userExist = await this.userService.existBy({ email: data.email })
         if (!userExist) {
-            throw new NotFoundException()
+            throw new NotFoundException('No se encontro el mail')
         }
         const token = generateCode(8)
         await this.recoveryTokenRepository.save({ token, email: data.email })
+
         console.log('Recovery Password token:', token)
+
         sendMail(data.email, "Recuperar contraseña", `Ingrese a este enlace para recuperar su contraseña\n${process.env.FRONT_URL}/recovery?token=${token}&email=${data.email}`)
         return response.status(200)
     }
@@ -46,15 +48,15 @@ export class RecoveryService {
     async changePassword(data: ChangePasswordDto) {
         const user = await this.userService.findOneByEmail(data.email)
 
-        if (!user) throw new NotFoundException()
-        if (user.rol != UserRole.Cliente) throw new UnauthorizedException()
+        if (!user) throw new NotFoundException('No se encontro el mail')
+        if (user.rol != UserRole.Cliente) throw new UnauthorizedException('Solo los clientes pueden cambiar su contraseña')
         
         if (data.token) {
             await this.checkToken({ token: data.token, email: data.email })
             await this.recoveryTokenRepository.delete({email: data.email})
         } else {
             if (!data.currentPassword || user.password != data.currentPassword) {
-                throw new BadRequestException()
+                throw new BadRequestException('CurrentPassword no corresponde con la contraseña del usuario')
             }
         }
         return this.userService.update({ email: data.email }, { password: data.newPassword })

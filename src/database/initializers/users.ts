@@ -39,13 +39,9 @@ export class InitializeUsers {
         ],
         [UserRole.Empleado]: [],
     }
-
-
     constructor(private readonly registerService: RegisterService) {
-        this.initUsers()
     }
-
-    async initUsers() {
+    async init() {
         for (const [rol, users] of Object.entries(this.users)) {
             if (users.length == 0) continue
             users.forEach(async(user) => await this.inyectUser(user, rol as UserRole))

@@ -22,6 +22,9 @@ export class MaquinariaService {
     ) {}
 
     async create(maquinariaDto: MaquinariaDto): Promise<Maquinaria> {
+        const invExist = await this.maquinariaRepository.findOneBy({ inventario: maquinariaDto.inventario });
+        if(invExist) throw new BadRequestException('El numero de inventario ya se encuentra registrado')
+        
         const maquinaria = this.maquinariaRepository.create(maquinariaDto);
         return await this.maquinariaRepository.save(maquinaria);
     }

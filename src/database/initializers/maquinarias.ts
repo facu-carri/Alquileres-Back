@@ -87,10 +87,9 @@ export class InitializeMaquinarias {
     ]
 
     constructor(private readonly maquinariaService: MaquinariaService) {
-        this.initMaquinarias()
     }
 
-    async initMaquinarias() {
+    async init() {
         await Promise.all(this.maquinarias.map(maq => this.inyectMaquinaria(maq)));
     }
 

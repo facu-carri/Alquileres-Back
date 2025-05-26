@@ -3,6 +3,8 @@ import { Module } from '@nestjs/common';
 import { DatabaseService } from './database.service';
 import { RegisterModule } from 'src/register/register.module';
 import { MaquinariaModule } from 'src/maquinaria/maquinaria.module';
+import { ReservaModule } from 'src/reserva/reserva.module';
+import { UserModule } from 'src/user/user.module';
 
 const initializeDB = true
 
@@ -25,7 +27,9 @@ const DatabaseDynamicModule = TypeOrmModule.forRoot({
         DatabaseDynamicModule,
         ...(initializeDB ? [
             RegisterModule,
-            MaquinariaModule
+            MaquinariaModule,
+            ReservaModule,
+            UserModule,
         ] : [])
     ],
     providers: [
