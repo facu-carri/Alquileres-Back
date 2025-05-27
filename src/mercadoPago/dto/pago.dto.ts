@@ -2,11 +2,11 @@ import { IsString, IsNotEmpty, IsDateString, IsNumber } from 'class-validator';
 
 export class PagoDto {
 
-    @IsString()
     @IsNotEmpty()
-    title: string;
+    @IsNumber()
+    id: number;
 
     @IsNotEmpty()
     @IsNumber()
-    price: number;
+    days: number;
 }

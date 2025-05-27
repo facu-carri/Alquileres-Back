@@ -1,7 +1,8 @@
 import MercadoPagoConfig, { Preference } from "mercadopago";
 import { Items } from "mercadopago/dist/clients/commonTypes";
 import { BackUrls, PreferenceResponse } from "mercadopago/dist/clients/preference/commonTypes";
-import { PagoDto } from "./dto/pago.dto";
+import { Maquinaria } from "src/maquinaria/maquinaria.entity";
+import { Item } from "./Item";
 
 export class MercadoPago {
 
@@ -25,11 +26,11 @@ export class MercadoPago {
 		return MercadoPago.instance
 	}
 
-	createItem(data: PagoDto): Items {
+	createItem(data: Item): Items {
 		return {
 			id: 'product',
-			title: data.title,
-			description: data.title,
+			title: data.name,
+			description: data.name,
 			quantity: 1,
 			unit_price: data.price,
 			currency_id: 'ARS',
