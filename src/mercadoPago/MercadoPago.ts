@@ -1,6 +1,7 @@
 import MercadoPagoConfig, { Preference } from "mercadopago";
 import { Items } from "mercadopago/dist/clients/commonTypes";
 import { BackUrls, PreferenceResponse } from "mercadopago/dist/clients/preference/commonTypes";
+import { PagoDto } from "./dto/pago.dto";
 
 export class MercadoPago {
 
@@ -8,8 +9,8 @@ export class MercadoPago {
 	private client: MercadoPagoConfig
 	private preference: Preference
 	private backUrls: BackUrls = {
-		success: 'http://localhost:3000/payment/sucess',
-		failure: 'http://localhost:3000/payment/failure',
+		success: `${process.env.FRONT_URL}/payment/sucess`,
+		failure: `${process.env.FRONT_URL}/payment/failure`,
 	}
 
 	private constructor() {
@@ -24,19 +25,13 @@ export class MercadoPago {
 		return MercadoPago.instance
 	}
 
-	async getPreferenceId(): Promise<string> {
-		const item = this.createExampleItem()
-		const pref = await this.createPreference(item)
-		return pref.id
-	}
-
-	private createExampleItem(): Items { // Item Example
+	createItem(data: PagoDto): Items {
 		return {
 			id: 'product',
-			title: 'Mani maquinarias',
-			description: 'this is just a test',
+			title: data.title,
+			description: data.title,
 			quantity: 1,
-			unit_price: 100,
+			unit_price: data.price,
 			currency_id: 'ARS',
 			picture_url: 'https://www.mercadopago.com/org-img/MP3/home/logomp3.gif'
 		}
@@ -44,7 +39,6 @@ export class MercadoPago {
 
 	async createPreference(item: Items): Promise<PreferenceResponse> {
 		try {
-			
 			return await this.preference.create({
 				body: {
 					items: [item],
