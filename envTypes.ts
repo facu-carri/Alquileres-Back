@@ -11,6 +11,7 @@ declare namespace NodeJS {
         GMAIL_USER: string,
         MAILER_PORT: string,
         MERCADO_PAGO_TOKEN: string,
+        MERCADO_PAGO_NOTIFICATION_URL: string,
         FRONT_URL: string
     }
 }

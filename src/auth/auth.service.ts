@@ -29,7 +29,7 @@ export class AuthService {
 
         const isPasswordValid = user.password == loginData.password
         if (!isPasswordValid) {
-            throw new UnauthorizedException("La contrasenia es incorrecta")
+            throw new UnauthorizedException("La contraseña es incorrecta")
         }
 
         const rol = user.rol
