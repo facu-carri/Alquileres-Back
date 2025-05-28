@@ -56,7 +56,6 @@ export class RecoveryService {
         if (data.token) {
             await this.checkToken({ token: data.token, email: data.email })
             await this.recoveryTokenRepository.delete({email: data.email})
-            return response.status(200)
         } else {
             if (!data.currentPassword || user.password != data.currentPassword) {
                 throw new BadRequestException('CurrentPassword no corresponde con la contraseña del usuario')
