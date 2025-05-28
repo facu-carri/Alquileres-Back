@@ -20,7 +20,7 @@ export class MaquinariaController {
     @Get()
     @UseInterceptors(UserInterceptor)
     findAll(@Query() filters: FilterMaquinariaDto, @Req() req): Promise<Maquinaria[]> {
-        return this.maquinariaService.findAll(filters, req.user);
+        return this.maquinariaService.findAll(filters, req.user.rol);
     }
 
     @Post()

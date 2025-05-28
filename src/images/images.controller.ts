@@ -1,8 +1,8 @@
-import { Controller, Get, NotFoundException, Param, Post, Query, Req, Res, Response, UploadedFile, UseInterceptors } from '@nestjs/common';
-import { FileInterceptor } from '@nestjs/platform-express';
+import { Controller, Get, NotFoundException, Req, Res } from '@nestjs/common';
 import { Request } from 'express';
 import { createReadStream, existsSync } from 'fs';
 import path from 'path';
+import { lookup } from 'mime-types';
 
 @Controller('images')
 export class ImagesController {
@@ -21,6 +21,9 @@ export class ImagesController {
         const route = path.normalize(req.path.substring("/images/".length))
         const filePath = path.join(this.basePath, route)
         if (!existsSync(filePath)) throw new NotFoundException('No se encontro la imagen')
+        
+        const mimeType = lookup(path.extname(filePath)) || 'application/octet-stream';
+        res.setHeader('Content-Type', mimeType);
         
         const file = createReadStream(path.join(this.basePath, route));
         file.pipe(res);

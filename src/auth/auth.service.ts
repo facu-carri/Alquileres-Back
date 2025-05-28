@@ -72,6 +72,8 @@ export class AuthService {
         if(!authData) throw new NotFoundException('No se encontro un token asociado al mail')
         if (authCodeDto.code != authData.code) throw new UnauthorizedException('Token invalido')
         
+        await this.authRepository.delete({ code: authData.code });
+        
         const user = await this.userService.findOneByEmail(authData.email)
         const token = await this.generateToken(user)
         const rol = user.rol

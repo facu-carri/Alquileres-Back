@@ -7,7 +7,7 @@ export class InitializeMaquinarias {
 
     private maquinarias: Array<MaquinariaDto> = [
         {
-            inventario: 123456,
+            inventario: "MM001",
             nombre: 'Tractor',
             marca: 'Ford',
             modelo: 'TW 20',
@@ -20,7 +20,7 @@ export class InitializeMaquinarias {
             state: MaquinariaStates.Eliminado
         },
         {
-            inventario: 234567,
+            inventario: "MM452",
             nombre: 'Excavadora',
             marca: 'Caterpillar',
             modelo: '320D',
@@ -33,7 +33,7 @@ export class InitializeMaquinarias {
             state: MaquinariaStates.Disponible
         },
         {
-            inventario: 345678,
+            inventario: "AH235",
             nombre: 'Cosechadora',
             marca: 'John Deere',
             modelo: 'S670',
@@ -46,7 +46,7 @@ export class InitializeMaquinarias {
             state: MaquinariaStates.Disponible
         },
         {
-            inventario: 456789,
+            inventario: "4BG79",
             nombre: 'Retroexcavadora',
             marca: 'JCB',
             modelo: '3CX',
@@ -59,7 +59,7 @@ export class InitializeMaquinarias {
             state: MaquinariaStates.Disponible
         },
         {
-            inventario: 567890,
+            inventario: "GBN12",
             nombre: 'Grúa',
             marca: 'Liebherr',
             modelo: 'LTM 1055',
@@ -72,7 +72,7 @@ export class InitializeMaquinarias {
             state: MaquinariaStates.Mantenimiento
         },
         {
-            inventario: 678901,
+            inventario: "FF807",
             nombre: 'Camión',
             marca: 'Volvo',
             modelo: 'FH 16',
