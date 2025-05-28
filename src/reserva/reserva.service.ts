@@ -133,6 +133,19 @@ export class ReservaService {
         return reserva;
     }
 
+    getValidStates(rol: UserRole): string[] {
+        switch (rol) {
+            case UserRole.Cliente:
+                return [ReservaStates.Activa, ReservaStates.Cancelada];
+            case UserRole.Empleado:
+                return [ReservaStates.Activa, ReservaStates.Cancelada];
+            case UserRole.Admin:
+                return [ReservaStates.Activa, ReservaStates.Cancelada, ReservaStates.Finalizada, ReservaStates.Reembolsada];
+            default:
+                throw new BadRequestException('Rol no válido para obtener estados de reserva');
+        }
+    }
+
     async remove(id: number): Promise<boolean> {
         const result = await this.reservaRepository.delete(id);
         if (result.affected === 0) {

@@ -23,6 +23,12 @@ export class ReservaController {
         return this.reservaService.findAll(filters);
     }
 
+    @Get('estados')
+    @UseInterceptors(UserInterceptor)
+    getStates(@Req() req): string[] {
+        return this.reservaService.getValidStates(req.user.rol)
+    }
+
     @Get(':id')
     async findOne(@Param('id') id: string) {
         const reserva = await this.reservaService.findOne(+id);
