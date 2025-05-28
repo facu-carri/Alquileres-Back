@@ -21,7 +21,7 @@ export class FilterReservaDto {
   @IsOptional()
   @IsDefined()
   @IsString()
-  readonly maquinaria_inventario?: number;
+  readonly maquinaria_inventario?: string;
 
   @IsOptional()
   @IsDefined()

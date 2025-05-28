@@ -4,9 +4,10 @@ import { ReturnPolicy, MaquinariaCategory, Location, MaquinariaStates } from '..
 
 export class MaquinariaDto {
 
+  @IsString(validationMessage(ValidatorTypes.IsString))
   @IsAlphanumeric(null, validationMessage(ValidatorTypes.IsAlphaNumeric))
   @IsNotEmpty(validationMessage(ValidatorTypes.isNotEmpty))
-  readonly inventario: number;
+  readonly inventario: string;
 
   @IsString(validationMessage(ValidatorTypes.IsString))
   @IsNotEmpty(validationMessage(ValidatorTypes.isNotEmpty))

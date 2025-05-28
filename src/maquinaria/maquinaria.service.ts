@@ -150,7 +150,7 @@ export class MaquinariaService {
         return maquinaria;
     }
 
-    async findByInventario(inventario: number): Promise<Maquinaria> {
+    async findByInventario(inventario: string): Promise<Maquinaria> {
         const maquinaria = await this.maquinariaRepository.findOneBy({ inventario });
         if (!maquinaria) {
             throw new NotFoundException(`No se encontró la maquinaria con inventario ${inventario}`);
