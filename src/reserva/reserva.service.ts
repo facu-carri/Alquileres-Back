@@ -1,7 +1,7 @@
 import { Injectable, NotFoundException, BadRequestException, UseGuards } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Maquinaria } from 'src/maquinaria/maquinaria.entity';
-import { User } from 'src/user/user.entity';
+import { Maquinaria, ReturnPolicy } from 'src/maquinaria/maquinaria.entity';
+import { User, UserRole } from 'src/user/user.entity';
 import { CreateReservaDto } from './dto/create-reserva.dto';
 import { Repository } from 'typeorm';
 import { Reserva, ReservaStates } from './reserva.entity';
@@ -66,54 +66,59 @@ export class ReservaService {
         return queryBuilder.getMany();
     }
 
-    async finalizarReserva(id: number): Promise<Reserva> {
+    async confirmarReserva(id: number): Promise<Reserva> {
         const reserva = await this.reservaRepository.findOneBy({ id });
         if (!reserva) {
             throw new NotFoundException('Reserva not found');
         }
-        reserva.estado = ReservaStates.Finalizada;
-        return this.reservaRepository.save(reserva);
-    }
 
-    async cancelarReservaUser(id: number, email: string): Promise<Reserva> {
+        switch (reserva.estado) {
+            case ReservaStates.Cancelada:
+                reserva.estado = ReservaStates.Reembolsada;
+                break;
+            case ReservaStates.Activa:
+
+                // TO DO: ACÁ VA EL CODIGO PARA CREAR UN NUEVO ALQUILER
+
+                reserva.estado = ReservaStates.Finalizada;
+                break;
+            case ReservaStates.Finalizada:
+                throw new BadRequestException('La reserva ya está finalizada.');
+            case ReservaStates.Reembolsada:
+                throw new BadRequestException('La reserva ya ha sido reembolsada.');
+            default:
+                // No se debería llegar a este punto
+                throw new BadRequestException('La reserva no puede ser confirmada.');
+        }
+
+        return this.reservaRepository.save(reserva);
+}
+
+    async cancelarReserva(id: number, user: User): Promise<Reserva> {
         const reserva = await this.reservaRepository.findOneBy({ id });
         if (!reserva) {
             throw new NotFoundException('Reserva not found');
-        }
-        if (reserva.usuario.email !== email) {
-            throw new BadRequestException('El usuario no tiene permisos para cancelar esta reserva');
         }
         if (reserva.estado !== ReservaStates.Activa) {
-            throw new BadRequestException('Reserva no se pudo cancelar');
+            throw new BadRequestException('Reserva no se puede cancelar');
         }
-
-        reserva.estado = ReservaStates.Cancelada;
-        return this.reservaRepository.save(reserva);
-    }
-
-    async cancelarReservaAdmin(id: number): Promise<Reserva> {
-        const reserva = await this.reservaRepository.findOneBy({ id });
-        if (!reserva) {
-            throw new NotFoundException('Reserva not found');
+        switch (user.rol) {
+            case UserRole.Cliente:
+                if (reserva.usuario.id !== user.id) {
+                    throw new BadRequestException('No tienes permiso para cancelar esta reserva');
+                }
+                if (reserva.politica === ReturnPolicy.devolucion_0) {
+                    reserva.estado = ReservaStates.Reembolsada;
+                }
+                else reserva.estado = ReservaStates.Cancelada;
+                break;
+            case UserRole.Admin || UserRole.Empleado:
+                reserva.politica = ReturnPolicy.devolucion_100;
+                reserva.estado = ReservaStates.Cancelada;
+                break;
+            default:
+                throw new BadRequestException('No tienes permiso para cancelar la reserva');
         }
-        if (reserva.estado !== ReservaStates.Finalizada) {
-            throw new BadRequestException('Reserva no se pudo cancelar');
-        }
-        // + Notificar al usuario
-        reserva.estado = ReservaStates.Cancelada;
-        return this.reservaRepository.save(reserva);
-    }
-
-    async confirmarDevolucion(id: number): Promise<Reserva> {
-        const reserva = await this.reservaRepository.findOneBy({ id });
-        if (!reserva) {
-            throw new NotFoundException('Reserva not found');
-        }
-        if (reserva.estado !== ReservaStates.Cancelada) {
-            throw new BadRequestException('La reserva no está esperando devolución');
-        }
-        // + Notificar al usuario
-        reserva.estado = ReservaStates.Finalizada;
         return this.reservaRepository.save(reserva);
     }
 

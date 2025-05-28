@@ -128,10 +128,18 @@ export class MaquinariaService {
             },
         });
         
-        return reservas.map((reserva) => ({
-            fecha_inicio: reserva.fecha_inicio.toISOString(),
-            fecha_fin: reserva.fecha_fin.toISOString(),
-        }));
+        return reservas.map((reserva) => {
+            const fecha_inicio = new Date(reserva.fecha_inicio);
+            fecha_inicio.setDate(fecha_inicio.getDate() - 3);
+
+            const fecha_fin = new Date(reserva.fecha_fin);
+            fecha_fin.setDate(fecha_fin.getDate() + 3);
+
+            return {
+            fecha_inicio: fecha_inicio.toISOString(),
+            fecha_fin: fecha_fin.toISOString(),
+            };
+        });
     }
 
     async findOne(id: number): Promise<Maquinaria> {
