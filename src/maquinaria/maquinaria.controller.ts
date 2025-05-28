@@ -31,6 +31,7 @@ export class MaquinariaController {
         @Body() maquinariaDto: MaquinariaDto,
         @UploadedFile() image: Express.Multer.File
     ): Promise<Maquinaria> {
+        if(!image) throw new BadRequestException('Falta la imagen')
         maquinariaDto.imagen = getImageLink(image)
         return await this.maquinariaService.create(maquinariaDto);
     }
