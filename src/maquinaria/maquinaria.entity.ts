@@ -38,7 +38,7 @@ export class Maquinaria {
     id: number
 
     @Column({ nullable: false , unique: true})
-    inventario: number
+    inventario: string
 
     @Column({ nullable: false })
     nombre: string
