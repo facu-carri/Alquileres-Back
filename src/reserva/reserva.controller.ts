@@ -23,6 +23,12 @@ export class ReservaController {
         return this.reservaService.findAll(filters);
     }
 
+    @Get('estados')
+    @UseInterceptors(UserInterceptor)
+    getStates(@Req() req): string[] {
+        return this.reservaService.getValidStates(req.user.rol)
+    }
+
     @Get(':id')
     async findOne(@Param('id') id: string) {
         const reserva = await this.reservaService.findOne(+id);
@@ -31,9 +37,9 @@ export class ReservaController {
     }
 
     @UseGuards(RoleGuard.bind(RoleGuard, [UserRole.Empleado]))
-    @Patch(':id/finalizar')
-    async finalizarReserva(@Param('id', ParseIntPipe) id: number) {
-        return this.reservaService.finalizarReserva(id);
+    @Patch(':id/confirmar')
+    async confirmarReserva(@Param('id', ParseIntPipe) id: number) {
+        return this.reservaService.confirmarReserva(id);
     }
 
     @UseGuards(RoleGuard.bind(RoleGuard, [UserRole.Cliente, UserRole.Empleado, UserRole.Admin]))
@@ -42,20 +48,7 @@ export class ReservaController {
         const user = req.user;
         if (!user) throw new NotFoundException('User not found');
 
-        switch (user.role) {
-            case UserRole.Admin || UserRole.Empleado:
-                return this.reservaService.cancelarReservaAdmin(id);
-            case UserRole.Cliente:
-                return this.reservaService.cancelarReservaUser(id, user.email);
-            default:
-                throw new NotFoundException('El usuario no tiene permisos para cancelar la reserva');
-        }
-    }
-
-    @UseGuards(RoleGuard.bind(RoleGuard, [UserRole.Empleado]))
-    @Patch(':id/confirmar-devolucion')
-    async confirmarDevolucion(@Param('id', ParseIntPipe) id: number) {
-        return this.reservaService.confirmarDevolucion(id);
+        return this.reservaService.cancelarReserva(id, user);
     }
 
     @Post()

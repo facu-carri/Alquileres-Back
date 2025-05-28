@@ -11,7 +11,8 @@ import { ManyToOne, JoinColumn } from "typeorm";
 export enum ReservaStates {
     Activa = 'Activa',
     Cancelada = 'Cancelada',
-    Finalizada = 'Finalizada'
+    Finalizada = 'Finalizada',
+    Reembolsada = 'Reembolsada'
 }
 
 @Entity({ name: 'reservas' })
