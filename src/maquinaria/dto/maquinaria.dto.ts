@@ -1,11 +1,12 @@
 import { IsString, IsNotEmpty, IsEnum, IsNumber, Min, IsAlphanumeric, MinLength } from 'class-validator';
 import { validationMessage, ValidatorTypes } from 'src/utils/ValidatorMessages';
 import { ReturnPolicy, MaquinariaCategory, Location, MaquinariaStates } from '../maquinaria.entity';
+import { Transform } from 'class-transformer';
 
 export class MaquinariaDto {
 
+  @Transform(({ value }) => value !== undefined && value !== null ? String(value) : value)
   @IsString(validationMessage(ValidatorTypes.IsString))
-  @IsAlphanumeric(null, validationMessage(ValidatorTypes.IsAlphaNumeric))
   @IsNotEmpty(validationMessage(ValidatorTypes.isNotEmpty))
   readonly inventario: string;
 
