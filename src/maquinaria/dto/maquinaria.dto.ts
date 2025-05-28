@@ -1,12 +1,11 @@
-import { IsString, IsNotEmpty, IsEnum, IsNumber, Min } from 'class-validator';
+import { IsString, IsNotEmpty, IsEnum, IsNumber, Min, IsAlphanumeric, MinLength } from 'class-validator';
 import { validationMessage, ValidatorTypes } from 'src/utils/ValidatorMessages';
 import { ReturnPolicy, MaquinariaCategory, Location, MaquinariaStates } from '../maquinaria.entity';
 
 export class MaquinariaDto {
 
-  @IsNumber({ allowInfinity: false, allowNaN: false }, validationMessage(ValidatorTypes.IsNumber))
+  @IsAlphanumeric(null, validationMessage(ValidatorTypes.IsAlphaNumeric))
   @IsNotEmpty(validationMessage(ValidatorTypes.isNotEmpty))
-  @Min(1, { message: 'El inventario debe ser un número mayor a 0' })
   readonly inventario: number;
 
   @IsString(validationMessage(ValidatorTypes.IsString))
