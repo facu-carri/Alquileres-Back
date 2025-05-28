@@ -14,7 +14,7 @@ export class ReservaController {
     @UseGuards(RoleGuard.bind(RoleGuard, [UserRole.Cliente, UserRole.Empleado, UserRole.Admin]))
     async findReservas(@Query() filters: FilterReservaDto, @Req() req) {
         const user = req.user;
-        if (user.role === UserRole.Cliente) {
+        if (user.rol === UserRole.Cliente) {
             filters.user_email = user.email;
             if (user.id) {
                 filters.user_id = user.id;
