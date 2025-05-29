@@ -22,9 +22,9 @@ export class InitializeUsers {
                 apellido: 'Lozano',
                 password: '12345678',
                 email: 'matilozano96@hotmail.com',
-                telefono: '123456789',
+                telefono: '+1234567890',
                 dni: '19011452',
-                nacimiento: '02/02/1996'
+                nacimiento: '1996-02-02'
             }
         ],
         [UserRole.Empleado]: [],
