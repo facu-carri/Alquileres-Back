@@ -5,7 +5,7 @@ import { Location, Maquinaria, MaquinariaCategory, MaquinariaStates, ReturnPolic
 import { MaquinariaDto } from './dto/maquinaria.dto';
 import { UpdateMaquinariaDto } from './dto/update-maquinaria.dto';
 import { FilterMaquinariaDto } from './dto/filter-maquinaria.dto';
-import { Reserva } from 'src/reserva/reserva.entity';
+import { Reserva, ReservaStates } from 'src/reserva/reserva.entity';
 
 import { getEnumValues } from 'src/utils/EnumUtils';
 import { response } from 'express';
@@ -228,8 +228,21 @@ export class MaquinariaService {
         }
 
         maquinaria.state = state as MaquinariaStates;
+
+        if (maquinaria.state !== MaquinariaStates.Disponible) {
+            const reservas = await this.reservaRepository.find({
+                where: {
+                    maquinaria: { id },
+                    estado: ReservaStates.Activa,
+                },
+            });
+        if (reservas.length > 0) {
+            throw new BadRequestException(`No se puede cambiar el estado de la maquinaria porque tiene reservas activas`);
+        }
         return await this.maquinariaRepository.save(maquinaria);
+        }
     }
+
 
     getAllCategories(): string[] {
         return getEnumValues(MaquinariaCategory)

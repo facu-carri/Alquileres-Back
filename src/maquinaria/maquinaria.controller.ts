@@ -110,8 +110,6 @@ export class MaquinariaController {
         @Req() req
     ): Promise<Maquinaria> {
         if (!estado) throw new BadRequestException('Se requiere un estado válido');
-        console.log(`Entered`);
-        console.log(req.user)
         return await this.maquinariaService.changeState(id, estado, req.user.rol);
     }
 }
