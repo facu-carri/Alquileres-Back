@@ -8,6 +8,7 @@ export enum ValidatorTypes {
     "IsNumber",
     "IsPhoneNumber",
     "IsEnum",
+    "IsAlphaNumeric"
 }
 
 const messages = {
@@ -17,7 +18,8 @@ const messages = {
     [ValidatorTypes.MinLength]: "El parametro '${p}' debe ser mayor o igual a ${0} caracteres",
     [ValidatorTypes.IsPhoneNumber]: "Numero telefono invalido",
     [ValidatorTypes.IsNumber]: "El parametro '${p}' debe ser un numero",
-    [ValidatorTypes.IsEnum]: "El parametro '${p}' debe ser uno de: ${0}"
+    [ValidatorTypes.IsEnum]: "El parametro '${p}' debe ser uno de: ${0}",
+    [ValidatorTypes.IsAlphaNumeric]: "El parametro '${p}' debe ser alfanumerico"
 }
 
 function processArguments(type: ValidatorTypes, validationArguments: ValidationArguments): string {

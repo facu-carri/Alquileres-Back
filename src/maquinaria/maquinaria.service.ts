@@ -216,6 +216,21 @@ export class MaquinariaService {
         return response.status(200)
     }
 
+    async changeState(id: number, state: string, rol: UserRole): Promise<Maquinaria> {
+        const maquinaria = await this.findOne(id);
+        if (!maquinaria) {
+            throw new NotFoundException(`No se encontró la maquinaria con id ${id}`);
+        }
+
+        const validStates = this.getValidStates(rol);
+        if (!validStates.includes(state as MaquinariaStates)) {
+            throw new BadRequestException(`El estado ${state} no es válido para el rol ${rol}`);
+        }
+
+        maquinaria.state = state as MaquinariaStates;
+        return await this.maquinariaRepository.save(maquinaria);
+    }
+
     getAllCategories(): string[] {
         return getEnumValues(MaquinariaCategory)
     }

@@ -27,5 +27,6 @@ export class UserDto {
     readonly nacimiento: string;
 
     @IsString(validationMessage(ValidatorTypes.IsString))
+    @IsPhoneNumber(null, validationMessage(ValidatorTypes.IsPhoneNumber))
     readonly telefono: string
 }

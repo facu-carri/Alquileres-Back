@@ -1,4 +1,4 @@
-import { IsString, IsNotEmpty, IsEnum, IsNumber, Min } from 'class-validator';
+import { IsString, IsNotEmpty, IsEnum, IsNumber, Min, IsAlphanumeric, MinLength } from 'class-validator';
 import { validationMessage, ValidatorTypes } from 'src/utils/ValidatorMessages';
 import { ReturnPolicy, MaquinariaCategory, Location, MaquinariaStates } from '../maquinaria.entity';
 import { Transform } from 'class-transformer';

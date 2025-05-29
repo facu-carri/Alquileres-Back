@@ -31,6 +31,7 @@ export class MaquinariaController {
         @Body() maquinariaDto: MaquinariaDto,
         @UploadedFile() image: Express.Multer.File
     ): Promise<Maquinaria> {
+        if(!image) throw new BadRequestException('Falta la imagen')
         maquinariaDto.imagen = getImageLink(image)
         return await this.maquinariaService.create(maquinariaDto);
     }
@@ -99,5 +100,18 @@ export class MaquinariaController {
     @Patch(':id/mostrar')
     async hide(@Param('id', ParseIntPipe) id: number): Promise<void> {
         return await this.maquinariaService.show(id);
+    }
+
+    @UseGuards(RoleGuard.bind(RoleGuard, [UserRole.Admin, UserRole.Empleado]))
+    @Patch(':id/estado')
+    async changeState(
+        @Param('id', ParseIntPipe) id: number,
+        @Body('estado') estado: string,
+        @Req() req
+    ): Promise<Maquinaria> {
+        if (!estado) throw new BadRequestException('Se requiere un estado válido');
+        console.log(`Entered`);
+        console.log(req.user)
+        return await this.maquinariaService.changeState(id, estado, req.user.rol);
     }
 }

@@ -28,7 +28,6 @@ export class RecoveryService {
         if (data.token != tokenData.token) {
             throw new BadRequestException('El codigo es invalido')
         }
-        return response.status(200)
     }
 
     async recoveryPassword(data: RecoveryPasswordDto) {
@@ -36,8 +35,11 @@ export class RecoveryService {
         if (!userExist) {
             throw new NotFoundException('No se encontro el mail')
         }
+
         const token = generateCode(8)
-        await this.recoveryTokenRepository.save({ token, email: data.email })
+
+        try { await this.recoveryTokenRepository.save({ token, email: data.email }) }
+        catch { await this.recoveryTokenRepository.update({ email: data.email }, { token }) }
 
         console.log('Recovery Password token:', token)
 
