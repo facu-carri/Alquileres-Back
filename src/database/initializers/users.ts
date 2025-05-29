@@ -22,7 +22,7 @@ export class InitializeUsers {
                 apellido: 'Tester',
                 password: '12345678',
                 email: 'cliente@hotmail.com',
-                telefono: '+1234567890',
+                telefono: '+542215555555',
                 dni: '567890123',
                 nacimiento: '2001-01-01'
             }
