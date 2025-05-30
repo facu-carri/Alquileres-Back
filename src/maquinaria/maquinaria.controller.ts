@@ -7,10 +7,11 @@ import { CheckAvailabilityDto } from './dto/check-availability.dto';
 import { MaquinariaService } from './maquinaria.service';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { setFilename, setImgOpts, setRoute } from 'src/images/images.module';
-import { generateCode, getImageLink } from 'src/utils/Utils';
+import { generateCode, getImageLink, validFileExt } from 'src/utils/Utils';
 import { UserInterceptor } from 'src/interceptors/user-interceptor';
 import { RoleGuard } from 'src/guards/role.guard';
 import { UserRole } from 'src/user/user.entity';
+import path from 'path';
 
 @Controller('maquinaria')
 export class MaquinariaController {
@@ -35,7 +36,8 @@ export class MaquinariaController {
         @Body() maquinariaDto: MaquinariaDto,
         @UploadedFile() image: Express.Multer.File
     ): Promise<Maquinaria> {
-        if(!image) throw new BadRequestException('Falta la imagen')
+        if (!image) throw new BadRequestException('Falta la imagen')
+        validFileExt(image, 'Formato de imagen invalido', "jpg", "jpeg", "png", "webp", "svg")
         maquinariaDto.imagen = getImageLink(image)
         return await this.maquinariaService.create(maquinariaDto);
     }
