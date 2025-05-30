@@ -28,9 +28,8 @@ export const setRoute = (...args: argsParams): any => {
 }
 
 function getRealValue(value): string {
-    console.log(value.toString())
     const typeOfValue = typeof (value)
-    return (typeOfValue == 'object' || typeOfValue == 'function') ? value() : value
+    return (typeOfValue == 'function') ? value() : value
 }
 
 export const setFilename = (...args: argsParams): any => {
