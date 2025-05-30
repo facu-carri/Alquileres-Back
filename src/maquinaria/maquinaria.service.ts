@@ -125,6 +125,7 @@ export class MaquinariaService {
         const reservas = await this.reservaRepository.find({
             where: {
                 maquinaria: { id },
+                estado: ReservaStates.Activa,
             },
         });
         
