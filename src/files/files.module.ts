@@ -3,8 +3,11 @@ import { MulterModule, MulterModuleOptions } from '@nestjs/platform-express';
 import { existsSync, mkdirSync } from 'fs';
 import { diskStorage } from 'multer';
 import path from 'path';
-import { validFileExt } from 'src/utils/Utils';
 
+type fileFilters = {
+    exts: string[],
+    msg: string
+}
 type paramType = string | (() => string)
 type argsParams = [...(paramType)[]]
 
@@ -34,18 +37,17 @@ function getRealValue(value): string {
     return (typeOfValue == 'function') ? value() : value
 }
 
-export const setFilename = (validExts: string[], ...args: argsParams): any => {
+export const setFilename = (...args: argsParams): any => {
     return {
         filename: ({ body }, file, cb) => {
             const ext = path.extname(file.originalname)
             const filename: string = getRealValue(args.reduce((pv, cv) => getRealValue(pv) + getRealValue(cv)))
-            if(!validFileExt(file, null, ...validExts)) return
             cb(null, processBody(body, filename) + ext);
         }
     }
 }
 
-export function setImgOpts(...fns: any[]): MulterModuleOptions {
+export function setImgOpts(fileFilters: fileFilters, ...fns: any[]): MulterModuleOptions {
     
     const mergeObjs = {}
     for (const val of fns) Object.assign(mergeObjs, val)
@@ -59,6 +61,11 @@ export function setImgOpts(...fns: any[]): MulterModuleOptions {
             },
             ...mergeObjs
         }),
+        fileFilter: (req, file, cb) => {
+            const ext = path.extname(file.originalname).toLowerCase().substring(1)
+            if (fileFilters && !fileFilters.exts.includes(ext)) return cb(new BadRequestException(fileFilters.msg), false)
+            cb(null, true);
+        }
     }
 }
 

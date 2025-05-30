@@ -6,12 +6,12 @@ import { UpdateMaquinariaDto } from './dto/update-maquinaria.dto';
 import { CheckAvailabilityDto } from './dto/check-availability.dto';
 import { MaquinariaService } from './maquinaria.service';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { setFilename, setImgOpts, setRoute } from 'src/images/images.module';
+import { setFilename, setImgOpts, setRoute } from 'src/files/files.module';
 import { generateCode, getImageLink, validFileExt } from 'src/utils/Utils';
 import { UserInterceptor } from 'src/interceptors/user-interceptor';
 import { RoleGuard } from 'src/guards/role.guard';
 import { UserRole } from 'src/user/user.entity';
-import path from 'path';
+import { EXT_IMAGES } from 'src/files/extensions';
 
 @Controller('maquinaria')
 export class MaquinariaController {
@@ -24,20 +24,24 @@ export class MaquinariaController {
         return this.maquinariaService.findAll(filters, req.user.rol);
     }
 
-    private fotoName() {
-        return `foto_${generateCode(8)}`
-    }
-
     @Post()
     // Si se redefinen las opciones, se debe volver a setear la ruta usada en el module (en este caso, "maquinaria")
     @UseGuards(RoleGuard.bind(RoleGuard, [UserRole.Admin]))
-    @UseInterceptors(FileInterceptor('image', setImgOpts(setRoute('maquinaria', '{nombre}'), setFilename('foto_', generateCode.bind(null, 8)))))
+    @UseInterceptors(FileInterceptor('image',
+        setImgOpts(
+            {
+                exts: EXT_IMAGES,
+                msg: 'Formato de imagen invalido'
+            },
+            setRoute('maquinaria', '{nombre}'),
+            setFilename('foto_', generateCode.bind(null, 8))
+        )
+    ))
     async create(
         @Body() maquinariaDto: MaquinariaDto,
         @UploadedFile() image: Express.Multer.File
     ): Promise<Maquinaria> {
         if (!image) throw new BadRequestException('Falta la imagen')
-        validFileExt(image, 'Formato de imagen invalido', "jpg", "jpeg", "png", "webp", "svg")
         maquinariaDto.imagen = getImageLink(image)
         return await this.maquinariaService.create(maquinariaDto);
     }
