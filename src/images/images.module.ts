@@ -20,9 +20,9 @@ function processBody(body, ret: string) {
 export const setRoute = (...args: argsParams): any => {
     return {
         destination: ({ body }, file, cb) => {
-            const dest: string = path.join(baseDir, ...args.map(value => getRealValue(value)))
+            const dest: string = processBody(body, path.join(baseDir, ...args.map(value => getRealValue(value))))
             if (!existsSync(dest)) mkdirSync(dest, { recursive: true })
-            cb(null, processBody(body, dest))
+            cb(null, dest)
         },
     }
 }
