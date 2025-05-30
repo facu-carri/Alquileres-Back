@@ -3,50 +3,43 @@ import { existsSync, mkdirSync } from 'fs';
 import { diskStorage } from 'multer';
 import path from 'path';
 
-type argsParams = [...(string | ((body: Record<string, any>) => Record<string, any>))[]]
+type paramType = string | (() => string)
+type argsParams = [...(paramType)[]]
 
 const baseDir = path.resolve('./images')
 
-function processBody(body, ret: string, proxyBody) {
+function processBody(body, ret: string) {
     if (!body) return ret
-    let processedBody = body
-    if (proxyBody) processedBody = proxyBody(body)
-    for (const key in processedBody) {
+    for (const key in body) {
         const replacer = "{" + key + "}"
-        if (ret.includes(replacer)) ret = ret.replaceAll(replacer, processedBody[key])
+        if (ret.includes(replacer)) ret = ret.replaceAll(replacer, body[key])
     }
     return ret
 }
 
 export const setRoute = (...args: argsParams): any => {
-    const proxyBody: Function = (typeof(args.at(-1)) == 'function' ? args.at(-1) : null) as Function
-    const route: any[] = proxyBody ? args.slice(0, -1) : args
-    let dest = path.join(baseDir, ...route)
     return {
         destination: ({ body }, file, cb) => {
-            if (body) {
-                dest = processBody(body, dest, proxyBody)
-            }
-            if (!existsSync(dest)) {
-                mkdirSync(dest, { recursive: true })
-            }
-            cb(null, dest)
+            const dest: string = path.join(baseDir, ...args.map(value => getRealValue(value)))
+            if (!existsSync(dest)) mkdirSync(dest, { recursive: true })
+            cb(null, processBody(body, dest))
         },
     }
 }
 
-export const setFilename = (...args: argsParams): any => {
-    const proxyBody: Function = (typeof (args.at(-1)) == 'function' ? args.at(-1) : null) as Function
-    let filename: string = (proxyBody ? args.slice(0, -1) : args).join('')
+function getRealValue(value): string {
+    console.log(value.toString())
+    const typeOfValue = typeof (value)
+    return (typeOfValue == 'object' || typeOfValue == 'function') ? value() : value
+}
 
+export const setFilename = (...args: argsParams): any => {
     return {
         filename: ({ body }, file, cb) => {
             const ext = path.extname(file.originalname)
-            if (body) {
-                filename = processBody(body, filename, proxyBody)
-            }
-            cb(null, filename + ext);
-        },
+            const filename: string = getRealValue(args.reduce((pv, cv) => getRealValue(pv) + getRealValue(cv)))
+            cb(null, processBody(body, filename) + ext);
+        }
     }
 }
 

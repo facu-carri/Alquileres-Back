@@ -23,10 +23,14 @@ export class MaquinariaController {
         return this.maquinariaService.findAll(filters, req.user.rol);
     }
 
+    private fotoName() {
+        return `foto_${generateCode(8)}`
+    }
+
     @Post()
     // Si se redefinen las opciones, se debe volver a setear la ruta usada en el module (en este caso, "maquinaria")
     @UseGuards(RoleGuard.bind(RoleGuard, [UserRole.Admin]))
-    @UseInterceptors(FileInterceptor('image', setImgOpts(setRoute('maquinaria', '{nombre}'), setFilename(`foto_${generateCode(8)}`))))
+    @UseInterceptors(FileInterceptor('image', setImgOpts(setRoute('maquinaria', '{nombre}'), setFilename(() => `foto_${generateCode(8)}`))))
     async create(
         @Body() maquinariaDto: MaquinariaDto,
         @UploadedFile() image: Express.Multer.File
