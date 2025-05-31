@@ -32,6 +32,10 @@ export class AuthService {
             throw new UnauthorizedException("La contraseña es incorrecta")
         }
 
+        if (!user.isActive) {
+            throw new UnauthorizedException("El usuario está inhabilitado")
+        }
+
         const rol = user.rol
         const requireAuth = rol == UserRole.Admin || rol == UserRole.Empleado
         let token = null
