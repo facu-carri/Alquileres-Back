@@ -95,11 +95,13 @@ export class UserService {
             throw new BadRequestException('El usuario ya está desactivado');
         }
 
-        if (user.rol === UserRole.Cliente) {
-            if (userToDeactivate.email !== user.email) {
-                throw new BadRequestException('No tenés permiso para desactivar este usuario');
-            }
+        if (user.rol === UserRole.Cliente && userToDeactivate.email !== user.email) {
+            throw new BadRequestException('No tenés permiso para desactivar este usuario');
         }
+
+        if (userToDeactivate.rol === UserRole.Empleado && user.rol !== UserRole.Admin) {
+            throw new BadRequestException('Solo un administrador puede desactivar empleados');
+        }   
 
         if (userToDeactivate.rol === UserRole.Admin) {
             throw new BadRequestException('No se puede desactivar un usuario administrador');
