@@ -15,12 +15,10 @@ async function bootstrap() {
             }
         })
     )
-      // habilitar CORS
     app.enableCors({
         origin: process.env.FRONT_URL, 
         credentials: true
     });
-    // app.enableCors({ origin: true }); //habilitar CORS para todos los dominios
     await app.listen(process.env.PORT ?? 3000);
 }
 bootstrap();

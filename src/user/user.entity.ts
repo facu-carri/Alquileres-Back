@@ -34,4 +34,7 @@ export class User {
 
     @Column()
     nacimiento: string
+
+    @Column({ nullable: false, default: true })
+    isActive: boolean
 }

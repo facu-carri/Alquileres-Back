@@ -18,13 +18,23 @@ export class InitializeUsers {
         ],
         [UserRole.Cliente]: [
             {
-                nombre: 'Matias',
-                apellido: 'Lozano',
+                nombre: 'Test',
+                apellido: 'Tester',
                 password: '12345678',
-                email: 'matilozano96@hotmail.com',
-                telefono: '123456789',
-                dni: '19011452',
-                nacimiento: '02/02/1996'
+                email: 'cliente@hotmail.com',
+                telefono: '+542215555555',
+                dni: '567890123',
+                nacimiento: '2001-01-01'
+            },
+            {
+                nombre: 'Test2',
+                apellido: 'Tester2',
+                password: '12345678',
+                email: 'eliminado@hotmail.com',
+                telefono: '+542215555555',
+                dni: '567890123',
+                nacimiento: '2001-01-01',
+                isActive: false
             }
             ,
             {

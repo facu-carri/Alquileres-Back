@@ -29,4 +29,6 @@ export class UserDto {
     @IsString(validationMessage(ValidatorTypes.IsString))
     @IsPhoneNumber(null, validationMessage(ValidatorTypes.IsPhoneNumber))
     readonly telefono: string
+
+    readonly isActive?: boolean;
 }

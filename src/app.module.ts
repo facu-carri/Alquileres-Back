@@ -7,7 +7,7 @@ import { AuthModule } from './auth/auth.module';
 import { DatabaseModule } from './database/database.module';
 import { RegisterModule } from './register/register.module';
 import { RecoveryModule } from './recovery/recovery.module';
-import { ImagesController } from './images/images.controller';
+import { ImagesController } from './files/images.controller';
 import { ReservaModule } from 'src/reserva/reserva.module';
 import { MercadoPagoModule } from './mercadoPago/mercadoPago.module';
 

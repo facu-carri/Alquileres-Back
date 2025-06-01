@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Put, Body, Param, Delete, Patch, Query, UseInterceptors, UploadedFile, Req, UseGuards, ParseIntPipe, BadRequestException } from '@nestjs/common';
+import { Controller, Get, Post, Put, Body, Param, Patch, Query, UseInterceptors, UploadedFile, Req, UseGuards, ParseIntPipe, BadRequestException } from '@nestjs/common';
 import { Maquinaria } from './maquinaria.entity';
 import { MaquinariaDto } from './dto/maquinaria.dto';
 import { FilterMaquinariaDto } from './dto/filter-maquinaria.dto';
@@ -6,11 +6,12 @@ import { UpdateMaquinariaDto } from './dto/update-maquinaria.dto';
 import { CheckAvailabilityDto } from './dto/check-availability.dto';
 import { MaquinariaService } from './maquinaria.service';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { setFilename, setImgOpts, setRoute } from 'src/images/images.module';
+import { setFilename, setImgOpts, setRoute } from 'src/files/files.module';
 import { generateCode, getImageLink } from 'src/utils/Utils';
 import { UserInterceptor } from 'src/interceptors/user-interceptor';
 import { RoleGuard } from 'src/guards/role.guard';
 import { UserRole } from 'src/user/user.entity';
+import { EXT_IMAGES } from 'src/files/extensions';
 
 @Controller('maquinaria')
 export class MaquinariaController {
@@ -26,12 +27,21 @@ export class MaquinariaController {
     @Post()
     // Si se redefinen las opciones, se debe volver a setear la ruta usada en el module (en este caso, "maquinaria")
     @UseGuards(RoleGuard.bind(RoleGuard, [UserRole.Admin]))
-    @UseInterceptors(FileInterceptor('image', setImgOpts(setRoute('maquinaria', '{nombre}'), setFilename(`foto_${generateCode(8)}`))))
+    @UseInterceptors(FileInterceptor('image',
+        setImgOpts(
+            {
+                exts: EXT_IMAGES,
+                msg: 'Formato de imagen invalido'
+            },
+            setRoute('maquinaria', '{nombre}'),
+            setFilename('foto_', generateCode.bind(null, 8))
+        )
+    ))
     async create(
         @Body() maquinariaDto: MaquinariaDto,
         @UploadedFile() image: Express.Multer.File
     ): Promise<Maquinaria> {
-        if(!image) throw new BadRequestException('Falta la imagen')
+        if (!image) throw new BadRequestException('Falta la imagen')
         maquinariaDto.imagen = getImageLink(image)
         return await this.maquinariaService.create(maquinariaDto);
     }
@@ -110,8 +120,6 @@ export class MaquinariaController {
         @Req() req
     ): Promise<Maquinaria> {
         if (!estado) throw new BadRequestException('Se requiere un estado válido');
-        console.log(`Entered`);
-        console.log(req.user)
         return await this.maquinariaService.changeState(id, estado, req.user.rol);
     }
 }

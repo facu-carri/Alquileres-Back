@@ -2,7 +2,6 @@ import { MaquinariaDto } from "src/maquinaria/dto/maquinaria.dto"
 import { MaquinariaService } from "src/maquinaria/maquinaria.service";
 import { MaquinariaCategory, Location, ReturnPolicy, MaquinariaStates } from "src/maquinaria/maquinaria.entity";
 
-
 export class InitializeMaquinarias {
 
     private maquinarias: Array<MaquinariaDto> = [
@@ -86,8 +85,7 @@ export class InitializeMaquinarias {
         },
     ]
 
-    constructor(private readonly maquinariaService: MaquinariaService) {
-    }
+    constructor(private readonly maquinariaService: MaquinariaService) {}
 
     async init() {
         await Promise.all(this.maquinarias.map(maq => this.inyectMaquinaria(maq)));

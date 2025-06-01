@@ -1,18 +1,14 @@
-import { Maquinaria } from "src/maquinaria/maquinaria.entity";
-import { Reserva, ReservaStates } from "src/reserva/reserva.entity";
-import { Repository } from "typeorm";
 import { ReservaService } from "src/reserva/reserva.service";
 import { MaquinariaService } from "src/maquinaria/maquinaria.service";
-import { User, UserRole } from "src/user/user.entity";
+import { UserRole } from "src/user/user.entity";
 import { CreateReservaDto } from "src/reserva/dto/create-reserva.dto";
 import { UserService } from "src/user/user.service";
-
 
 export class InitializeReservas {
     constructor(
         private readonly reservaService: ReservaService,
         private readonly maquinariaService: MaquinariaService,
-        private readonly userService: UserService,
+        private readonly userService: UserService
     ) { }
 
     async init() {
@@ -25,7 +21,7 @@ export class InitializeReservas {
             return;
         }
 
-        const users = await this.userService.findAllByRol(UserRole.Cliente);
+        const users = (await this.userService.findAllByRol(UserRole.Cliente)).filter(user => user.isActive);
         if (users.length === 0) {
             console.log('No hay clientes para crear reservas');
             return;

@@ -24,12 +24,16 @@ export class AuthService {
     async login(loginData: LoginDto) {
         const user: User = await this.userService.findOneByEmail(loginData.email)
         if (!user) {
-            throw new UnauthorizedException("El mail no se encuentra registrado")
+            throw new UnauthorizedException("Credenciales inválidas. Por favor verifique su email y contraseña e intente de nuevo.")
         }
 
         const isPasswordValid = user.password == loginData.password
         if (!isPasswordValid) {
-            throw new UnauthorizedException("La contraseña es incorrecta")
+            throw new UnauthorizedException("Credenciales inválidas. Por favor verifique su email y contraseña e intente de nuevo.")
+        }
+
+        if (!user.isActive) {
+            throw new UnauthorizedException("El usuario está inhabilitado")
         }
 
         const rol = user.rol

@@ -1,10 +1,11 @@
 import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { Repository, In } from 'typeorm';
 import { User, UserRole } from './user.entity';
 import { UserDto } from './dto/user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { response } from 'express';
+import { Reserva, ReservaStates } from 'src/reserva/reserva.entity';
 
 @Injectable()
 export class UserService {
@@ -12,6 +13,9 @@ export class UserService {
     constructor(
         @InjectRepository(User)
         private readonly userRepository: Repository<User>,
+
+        @InjectRepository(Reserva)
+        private readonly reservaRepository: Repository<Reserva>
     ) {}
 
     async create(userDto: UserDto, rol: UserRole): Promise<User> {
@@ -81,5 +85,43 @@ export class UserService {
         if (!this.existBy(obj)) throw new NotFoundException('No se encontro el usuario')
         await this.userRepository.delete(obj);
         return response.status(200)
+    }
+
+    async deactivateUser(id: number, user: Partial<User>): Promise<any> {
+        const userToDeactivate = await this.getUserById(id);
+        if (!userToDeactivate) throw new NotFoundException('No se encontro el usuario');
+
+        if (!userToDeactivate.isActive) {
+            throw new BadRequestException('El usuario ya está desactivado');
+        }
+
+        if (user.rol === UserRole.Cliente && userToDeactivate.email !== user.email) {
+            throw new BadRequestException('No tenés permiso para desactivar este usuario');
+        }
+
+        if (userToDeactivate.rol === UserRole.Empleado && user.rol !== UserRole.Admin) {
+            throw new BadRequestException('Solo un administrador puede desactivar empleados');
+        }   
+
+        if (userToDeactivate.rol === UserRole.Admin) {
+            throw new BadRequestException('No se puede desactivar un usuario administrador');
+        }
+
+        const reservas = await this.reservaRepository.find({
+            where: {
+            usuario: userToDeactivate,
+            estado: In([ReservaStates.Activa, ReservaStates.Cancelada])
+            }
+        });
+        if (reservas.length > 0){
+            throw new BadRequestException('No se puede desactivar el usuario porque tiene reservas activas o reembolsos pendientes');
+        }
+
+        // Cuando modelemos alquiler, hacer algo parecido para alquileres activos
+
+        userToDeactivate.isActive = false;
+        await this.userRepository.save(userToDeactivate);
+
+        return { message: "Usuario desactivado exitosamente"};
     }
 }
