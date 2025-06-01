@@ -1,1 +1,1 @@
-export const EXT_IMAGES = ["jpg", "jpeg", "png", "webp", "svg"]
+export const EXT_IMAGES = [".jpg", ".jpeg", ".png", ".webp", ".svg"]

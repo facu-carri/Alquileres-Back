@@ -62,8 +62,10 @@ export function setImgOpts(fileFilters: fileFilters, ...fns: any[]): MulterModul
             ...mergeObjs
         }),
         fileFilter: (req, file, cb) => {
-            const ext = path.extname(file.originalname).toLowerCase().substring(1)
-            if (fileFilters && !fileFilters.exts.includes(ext)) return cb(new BadRequestException(fileFilters.msg), false)
+            const ext = path.extname(file.originalname).toLowerCase()
+            if (fileFilters && !fileFilters.exts.includes(ext)) {
+                return cb(new BadRequestException(fileFilters.msg), false)
+            }
             cb(null, true);
         }
     }

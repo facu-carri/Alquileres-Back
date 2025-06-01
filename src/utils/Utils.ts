@@ -7,7 +7,7 @@ export function generateCode(length: number) {
 }
 
 export function validFileExt(file: Express.Multer.File, msg: string, ...exts: string[]) {
-    const file_ext = path.extname(file.filename).substring(1)
+    const file_ext = path.extname(file.filename)
 
     for (const ext of exts) {
         if(file_ext == ext) return true
