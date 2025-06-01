@@ -3,6 +3,7 @@ import { Request } from 'express';
 import { createReadStream, existsSync } from 'fs';
 import path from 'path';
 import { lookup } from 'mime-types';
+import { EXT_IMAGES } from './extensions';
 
 @Controller('images')
 export class ImagesController {
@@ -13,6 +14,11 @@ export class ImagesController {
         this.basePath = path.resolve('./images')
     }
     
+    @Get('/ext')
+    getExtensions() {
+        return EXT_IMAGES
+    }
+
     @Get('/*')
     getImage(
         @Req() req: Request,
