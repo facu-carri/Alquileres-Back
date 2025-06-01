@@ -4,7 +4,7 @@ import { Items } from 'mercadopago/dist/clients/commonTypes';
 import { MaquinariaService } from 'src/maquinaria/maquinaria.service';
 import { Item } from './Item';
 import MercadoPagoConfig, { Payment, Preference } from 'mercadopago';
-import { BackUrls, PreferenceResponse } from 'mercadopago/dist/clients/preference/commonTypes';
+import { PreferenceResponse } from 'mercadopago/dist/clients/preference/commonTypes';
 import { response } from 'express';
 import { generateCode } from 'src/utils/Utils';
 

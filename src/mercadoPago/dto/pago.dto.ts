@@ -1,4 +1,4 @@
-import { IsString, IsNotEmpty, IsDateString, IsNumber } from 'class-validator';
+import { IsNotEmpty, IsNumber } from 'class-validator';
 
 export class PagoDto {
 

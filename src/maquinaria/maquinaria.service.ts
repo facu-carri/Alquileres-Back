@@ -1,12 +1,11 @@
 import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Brackets, Filter, LessThanOrEqual, MoreThanOrEqual, Repository } from 'typeorm';
+import { Brackets, LessThanOrEqual, MoreThanOrEqual, Repository } from 'typeorm';
 import { Location, Maquinaria, MaquinariaCategory, MaquinariaStates, ReturnPolicy } from './maquinaria.entity';
 import { MaquinariaDto } from './dto/maquinaria.dto';
 import { UpdateMaquinariaDto } from './dto/update-maquinaria.dto';
 import { FilterMaquinariaDto } from './dto/filter-maquinaria.dto';
 import { Reserva, ReservaStates } from 'src/reserva/reserva.entity';
-
 import { getEnumValues } from 'src/utils/EnumUtils';
 import { response } from 'express';
 import { UserRole } from 'src/user/user.entity';

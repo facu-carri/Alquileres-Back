@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Put, Body, Param, Delete, Patch, Query, UseInterceptors, UploadedFile, Req, UseGuards, ParseIntPipe, BadRequestException } from '@nestjs/common';
+import { Controller, Get, Post, Put, Body, Param, Patch, Query, UseInterceptors, UploadedFile, Req, UseGuards, ParseIntPipe, BadRequestException } from '@nestjs/common';
 import { Maquinaria } from './maquinaria.entity';
 import { MaquinariaDto } from './dto/maquinaria.dto';
 import { FilterMaquinariaDto } from './dto/filter-maquinaria.dto';
@@ -7,7 +7,7 @@ import { CheckAvailabilityDto } from './dto/check-availability.dto';
 import { MaquinariaService } from './maquinaria.service';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { setFilename, setImgOpts, setRoute } from 'src/files/files.module';
-import { generateCode, getImageLink, validFileExt } from 'src/utils/Utils';
+import { generateCode, getImageLink } from 'src/utils/Utils';
 import { UserInterceptor } from 'src/interceptors/user-interceptor';
 import { RoleGuard } from 'src/guards/role.guard';
 import { UserRole } from 'src/user/user.entity';

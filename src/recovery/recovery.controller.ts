@@ -1,5 +1,4 @@
 import { Body, Controller, Get, Post, Query } from '@nestjs/common';
-import { UserService } from 'src/user/user.service';
 import { RecoveryPasswordDto } from './dto/password.dto';
 import { RecoveryTokenDto } from './dto/token.dto';
 import { RecoveryService } from './recovery.service';
