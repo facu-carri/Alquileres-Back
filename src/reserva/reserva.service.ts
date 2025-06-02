@@ -39,6 +39,7 @@ export class ReservaService {
             maquinaria,
             usuario,
             precio_dia: maquinaria.precio,
+            precio_total: maquinaria.precio * (dto.fecha_fin.getTime() - dto.fecha_inicio.getTime()) / (1000 * 60 * 60 * 24),
             politica: maquinaria.politica,
             sucursal: maquinaria.sucursal,
             codigo_reserva: `${maquinaria.inventario}-${usuario.id}-${Date.now()}`,

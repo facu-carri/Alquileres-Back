@@ -40,6 +40,9 @@ export class Reserva {
     @Column({ nullable: false })
     precio_dia: number
 
+    @Column({ nullable: false })
+    precio_total: number
+
     @Column({ 
         type: 'enum',
         enum: Location,
