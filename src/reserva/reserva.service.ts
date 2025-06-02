@@ -130,8 +130,10 @@ export class ReservaService {
             Marca: ${maq.marca}\n
             Modelo: ${maq.modelo}\n
             Desde: ${reserva.fecha_inicio}\n
-            Hasta: ${reserva.fecha_inicio}\n
-            ha sido cancelda
+            Hasta: ${reserva.fecha_fin}\n
+            ha sido cancelada.\n
+            Te recordamos que la política de reembolso que te corresponde es: ${reserva.politica}.\n
+            Podés retirar el reembolso en la sucursal ${reserva.sucursal}.\n
         `)
         return this.reservaRepository.save(reserva);
     }
