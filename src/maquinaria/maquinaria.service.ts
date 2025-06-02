@@ -8,7 +8,8 @@ import { FilterMaquinariaDto } from './dto/filter-maquinaria.dto';
 import { Reserva, ReservaStates } from 'src/reserva/reserva.entity';
 import { getEnumValues } from 'src/utils/EnumUtils';
 import { response } from 'express';
-import { UserRole } from 'src/user/user.entity';
+import { User, UserRole } from 'src/user/user.entity';
+import { ReservaService } from 'src/reserva/reserva.service';
 
 @Injectable()
 export class MaquinariaService {
@@ -18,6 +19,7 @@ export class MaquinariaService {
         private readonly maquinariaRepository: Repository<Maquinaria>,
         @InjectRepository(Reserva)
         private readonly reservaRepository: Repository<Reserva>,
+        private readonly reservaService: ReservaService
     ) {}
 
     async create(maquinariaDto: MaquinariaDto): Promise<Maquinaria> {
@@ -216,8 +218,10 @@ export class MaquinariaService {
         return response.status(200)
     }
 
-    async changeState(id: number, state: string, rol: UserRole): Promise<Maquinaria> {
+    async changeState(id: number, state: string, user: User): Promise<Maquinaria> {
         const maquinaria = await this.findOne(id);
+        const rol = user.rol
+
         if (!maquinaria) {
             throw new NotFoundException(`No se encontró la maquinaria con id ${id}`);
         }
@@ -230,19 +234,13 @@ export class MaquinariaService {
         maquinaria.state = state as MaquinariaStates;
 
         if (maquinaria.state !== MaquinariaStates.Disponible) {
-            const reservas = await this.reservaRepository.find({
-                where: {
-                    maquinaria: { id },
-                    estado: ReservaStates.Activa,
-                },
-            });
-        if (reservas.length > 0) {
-            throw new BadRequestException(`No se puede cambiar el estado de la maquinaria porque tiene reservas activas`);
-        }
-        return await this.maquinariaRepository.save(maquinaria);
+            const reservas = await this.reservaService.findAll({ maquinaria_id: maquinaria.id })
+            
+            reservas.filter(reserva => reserva.estado == ReservaStates.Activa).forEach(reserva => this.reservaService.cancelarReserva(reserva.id, user))
+
+            return await this.maquinariaRepository.save(maquinaria);
         }
     }
-
 
     getAllCategories(): string[] {
         return getEnumValues(MaquinariaCategory)
