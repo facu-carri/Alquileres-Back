@@ -58,7 +58,7 @@ export class RecoveryService {
             await this.recoveryTokenRepository.delete({email: data.email})
         } else {
             if (!data.currentPassword || user.password != data.currentPassword) {
-                throw new BadRequestException('CurrentPassword no corresponde con la contraseña del usuario')
+                throw new BadRequestException('Ocurrió un error al cambiar la contraseña, por favor revise que la contraseña actual sea la correcta.');
             }
         }
         return this.userService.update({ email: data.email }, { password: data.newPassword })
