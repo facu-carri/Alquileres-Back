@@ -43,7 +43,7 @@ export class ReservaService {
             precio_total: maquinaria.precio * (dto.fecha_fin.getTime() - dto.fecha_inicio.getTime()) / (1000 * 60 * 60 * 24),
             politica: maquinaria.politica,
             sucursal: maquinaria.sucursal,
-            codigo_reserva: `${maquinaria.inventario}-${usuario.id}-${Date.now()}`,
+            codigo_reserva: `${maquinaria.inventario}-${usuario.id}-${Date.now().toString().slice(-6)}`,
             estado: ReservaStates.Activa,
         });
 
