@@ -7,6 +7,7 @@ import { Repository } from 'typeorm';
 import { Reserva, ReservaStates } from './reserva.entity';
 import { FilterReservaDto } from './dto/filter-reserva.dto';
 import { sendMail } from 'src/utils/Mailer';
+import { JwtPayload } from 'src/auth/jwt/jwtPayload';
 
 @Injectable()
 export class ReservaService {
@@ -96,7 +97,7 @@ export class ReservaService {
         return this.reservaRepository.save(reserva);
 }
 
-    async cancelarReserva(id: number, user: User): Promise<Reserva> {
+    async cancelarReserva(id: number, user: JwtPayload): Promise<Reserva> {
         const reserva = await this.reservaRepository.findOneBy({ id });
         if (!reserva) {
             throw new NotFoundException('Reserva not found');

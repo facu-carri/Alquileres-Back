@@ -51,7 +51,8 @@ export class AuthService {
     private async generateToken(user:User) {
         const payload: JwtPayload = {
             email: user.email,
-            rol: user.rol
+            rol: user.rol,
+            id: user.id
         }
         return await this.jwtService.signAsync(payload)
     }

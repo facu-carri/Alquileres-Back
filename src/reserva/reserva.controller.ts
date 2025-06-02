@@ -16,9 +16,7 @@ export class ReservaController {
         const user = req.user;
         if (user.rol === UserRole.Cliente) {
             filters.user_email = user.email;
-            if (user.id) {
-                filters.user_id = user.id;
-            }
+            if (user.id) filters.user_id = user.id;
         }
         return this.reservaService.findAll(filters);
     }
