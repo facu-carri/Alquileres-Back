@@ -18,7 +18,7 @@ export class ReservaController {
             filters.user_email = user.email;
             if (user.id) filters.user_id = user.id;
         }
-        return this.reservaService.findAll(filters);
+        return this.reservaService.findAll(filters, user.rol);
     }
 
     @Get('estados')
