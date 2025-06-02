@@ -5,12 +5,12 @@ import { Reserva } from 'src/reserva/reserva.entity';
 import { MaquinariaService } from './maquinaria.service';
 import { MaquinariaController } from './maquinaria.controller';
 import { FilesModuleByRoute } from 'src/files/files.module';
-import { ReservaService } from 'src/reserva/reserva.service';
+import { ReservaModule } from 'src/reserva/reserva.module';
 
 @Module({
-    imports: [TypeOrmModule.forFeature([Maquinaria, Reserva]), FilesModuleByRoute('maquinaria')],
+    imports: [ReservaModule, TypeOrmModule.forFeature([Maquinaria, Reserva]), FilesModuleByRoute('maquinaria')],
     controllers: [MaquinariaController],
-    providers: [MaquinariaService, ReservaService],
+    providers: [MaquinariaService],
     exports: [MaquinariaService]
 })
 export class MaquinariaModule {}
