@@ -114,7 +114,7 @@ export class UserService {
             }
         });
         if (reservas.length > 0){
-            throw new BadRequestException('No se puede desactivar el usuario porque tiene reservas activas o reembolsos pendientes');
+            throw new BadRequestException('No se puede desactivar el usuario porque tiene operaciones pendientes.');
         }
 
         // Cuando modelemos alquiler, hacer algo parecido para alquileres activos
