@@ -6,6 +6,7 @@ import { CreateReservaDto } from './dto/create-reserva.dto';
 import { Repository } from 'typeorm';
 import { Reserva, ReservaStates } from './reserva.entity';
 import { FilterReservaDto } from './dto/filter-reserva.dto';
+import { sendMail } from 'src/utils/Mailer';
 
 @Injectable()
 export class ReservaService {
@@ -49,7 +50,7 @@ export class ReservaService {
         return this.reservaRepository.save(reserva);
     }
 
-    async findAll(filters?: FilterReservaDto): Promise<Reserva[]> {
+    async findAll(filters?: Partial<FilterReservaDto>): Promise<Reserva[]> {
         const queryBuilder = this.reservaRepository.createQueryBuilder('reserva')
             .leftJoinAndSelect('reserva.maquinaria', 'maquinaria')
             .leftJoinAndSelect('reserva.usuario', 'usuario');
@@ -120,6 +121,18 @@ export class ReservaService {
             default:
                 throw new BadRequestException('No tienes permiso para cancelar la reserva');
         }
+
+        const maq = reserva.maquinaria
+
+        sendMail(reserva.usuario.email, "Reserva cancelada", `
+            La reserva '${reserva.codigo_reserva}' de la maquinaria\n
+            Nombre: ${maq.nombre}\n
+            Marca: ${maq.marca}\n
+            Modelo: ${maq.modelo}\n
+            Desde: ${reserva.fecha_inicio}\n
+            Hasta: ${reserva.fecha_inicio}\n
+            ha sido cancelda
+        `)
         return this.reservaRepository.save(reserva);
     }
 
