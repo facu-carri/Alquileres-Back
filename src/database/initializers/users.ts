@@ -27,8 +27,8 @@ export class InitializeUsers {
                 nacimiento: '2001-01-01'
             },
             {
-                nombre: 'Test_dos',
-                apellido: 'Tester_dos',
+                nombre: 'TestDos',
+                apellido: 'TesterDos',
                 password: '12345678',
                 email: 'eliminado@hotmail.com',
                 telefono: '+542215555555',
