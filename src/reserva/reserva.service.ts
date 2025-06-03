@@ -26,7 +26,7 @@ export class ReservaService {
             throw new NotFoundException('Maquinaria not found');
         }
 
-        const usuario = await this.userRepository.findOneBy({ email: dto.email_usuario });
+        const usuario = await this.userRepository.findOneBy({ email: dto.email });
         if (!usuario) {
             throw new NotFoundException('Usuario not found');
         }
@@ -35,7 +35,7 @@ export class ReservaService {
             throw new BadRequestException('La fecha de inicio debe ser menor que la fecha de fin');
         }
 
-        const reserva = this.reservaRepository.create({
+        return this.reservaRepository.save({
             fecha_inicio: dto.fecha_inicio,
             fecha_fin: dto.fecha_fin,
             maquinaria,
@@ -47,8 +47,6 @@ export class ReservaService {
             codigo_reserva: `${maquinaria.inventario}-${usuario.id}-${Date.now().toString().slice(-6)}`,
             estado: ReservaStates.Activa,
         });
-
-        return this.reservaRepository.save(reserva);
     }
 
     async findAll(filters?: Partial<FilterReservaDto>, rol?: UserRole): Promise<Reserva[]> {

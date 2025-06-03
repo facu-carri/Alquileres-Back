@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Put, Delete, Param, Body, NotFoundException, UseGuards, Patch, ParseIntPipe, UseInterceptors, Req, Query } from '@nestjs/common';
+import { Controller, Get, Post, Param, Body, NotFoundException, UseGuards, Patch, ParseIntPipe, UseInterceptors, Req, Query } from '@nestjs/common';
 import { CreateReservaDto } from './dto/create-reserva.dto';
 import { ReservaService } from './reserva.service';
 import { UserRole } from 'src/user/user.entity';
@@ -54,6 +54,4 @@ export class ReservaController {
     create(@Body() createReservaDto: CreateReservaDto) {
         return this.reservaService.create(createReservaDto);
     }
-
-
 }
