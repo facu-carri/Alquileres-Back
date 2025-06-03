@@ -129,20 +129,15 @@ export class ReservaService {
 
         const maq = reserva.maquinaria
 
-        let mail = 
-            `La reserva '${reserva.codigo_reserva}' de la maquinaria
-            Nombre: ${maq.nombre}
-            Marca: ${maq.marca}
-            Modelo: ${maq.modelo}
-            Desde: ${reserva.fecha_inicio.toISOString().split('T')[0]}
-            Hasta: ${reserva.fecha_fin.toISOString().split('T')[0]}
-            ha sido cancelada.
-            Te recordamos que la política de reembolso que te corresponde es: ${reserva.politica}.
-            `;
-        if (reserva.politica !== ReturnPolicy.devolucion_0) {
-            mail += `Podés retirar el reembolso en la sucursal ${reserva.sucursal}.
-            `;
-        }
+        let mail = `La reserva '${reserva.codigo_reserva}' de la maquinaria
+        - Nombre: ${maq.nombre}
+        - Marca: ${maq.marca}
+        - Modelo: ${maq.modelo}
+        - Desde: ${reserva.fecha_inicio.toISOString().split('T')[0]}
+        - Hasta: ${reserva.fecha_fin.toISOString().split('T')[0]}
+        ha sido cancelada.
+        Te recordamos que la política de reembolso que te corresponde es: ${reserva.politica}.
+        ${reserva.politica !== ReturnPolicy.devolucion_0 ? `Podés retirar el reembolso en la sucursal ${reserva.sucursal}` : ''}`;
 
         sendMail(reserva.usuario.email, "Reserva Cancelada", mail);
         return this.reservaRepository.save(reserva);
