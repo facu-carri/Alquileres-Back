@@ -110,7 +110,7 @@ export class UserService {
         const reservas = await this.reservaRepository.find({
             where: {
             usuario: userToDeactivate,
-            estado: In([ReservaStates.Activa, ReservaStates.Cancelada])
+            estado: In([ReservaStates.Activa])
             }
         });
         if (reservas.length > 0){

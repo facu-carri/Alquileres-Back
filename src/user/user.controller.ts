@@ -29,6 +29,16 @@ export class UserController {
         return await this.userService.modifyUser({ email, id }, userDto, rol)
     }
 
+    @Delete(':id/deactivate')
+    @UseGuards(RoleGuard.bind(RoleGuard, [UserRole.Admin, UserRole.Cliente]))
+    async deactivateUser(
+        @Param('id', ParseIntPipe) id: number,
+        @Req() req: Request
+    ) {
+        const { email, rol } = req['user']
+        return await this.userService.deactivateUser(id, { email, rol });
+    }
+
     @Delete(':id')
     @UseGuards(AuthGuard)
     async deleteUser(
@@ -37,15 +47,5 @@ export class UserController {
     ) {
         const { email, rol } = req['user']
         return await this.userService.deleteUser({email, id}, rol)
-    }
-
-    @Patch(':id/deactivate')
-    @UseGuards(RoleGuard.bind(RoleGuard, [UserRole.Admin, UserRole.Cliente]))
-    async deactivateUser(
-        @Param('id', ParseIntPipe) id: number,
-        @Req() req: Request
-    ) {
-        const { email, rol } = req['user']
-        return await this.userService.deactivateUser(id, { email, rol });
     }
 }
