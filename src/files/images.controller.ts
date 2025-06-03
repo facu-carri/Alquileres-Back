@@ -25,13 +25,14 @@ export class ImagesController {
         @Res() res
     ) {
         const route = path.normalize(req.path.substring("/images/".length))
-        const filePath = path.join(this.basePath, route)
+        const filePath = decodeURIComponent(path.join(this.basePath, route))
+
         if (!existsSync(filePath)) throw new NotFoundException('No se encontro la imagen')
         
         const mimeType = lookup(path.extname(filePath)) || 'application/octet-stream';
         res.setHeader('Content-Type', mimeType);
         
-        const file = createReadStream(path.join(this.basePath, route));
+        const file = createReadStream(filePath);
         file.pipe(res);
     }
 }
