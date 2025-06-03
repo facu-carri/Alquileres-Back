@@ -101,7 +101,10 @@ export class ReservaService {
 }
 
     async cancelarReserva(id: number, user: JwtPayload): Promise<Reserva> {
-        const reserva = await this.reservaRepository.findOneBy({ id });
+        const reserva = await this.reservaRepository.findOne({
+            where: { id },
+            relations: ['maquinaria', 'usuario'],
+        });
         if (!reserva) {
             throw new NotFoundException('Reserva not found');
         }
