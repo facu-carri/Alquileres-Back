@@ -12,7 +12,7 @@ export class CreateReservaDto {
 
     @IsString()
     @IsNotEmpty()
-    email_usuario: string;
+    email: string;
 
     @IsString()
     @IsDateString()

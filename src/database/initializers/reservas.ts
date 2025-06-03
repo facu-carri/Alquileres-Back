@@ -34,10 +34,10 @@ export class InitializeReservas {
             }
 
             const randomUser = users[Math.floor(Math.random() * users.length)];
-
             const reserva = new CreateReservaDto();
+
             reserva.id_maquinaria = randomMaquinaria.id;
-            reserva.email_usuario = randomUser.email;
+            reserva.email = randomUser.email;
 
             reserva.fecha_inicio = new Date(Date.now() + Math.floor(Math.random() * 90) * 86400000);
             reserva.fecha_fin = new Date(reserva.fecha_inicio.getTime() + (Math.floor(Math.random() * 7) + 1) * 86400000);
