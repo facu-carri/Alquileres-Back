@@ -32,6 +32,19 @@ export class InitializeMaquinarias {
             state: MaquinariaStates.Disponible
         },
         {
+            inventario: "AB232",
+            nombre: 'Cosechadora',
+            marca: 'John Deere',
+            modelo: 'S670',
+            precio: 10,
+            anio_adquisicion: 2021,
+            sucursal: Location.LaPlata,
+            politica: ReturnPolicy.devolucion_20,
+            categoria: MaquinariaCategory.Agricultura,
+            imagen: 'https://www.muyinteresante.com/wp-content/uploads/sites/5/2022/10/18/634dd1f412bb5.jpeg',
+            state: MaquinariaStates.Disponible
+        },
+        {
             inventario: "AH235",
             nombre: 'Cosechadora',
             marca: 'John Deere',
