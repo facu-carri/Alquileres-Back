@@ -237,9 +237,8 @@ export class MaquinariaService {
             const reservas = await this.reservaService.findAll({ maquinaria_id: maquinaria.id })
             
             reservas.filter(reserva => reserva.estado == ReservaStates.Activa).forEach(reserva => this.reservaService.cancelarReserva(reserva.id, user))
-
-            return await this.maquinariaRepository.save(maquinaria);
         }
+        return await this.maquinariaRepository.save(maquinaria);
     }
 
     getAllCategories(): string[] {
