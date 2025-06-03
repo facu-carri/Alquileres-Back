@@ -4,9 +4,15 @@ export class PagoDto {
 
     @IsNotEmpty()
     @IsNumber()
-    id: number;
+    maq_id: number;
 
     @IsNotEmpty()
     @IsNumber()
     days: number;
+
+    @IsNotEmpty()
+    startDate: Date
+
+    @IsNotEmpty()
+    endDate: Date
 }
