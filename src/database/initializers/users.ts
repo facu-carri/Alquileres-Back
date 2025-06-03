@@ -41,9 +41,9 @@ export class InitializeUsers {
                 apellido: 'Sisti',
                 password: '12345678',
                 email: 'sistijuanmanuel@gmail.com',
-                telefono: '2213649785',
-                dni: '44519668 ',
-                nacimiento: '12/02/1996'
+                telefono: '+542213649785',
+                dni: '44519668',
+                nacimiento: '12-02-1996'
             }
         ],
         [UserRole.Empleado]: [],
