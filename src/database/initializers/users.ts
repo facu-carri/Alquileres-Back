@@ -27,16 +27,15 @@ export class InitializeUsers {
                 nacimiento: '2001-01-01'
             },
             {
-                nombre: 'Test2',
-                apellido: 'Tester2',
+                nombre: 'Test_dos',
+                apellido: 'Tester_dos',
                 password: '12345678',
                 email: 'eliminado@hotmail.com',
                 telefono: '+542215555555',
                 dni: '567890123',
                 nacimiento: '2001-01-01',
                 isActive: false
-            }
-            ,
+            },
             {
                 nombre: 'Juan Manuel',
                 apellido: 'Sisti',
