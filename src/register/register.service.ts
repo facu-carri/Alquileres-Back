@@ -12,7 +12,7 @@ export class RegisterService {
     async register(usertData: UserDto, rol: UserRole) {
         const client = await this.userService.findOneByEmail(usertData.email)
         if (client) {
-            throw new BadRequestException('El mail ya se encuentra registrado')
+            throw new BadRequestException('El email ya se encuentra registrado.')
         }
         await this.userService.create(usertData, rol)
         return response.status(200)

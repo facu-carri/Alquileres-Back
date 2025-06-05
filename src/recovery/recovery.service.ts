@@ -33,7 +33,7 @@ export class RecoveryService {
     async recoveryPassword(data: RecoveryPasswordDto) {
         const userExist = await this.userService.existBy({ email: data.email })
         if (!userExist) {
-            throw new NotFoundException('No se encontro el mail')
+            throw new NotFoundException('No se encontro el mail ingresado, por favor verifique que sea correcto.');
         }
 
         const token = generateCode(8)
@@ -50,7 +50,7 @@ export class RecoveryService {
     async changePassword(data: ChangePasswordDto) {
         const user = await this.userService.findOneByEmail(data.email)
 
-        if (!user) throw new NotFoundException('No se encontro el mail')
+        if (!user) throw new NotFoundException('No se encontro el mail ingresado, por favor verifique que sea correcto.')
         if (user.rol != UserRole.Cliente) throw new UnauthorizedException('Solo los clientes pueden cambiar su contraseña')
         
         if (data.token) {
