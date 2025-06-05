@@ -37,15 +37,6 @@ export class InitializeUsers {
                 isActive: false
             },
             {
-                nombre: 'Juan Manuel',
-                apellido: 'Sisti',
-                password: '12345678',
-                email: 'sistijuanmanuel@gmail.com',
-                telefono: '2213649785',
-                dni: '44519668',
-                nacimiento: '1996-01-14'
-            },
-            {
                 nombre: 'Facundo',
                 apellido: 'Carrizo',
                 password: '12345678',
