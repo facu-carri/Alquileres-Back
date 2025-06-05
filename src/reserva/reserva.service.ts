@@ -115,7 +115,9 @@ export class ReservaService {
                     throw new BadRequestException('No tienes permiso para cancelar esta reserva');
                 }
                 if (reserva.politica === ReturnPolicy.devolucion_0) {
-                    reserva.estado = ReservaStates.Reembolsada;
+                    // Tal vez sea util mas adelante
+                    // reserva.estado = ReservaStates.Reembolsada;
+                    reserva.estado = ReservaStates.Cancelada;
                 }
                 else reserva.estado = ReservaStates.Cancelada;
                 break;
