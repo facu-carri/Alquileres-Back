@@ -1,6 +1,8 @@
 import { IsString, IsNotEmpty, IsEnum, IsNumber, Min } from 'class-validator';
 import { validationMessage, ValidatorTypes } from 'src/utils/ValidatorMessages';
-import { ReturnPolicy, MaquinariaCategory, Location, MaquinariaStates } from '../maquinaria.entity';
+import { MaquinariaCategory, MaquinariaStates } from '../maquinaria.entity';
+import { Location } from "src/utils/enums/location.enum";
+import { ReturnPolicy } from "src/utils/enums/return-policy.enum";
 import { Transform } from 'class-transformer';
 
 export class MaquinariaDto {

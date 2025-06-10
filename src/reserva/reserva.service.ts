@@ -1,6 +1,7 @@
 import { Injectable, NotFoundException, BadRequestException, UseGuards } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Maquinaria, ReturnPolicy } from 'src/maquinaria/maquinaria.entity';
+import { Maquinaria } from 'src/maquinaria/maquinaria.entity';
+import { ReturnPolicy } from "src/utils/enums/return-policy.enum";
 import { User, UserRole } from 'src/user/user.entity';
 import { CreateReservaDto } from './dto/create-reserva.dto';
 import { Repository } from 'typeorm';

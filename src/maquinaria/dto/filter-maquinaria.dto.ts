@@ -1,6 +1,8 @@
 import { PartialType } from '@nestjs/mapped-types';
 import { MaquinariaDto } from './maquinaria.dto';
-import { MaquinariaStates, ReturnPolicy, MaquinariaCategory, Location } from '../maquinaria.entity';
+import { MaquinariaStates, MaquinariaCategory} from '../maquinaria.entity';
+import { Location } from "src/utils/enums/location.enum";
+import { ReturnPolicy } from "src/utils/enums/return-policy.enum";
 import { IsOptional, IsString, IsDefined, IsDateString } from 'class-validator';
 import { validationMessage, ValidatorTypes } from 'src/utils/ValidatorMessages';
 

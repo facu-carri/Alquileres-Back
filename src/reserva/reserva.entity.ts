@@ -1,5 +1,6 @@
 import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
-import { ReturnPolicy, Location } from "src/maquinaria/maquinaria.entity";
+import { Location } from "src/utils/enums/location.enum";
+import { ReturnPolicy } from "src/utils/enums/return-policy.enum";
 import { Maquinaria } from "src/maquinaria/maquinaria.entity";
 import { User } from "src/user/user.entity";
 import { ManyToOne, JoinColumn } from "typeorm";

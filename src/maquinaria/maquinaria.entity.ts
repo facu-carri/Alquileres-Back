@@ -1,15 +1,11 @@
 import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
+import { Location } from "src/utils/enums/location.enum";
+import { ReturnPolicy } from "src/utils/enums/return-policy.enum";
 
 export enum MaquinariaStates {
     Disponible = 'Disponible',
     Mantenimiento = 'Mantenimiento',
     Eliminado = 'Eliminado'
-}
-
-export enum ReturnPolicy {
-    devolucion_0 = '0%',
-    devolucion_20 = '20%',
-    devolucion_100 = '100%'
 }
 
 export enum MaquinariaCategory {
@@ -20,16 +16,6 @@ export enum MaquinariaCategory {
     Logística = 'Logística',
     Transporte = 'Transporte',
     Otro = 'Otro'
-}
-
-export enum Location {
-    LaPlata = 'La Plata',
-    Tandil = 'Tandil',
-    Ensenada = 'Ensenada',
-    BahíaBlanca = 'Bahía Blanca',
-    LosHornos = 'Los Hornos',
-    Quilmes = 'Quilmes',
-    Zarate = 'Zárate'
 }
 
 @Entity({ name: 'maquinarias' })

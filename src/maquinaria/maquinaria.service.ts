@@ -1,7 +1,9 @@
 import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Brackets, LessThanOrEqual, MoreThanOrEqual, Repository } from 'typeorm';
-import { Location, Maquinaria, MaquinariaCategory, MaquinariaStates, ReturnPolicy } from './maquinaria.entity';
+import { Maquinaria, MaquinariaCategory, MaquinariaStates} from './maquinaria.entity';
+import { Location } from "src/utils/enums/location.enum";
+import { ReturnPolicy } from "src/utils/enums/return-policy.enum";
 import { MaquinariaDto } from './dto/maquinaria.dto';
 import { UpdateMaquinariaDto } from './dto/update-maquinaria.dto';
 import { FilterMaquinariaDto } from './dto/filter-maquinaria.dto';

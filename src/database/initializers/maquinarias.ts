@@ -1,6 +1,8 @@
 import { MaquinariaDto } from "src/maquinaria/dto/maquinaria.dto"
 import { MaquinariaService } from "src/maquinaria/maquinaria.service";
-import { MaquinariaCategory, Location, ReturnPolicy, MaquinariaStates } from "src/maquinaria/maquinaria.entity";
+import { MaquinariaCategory, MaquinariaStates } from "src/maquinaria/maquinaria.entity";
+import { Location } from "src/utils/enums/location.enum";
+import { ReturnPolicy } from "src/utils/enums/return-policy.enum";
 
 export class InitializeMaquinarias {
 
