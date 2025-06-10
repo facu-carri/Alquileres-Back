@@ -88,39 +88,21 @@ export class MaquinariaController {
         return await this.maquinariaService.findOne(id);
     }
 
-    @UseGuards(RoleGuard.bind(RoleGuard, [UserRole.Admin]))
-    @Patch(':id/eliminar')
-    async remove(@Param('id', ParseIntPipe) id: number): Promise<void> {
-        return await this.maquinariaService.remove(id);
-    }
-    
-    @UseGuards(RoleGuard.bind(RoleGuard, [UserRole.Admin]))
-    @Patch(':id/restaurar')
-    async delete(@Param('id', ParseIntPipe) id: number): Promise<void> {
-        return await this.maquinariaService.restore(id);
-    }
-
-    @UseGuards(RoleGuard.bind(RoleGuard, [UserRole.Admin, UserRole.Empleado]))
-    @Patch(':id/esconder')
-    async hardDelete(@Param('id', ParseIntPipe) id: number): Promise<void> {
-        return await this.maquinariaService.hide(id);
-    }
-
-    @UseGuards(RoleGuard.bind(RoleGuard, [UserRole.Admin, UserRole.Empleado]))
-    @Patch(':id/mostrar')
-    async hide(@Param('id', ParseIntPipe) id: number): Promise<void> {
-        return await this.maquinariaService.show(id);
-    }
-
     @UseGuards(RoleGuard.bind(RoleGuard, [UserRole.Admin, UserRole.Empleado]))
     @Patch(':id/estado')
     async changeState(
         @Param('id', ParseIntPipe) id: number,
         @Body('estado') estado: string,
         @Req() req
-    ): Promise<Maquinaria> {
+    ): Promise<any> {
         if (!estado) throw new BadRequestException('Se requiere un estado válido');
         const user = req['user']
-        return await this.maquinariaService.changeState(id, estado, req.user);
+
+        try {
+            await this.maquinariaService.changeState(id, estado, req.user);
+            return { message: 'Estado actualizado correctamente a ' + estado };
+        } catch (error) {
+            return { error: error.message || 'Error al actualizar el estado' };
+        }
     }
 }

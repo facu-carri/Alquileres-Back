@@ -168,58 +168,6 @@ export class MaquinariaService {
         return await this.maquinariaRepository.save(maquinaria);
     }
 
-    async remove(id: number): Promise<any> {
-        const item = await this.findOne(id);
-        if (!item) {
-            throw new NotFoundException(`No se encontró la maquinaria con id ${id}`);
-        }
-        if (item.state === MaquinariaStates.Eliminado) {
-            throw new BadRequestException(`La maquinaria con id ${id} ya se encuentra eliminada`);
-        }
-        item.state = MaquinariaStates.Eliminado;
-        await this.maquinariaRepository.save(item);
-        return response.status(200)
-    }
-
-    async restore(id: number): Promise<any> {
-        const item = await this.findOne(id);
-        if (!item) {
-            throw new NotFoundException(`No se encontró la maquinaria con id ${id}`);
-        }
-        if (item.state !== MaquinariaStates.Eliminado) {
-            throw new BadRequestException(`La maquinaria con id ${id} no se encuentra eliminada`);
-        }
-        item.state = MaquinariaStates.Disponible;
-        await this.maquinariaRepository.save(item);
-        return response.status(200)
-    }
-
-    async show(id: number): Promise<any> {
-        const item = await this.findOne(id);
-        if (!item) {
-            throw new NotFoundException(`No se encontró la maquinaria con id ${id}`);
-        }
-        if (item.state !== MaquinariaStates.Mantenimiento) {
-            throw new BadRequestException(`La maquinaria con id ${id} no se encuentra en mantenimiento`);
-        }
-        item.state = MaquinariaStates.Disponible;
-        await this.maquinariaRepository.save(item);
-        return response.status(200)
-    }
-
-    async hide(id: number): Promise<any> {
-        const item = await this.findOne(id);
-        if (!item) {
-            throw new NotFoundException(`No se encontró la maquinaria con id ${id}`);
-        }
-        if (item.state !== MaquinariaStates.Disponible) {
-            throw new BadRequestException(`La maquinaria con id ${id} no está disponible`);
-        }
-        item.state = MaquinariaStates.Mantenimiento;
-        await this.maquinariaRepository.save(item);
-        return response.status(200)
-    }
-
     async changeState(id: number, state: string, user: User): Promise<Maquinaria> {
         const maquinaria = await this.findOne(id);
         const rol = user.rol
@@ -240,6 +188,7 @@ export class MaquinariaService {
             
             reservas.filter(reserva => reserva.estado == ReservaStates.Activa).forEach(reserva => this.reservaService.cancelarReserva(reserva.id, user))
         }
+
         return await this.maquinariaRepository.save(maquinaria);
     }
 
