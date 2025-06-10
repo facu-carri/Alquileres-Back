@@ -147,11 +147,15 @@ export class ReservaService {
         return this.reservaRepository.save(reserva);
     }
 
-    async findOne(id: number): Promise<Reserva | null> {
-        const reserva = await this.reservaRepository.findOne({
-            where: { id },
-            relations: ['maquinaria', 'usuario'],
-        });
+    async findOne(id: number): Promise<any> {
+        const reserva = await this.reservaRepository
+            .createQueryBuilder('reserva')
+            .leftJoinAndSelect('reserva.maquinaria', 'maquinaria')
+            .leftJoin('reserva.usuario', 'usuario')
+            .addSelect(['usuario.id', 'usuario.email', 'usuario.nombre'])
+            .where('reserva.id = :id', { id })
+            .getOne();
+
         if (!reserva) {
             throw new NotFoundException('Reserva not found');
         }
