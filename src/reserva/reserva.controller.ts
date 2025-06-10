@@ -33,20 +33,30 @@ export class ReservaController {
         if (!reserva) throw new NotFoundException('Reserva not found');
         return reserva;
     }
-
+    
     @UseGuards(RoleGuard.bind(RoleGuard, [UserRole.Empleado]))
     @Patch(':id/confirmar')
     async confirmarReserva(@Param('id', ParseIntPipe) id: number) {
-        return this.reservaService.confirmarReserva(id);
+        try {
+            await this.reservaService.confirmarReserva(id);
+            return { message: 'Reserva confirmada exitosamente.' };
+        } catch (error) {
+            return { error: error.message || 'Error al confirmar la reserva.' };
+        }
     }
 
     @UseGuards(RoleGuard.bind(RoleGuard, [UserRole.Cliente, UserRole.Empleado, UserRole.Admin]))
     @Patch(':id/cancelar')
     async cancelarReserva(@Param('id', ParseIntPipe) id: number, @Req() req) {
         const user = req.user;
-        if (!user) throw new NotFoundException('User not found');
+        if (!user) return { error: 'User not found' };
 
-        return this.reservaService.cancelarReserva(id, user);
+        try {
+            await this.reservaService.cancelarReserva(id, user);
+            return { message: 'Reserva cancelada exitosamente.' };
+        } catch (error) {
+            return { error: error.message || 'Error al cancelar la reserva.' };
+        }
     }
 
     @Post()
