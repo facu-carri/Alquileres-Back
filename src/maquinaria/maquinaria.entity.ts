@@ -1,6 +1,6 @@
 import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from "typeorm";
-import { Location } from "src/utils/enums/location.enum";
-import { ReturnPolicy } from "src/utils/enums/return-policy.enum";
+import { Sucursal, Categoria } from "src/utils/enums";
+import { Politica } from "src/utils/enums";
 import { Pregunta } from "src/pregunta/pregunta.entity";
 import { Alquiler } from "src/alquiler/alquiler.entity";
 import { Reserva } from "src/reserva/reserva.entity";
@@ -9,16 +9,6 @@ export enum MaquinariaStates {
     Disponible = 'Disponible',
     Mantenimiento = 'Mantenimiento',
     Eliminado = 'Eliminado'
-}
-
-export enum MaquinariaCategory {
-    Jardinería = 'Jardinería',
-    Construcción = 'Construcción',
-    Agricultura = 'Agricultura',
-    Minería = 'Minería',
-    Logística = 'Logística',
-    Transporte = 'Transporte',
-    Otro = 'Otro'
 }
 
 @Entity({ name: 'maquinarias' })
@@ -49,19 +39,19 @@ export class Maquinaria {
 
     @Column({ 
         type: 'enum',
-        enum: Location,
-        default: Location.LaPlata,
+        enum: Sucursal,
+        default: Sucursal.LaPlata,
         nullable: false 
     })
-    sucursal: Location
+    sucursal: Sucursal
 
     @Column({ 
         type: 'enum',
-        enum: MaquinariaCategory,
-        default: MaquinariaCategory.Otro,
+        enum: Categoria,
+        default: Categoria.Otro,
         nullable: false 
     })
-    categoria: MaquinariaCategory
+    categoria: Categoria
 
     @Column({ 
         type: 'enum',
@@ -73,11 +63,11 @@ export class Maquinaria {
 
     @Column({ 
         type: 'enum',
-        enum: ReturnPolicy,
-        default: ReturnPolicy.devolucion_100,
+        enum: Politica,
+        default: Politica.devolucion_100,
         nullable: false 
     })
-    politica: ReturnPolicy
+    politica: Politica
 
     @OneToMany(() => Pregunta, pregunta => pregunta.maquinaria)
     preguntas: Pregunta[];

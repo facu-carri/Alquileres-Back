@@ -1,7 +1,7 @@
 import { Injectable, NotFoundException, BadRequestException, UseGuards } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Maquinaria } from 'src/maquinaria/maquinaria.entity';
-import { ReturnPolicy } from "src/utils/enums/return-policy.enum";
+import { Politica } from "src/utils/enums";
 import { User, UserRole } from 'src/user/user.entity';
 import { CreateReservaDto } from './dto/create-reserva.dto';
 import { Repository } from 'typeorm';
@@ -116,7 +116,7 @@ export class ReservaService {
                 if (reserva.usuario.id !== user.id) {
                     throw new BadRequestException('No tienes permiso para cancelar esta reserva');
                 }
-                if (reserva.politica === ReturnPolicy.devolucion_0) {
+                if (reserva.politica === Politica.devolucion_0) {
                     // Tal vez sea util mas adelante
                     // reserva.estado = ReservaStates.Reembolsada;
                     reserva.estado = ReservaStates.Cancelada;
@@ -124,7 +124,7 @@ export class ReservaService {
                 else reserva.estado = ReservaStates.Cancelada;
                 break;
             case UserRole.Admin || UserRole.Empleado:
-                reserva.politica = ReturnPolicy.devolucion_100;
+                reserva.politica = Politica.devolucion_100;
                 reserva.estado = ReservaStates.Cancelada;
                 break;
             default:
@@ -141,7 +141,7 @@ export class ReservaService {
         - Hasta: ${reserva.fecha_fin.toISOString().split('T')[0]}
         ha sido cancelada.
         Te recordamos que la política de reembolso que te corresponde es: ${reserva.politica}.
-        ${reserva.politica !== ReturnPolicy.devolucion_0 ? `Podés retirar el reembolso en la sucursal ${reserva.sucursal}` : ''}`;
+        ${reserva.politica !== Politica.devolucion_0 ? `Podés retirar el reembolso en la sucursal ${reserva.sucursal}` : ''}`;
 
         sendMail(reserva.usuario.email, "Reserva Cancelada", mail);
         return this.reservaRepository.save(reserva);

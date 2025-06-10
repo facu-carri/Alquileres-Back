@@ -1,9 +1,10 @@
 import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Brackets, LessThanOrEqual, MoreThanOrEqual, Repository } from 'typeorm';
-import { Maquinaria, MaquinariaCategory, MaquinariaStates} from './maquinaria.entity';
-import { Location } from "src/utils/enums/location.enum";
-import { ReturnPolicy } from "src/utils/enums/return-policy.enum";
+import { Maquinaria, MaquinariaStates} from './maquinaria.entity';
+import { Categoria } from "src/utils/enums";
+import { Sucursal } from "src/utils/enums";
+import { Politica } from "src/utils/enums";
 import { MaquinariaDto } from './dto/maquinaria.dto';
 import { UpdateMaquinariaDto } from './dto/update-maquinaria.dto';
 import { FilterMaquinariaDto } from './dto/filter-maquinaria.dto';
@@ -193,15 +194,15 @@ export class MaquinariaService {
     }
 
     getAllCategories(): string[] {
-        return getEnumValues(MaquinariaCategory)
+        return getEnumValues(Categoria)
     }
 
     getAllPolitics(): string[] {
-        return getEnumValues(ReturnPolicy)
+        return getEnumValues(Politica)
     }
 
     getAllLocations(): string[] {
-        return getEnumValues(Location)
+        return getEnumValues(Sucursal)
     }
 
     getValidStates(rol: UserRole): string[] {

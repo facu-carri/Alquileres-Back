@@ -1,8 +1,9 @@
 import { PartialType } from '@nestjs/mapped-types';
 import { MaquinariaDto } from './maquinaria.dto';
-import { MaquinariaStates, MaquinariaCategory} from '../maquinaria.entity';
-import { Location } from "src/utils/enums/location.enum";
-import { ReturnPolicy } from "src/utils/enums/return-policy.enum";
+import { MaquinariaStates} from '../maquinaria.entity';
+import { Categoria } from "src/utils/enums";
+import { Sucursal } from "src/utils/enums";
+import { Politica } from "src/utils/enums";
 import { IsOptional, IsString, IsDefined, IsDateString } from 'class-validator';
 import { validationMessage, ValidatorTypes } from 'src/utils/ValidatorMessages';
 
@@ -35,17 +36,17 @@ export class FilterMaquinariaDto extends PartialType(MaquinariaDto) {
   @IsOptional()
   @IsDefined()
   @IsString(validationMessage(ValidatorTypes.IsString))
-  readonly sucursal?: Location;
+  readonly sucursal?: Sucursal;
 
   @IsOptional()
   @IsDefined()
   @IsString(validationMessage(ValidatorTypes.IsString))
-  readonly categoria?: MaquinariaCategory;
+  readonly categoria?: Categoria;
 
   @IsOptional()
   @IsDefined()
   @IsString(validationMessage(ValidatorTypes.IsString))
-  readonly politica?: ReturnPolicy;
+  readonly politica?: Politica;
 
   @IsOptional()
   @IsDefined()

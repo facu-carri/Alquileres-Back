@@ -1,6 +1,6 @@
 import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
-import { Location } from "src/utils/enums/location.enum";
-import { ReturnPolicy } from "src/utils/enums/return-policy.enum";
+import { Sucursal } from "src/utils/enums";
+import { Politica } from "src/utils/enums";
 import { Maquinaria } from "src/maquinaria/maquinaria.entity";
 import { User } from "src/user/user.entity";
 import { ManyToOne, JoinColumn } from "typeorm";
@@ -46,19 +46,19 @@ export class Reserva {
 
     @Column({ 
         type: 'enum',
-        enum: Location,
-        default: Location.LaPlata,
+        enum: Sucursal,
+        default: Sucursal.LaPlata,
         nullable: false
     })
-    sucursal: Location
+    sucursal: Sucursal
 
     @Column({ 
         type: 'enum',
-        enum: ReturnPolicy,
-        default: ReturnPolicy.devolucion_100,
+        enum: Politica,
+        default: Politica.devolucion_100,
         nullable: false
     })
-    politica: ReturnPolicy
+    politica: Politica
 
     @Column({ 
         type: 'enum',

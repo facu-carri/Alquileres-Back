@@ -1,8 +1,9 @@
 import { IsString, IsNotEmpty, IsEnum, IsNumber, Min } from 'class-validator';
 import { validationMessage, ValidatorTypes } from 'src/utils/ValidatorMessages';
-import { MaquinariaCategory, MaquinariaStates } from '../maquinaria.entity';
-import { Location } from "src/utils/enums/location.enum";
-import { ReturnPolicy } from "src/utils/enums/return-policy.enum";
+import { MaquinariaStates } from '../maquinaria.entity';
+import { Categoria } from "src/utils/enums";
+import { Sucursal } from "src/utils/enums";
+import { Politica } from "src/utils/enums";
 import { Transform } from 'class-transformer';
 
 export class MaquinariaDto {
@@ -34,17 +35,17 @@ export class MaquinariaDto {
   @Min(1, { message: 'El año de adquisición debe ser un número mayor a 0' })
   readonly anio_adquisicion: number;
 
-  @IsEnum(Location, { ...validationMessage(ValidatorTypes.IsEnum), context: { constraints: [Object.values(Location)] } })
+  @IsEnum(Sucursal, { ...validationMessage(ValidatorTypes.IsEnum), context: { constraints: [Object.values(Sucursal)] } })
   @IsNotEmpty(validationMessage(ValidatorTypes.isNotEmpty))
-  readonly sucursal: Location;
+  readonly sucursal: Sucursal;
 
-  @IsEnum(ReturnPolicy, { ...validationMessage(ValidatorTypes.IsEnum), context: { constraints: [Object.values(ReturnPolicy)] } })
+  @IsEnum(Politica, { ...validationMessage(ValidatorTypes.IsEnum), context: { constraints: [Object.values(Politica)] } })
   @IsNotEmpty(validationMessage(ValidatorTypes.isNotEmpty))
-  readonly politica: ReturnPolicy;
+  readonly politica: Politica;
 
-  @IsEnum(MaquinariaCategory, { ...validationMessage(ValidatorTypes.IsEnum), context: { constraints: [Object.values(MaquinariaCategory)] } })
+  @IsEnum(Categoria, { ...validationMessage(ValidatorTypes.IsEnum), context: { constraints: [Object.values(Categoria)] } })
   @IsNotEmpty(validationMessage(ValidatorTypes.isNotEmpty))
-  readonly categoria: MaquinariaCategory;
+  readonly categoria: Categoria;
 
   imagen: string
   state?: MaquinariaStates
