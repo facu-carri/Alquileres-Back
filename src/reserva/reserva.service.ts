@@ -52,7 +52,8 @@ export class ReservaService {
     async findAll(filters?: Partial<FilterReservaDto>, rol?: UserRole): Promise<Reserva[]> {
         const queryBuilder = this.reservaRepository.createQueryBuilder('reserva')
             .leftJoinAndSelect('reserva.maquinaria', 'maquinaria')
-            .leftJoinAndSelect('reserva.usuario', 'usuario');
+            .leftJoin('reserva.usuario', 'usuario')
+            .addSelect(['usuario.id', 'usuario.email', 'usuario.nombre']);
 
         const validStates = this.getValidStates(rol || UserRole.Cliente);
         queryBuilder.andWhere('reserva.estado IN (:...validStates)', { validStates });
