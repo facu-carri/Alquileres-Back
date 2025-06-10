@@ -2,6 +2,7 @@ import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, OneToOne, JoinColumn
 import { Maquinaria } from "src/maquinaria/maquinaria.entity";
 import { User } from "src/user/user.entity";
 import { Reseña } from "src/alquiler/reseña.entity";
+import { Sucursal } from "src/utils/enums";
 
 export enum AlquilerStates {
     Activo = 'Activo',
@@ -27,8 +28,13 @@ export class Alquiler {
     @Column({ nullable: false })
     fecha_fin: Date;
 
-    @Column({ nullable: false })
-    sucursal: string; // Or use enum Location if you prefer
+    @Column({ 
+        type: 'enum',
+        enum: Sucursal,
+        default: Sucursal.LaPlata,
+        nullable: false 
+    })
+    sucursal: Sucursal;
 
     @Column({
         type: 'enum',
@@ -41,7 +47,6 @@ export class Alquiler {
     @Column({ nullable: true })
     observacion?: string;
 
-    // One-to-one with Reseña (optional)
     @OneToOne(() => Reseña, reseña => reseña.alquiler, { cascade: true, nullable: true })
     reseña?: Reseña;
 }
