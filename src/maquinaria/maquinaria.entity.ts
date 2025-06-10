@@ -1,6 +1,9 @@
-import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 import { Location } from "src/utils/enums/location.enum";
 import { ReturnPolicy } from "src/utils/enums/return-policy.enum";
+import { Pregunta } from "src/pregunta/pregunta.entity";
+import { Alquiler } from "src/alquiler/alquiler.entity";
+import { Reserva } from "src/reserva/reserva.entity";
 
 export enum MaquinariaStates {
     Disponible = 'Disponible',
@@ -75,4 +78,13 @@ export class Maquinaria {
         nullable: false 
     })
     politica: ReturnPolicy
+
+    @OneToMany(() => Pregunta, pregunta => pregunta.maquinaria)
+    preguntas: Pregunta[];
+
+    @OneToMany(() => Reserva, reserva => reserva.maquinaria)
+    reservas: Reserva[]
+
+    @OneToMany(() => Alquiler, alquiler => alquiler.maquinaria)
+    alquileres: Alquiler[]
 }
