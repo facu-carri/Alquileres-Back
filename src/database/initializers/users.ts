@@ -46,7 +46,17 @@ export class InitializeUsers {
                 nacimiento: '2001-10-10'
             },
         ],
-        [UserRole.Empleado]: [],
+        [UserRole.Empleado]: [
+            {
+                nombre: 'Empleado',
+                apellido: 'Empleado',
+                password: '12345678',
+                email: 'empleado@hotmail.com',
+                telefono: '+542215555555',
+                dni: '567890123',
+                nacimiento: '2001-01-01'
+            },
+        ],
     }
     constructor(private readonly registerService: RegisterService) {
     }

@@ -6,7 +6,7 @@ import { UserService } from "src/user/user.service";
 import { MaquinariaStates } from "src/maquinaria/maquinaria.entity";
 
 export class InitializeReservas {
-    private readonly HARDCODED_EMAIL = 'facuc4rr@gmail.com';
+    private readonly HARDCODED_EMAIL = 'cliente@hotmail.com';
 
     constructor(
         private readonly reservaService: ReservaService,
