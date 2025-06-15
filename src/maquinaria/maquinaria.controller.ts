@@ -88,6 +88,11 @@ export class MaquinariaController {
         return await this.maquinariaService.findOne(id);
     }
 
+    @Get(':id/reseñas')
+    async getReviews(@Param('id', ParseIntPipe) id: number): Promise<any> {
+        return await this.maquinariaService.getReviews(id);
+    }
+
     @UseGuards(RoleGuard.bind(RoleGuard, [UserRole.Admin, UserRole.Empleado]))
     @Patch(':id/estado')
     async changeState(

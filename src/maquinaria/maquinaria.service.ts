@@ -13,9 +13,11 @@ import { getEnumValues } from 'src/utils/EnumUtils';
 import { response } from 'express';
 import { User, UserRole } from 'src/user/user.entity';
 import { ReservaService } from 'src/reserva/reserva.service';
+import { Reseña } from 'src/alquiler/reseña.entity';
 
 @Injectable()
 export class MaquinariaService {
+    reseñaRepository: any;
     
     constructor(
         @InjectRepository(Maquinaria)
@@ -191,6 +193,22 @@ export class MaquinariaService {
         }
 
         return await this.maquinariaRepository.save(maquinaria);
+    }
+
+    async getReviews(id: number): Promise<any> {
+        const maquinaria = await this.maquinariaRepository.findOneBy({ id });
+        if (!maquinaria) {
+            throw new NotFoundException(`No se encontró la maquinaria con id ${id}`);
+        }
+        
+        const reseñas = await this.reseñaRepository.find({
+            where: {
+                maquinaria: { id }
+            },
+            relations: ['alquiler']
+        });
+
+        return reseñas;
     }
 
     getAllCategories(): string[] {

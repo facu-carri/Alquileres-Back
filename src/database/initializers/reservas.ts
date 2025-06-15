@@ -4,6 +4,7 @@ import { UserRole } from "src/user/user.entity";
 import { CreateReservaDto } from "src/reserva/dto/create-reserva.dto";
 import { UserService } from "src/user/user.service";
 import { MaquinariaStates } from "src/maquinaria/maquinaria.entity";
+import { AlquilerService } from "src/alquiler/alquiler.service";
 
 export class InitializeReservas {
     private readonly HARDCODED_EMAIL = 'cliente@hotmail.com';
@@ -11,7 +12,8 @@ export class InitializeReservas {
     constructor(
         private readonly reservaService: ReservaService,
         private readonly maquinariaService: MaquinariaService,
-        private readonly userService: UserService
+        private readonly userService: UserService,
+        private readonly alquilerService: AlquilerService
     ) { }
 
     async init() {
@@ -29,13 +31,28 @@ export class InitializeReservas {
             return;
         }
 
-        maquinaria.forEach(element => {
+        maquinaria.forEach(async element => {
             const reserva = new CreateReservaDto();
             reserva.id_maquinaria = element.id;
             reserva.email = user.email;
             reserva.fecha_inicio = new Date(Date.now() + 86400000*10);
             reserva.fecha_fin = new Date(reserva.fecha_inicio.getTime() + 86400000);
             this.reservaService.create(reserva);
+        });
+
+        maquinaria.forEach(async element => {
+            const reserva = new CreateReservaDto();
+            reserva.id_maquinaria = element.id;
+            reserva.email = user.email;
+            reserva.fecha_inicio = new Date(Date.now() - 86400000*50);
+            reserva.fecha_fin = new Date(reserva.fecha_inicio.getTime() + 86400000);
+
+            const res = await this.reservaService.create(reserva);
+            await this.reservaService.confirmarReserva(res.id);
+
+            const alquiler = await this.alquilerService.getOneByCode(res.codigo_reserva);
+            await this.alquilerService.confirm(alquiler.id, 'Observacion');
+            await this.alquilerService.reseñar(alquiler.id, user.id, 5, 'Excelente');
         });
 
 

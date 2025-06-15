@@ -3,6 +3,7 @@ import { Maquinaria } from "src/maquinaria/maquinaria.entity";
 import { User } from "src/user/user.entity";
 import { Reseña } from "src/alquiler/reseña.entity";
 import { Sucursal } from "src/utils/enums";
+import { Reserva } from "src/reserva/reserva.entity";
 
 export enum AlquilerStates {
     Activo = 'Activo',
@@ -11,8 +12,31 @@ export enum AlquilerStates {
 
 @Entity({ name: 'alquileres' })
 export class Alquiler {
+
+    constructor( reserva?: Reserva, estado? : AlquilerStates ) 
+    {
+        if (reserva){ 
+            this.maquinaria = reserva.maquinaria;
+            this.codigo_reserva = reserva.codigo_reserva;
+            this.usuario = reserva.usuario;
+            this.fecha_inicio = reserva.fecha_inicio;
+            this.fecha_fin = reserva.fecha_fin;
+            this.sucursal = reserva.sucursal;        
+        }
+        this.estado = estado || AlquilerStates.Activo;
+    }
+
     @PrimaryGeneratedColumn()
     id: number;
+
+    @Column({ nullable: false, unique: true })
+    codigo_reserva: string
+
+      @Column({ name: 'id_usuario' })
+    usuarioId: number;
+
+  @Column({ name: 'id_maquinaria' })
+    maquinariaId: number;
 
     @ManyToOne(() => Maquinaria, { nullable: false })
     @JoinColumn({ name: 'id_maquinaria' })

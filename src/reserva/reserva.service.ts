@@ -9,6 +9,7 @@ import { Reserva, ReservaStates } from './reserva.entity';
 import { FilterReservaDto } from './dto/filter-reserva.dto';
 import { sendMail } from 'src/utils/Mailer';
 import { JwtPayload } from 'src/auth/jwt/jwtPayload';
+import { Alquiler } from 'src/alquiler/alquiler.entity';
 
 @Injectable()
 export class ReservaService {
@@ -19,6 +20,8 @@ export class ReservaService {
         private readonly maquinariaRepository: Repository<Maquinaria>,
         @InjectRepository(User)
         private readonly userRepository: Repository<User>,
+        @InjectRepository(Alquiler)
+        private readonly alquilerRepository: Repository<Alquiler>
     ) {}
 
     async create(dto: CreateReservaDto): Promise<Reserva> {
@@ -73,7 +76,10 @@ export class ReservaService {
     }
 
     async confirmarReserva(id: number): Promise<Reserva> {
-        const reserva = await this.reservaRepository.findOneBy({ id });
+        const reserva = await this.reservaRepository.findOne({
+            where: { id },
+            relations: ['usuario', 'maquinaria']
+        });
         if (!reserva) {
             throw new NotFoundException('Reserva not found');
         }
@@ -83,10 +89,8 @@ export class ReservaService {
                 reserva.estado = ReservaStates.Reembolsada;
                 break;
             case ReservaStates.Activa:
-
-                // TO DO: ACÁ VA EL CODIGO PARA CREAR UN NUEVO ALQUILER
-
                 reserva.estado = ReservaStates.Finalizada;
+                await this.alquilerRepository.save(new Alquiler(reserva));
                 break;
             case ReservaStates.Finalizada:
                 throw new BadRequestException('La reserva ya está finalizada.');
@@ -96,7 +100,6 @@ export class ReservaService {
                 // No se debería llegar a este punto
                 throw new BadRequestException('La reserva no puede ser confirmada.');
         }
-
         return this.reservaRepository.save(reserva);
 }
 
