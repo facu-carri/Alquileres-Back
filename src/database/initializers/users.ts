@@ -24,7 +24,7 @@ export class InitializeUsers {
                 password: '12345678',
                 email: 'cliente@hotmail.com',
                 telefono: '+542215555555',
-                dni: '567890123',
+                dni: '56789012',
                 nacimiento: '2001-01-01'
             },
             {
@@ -33,7 +33,7 @@ export class InitializeUsers {
                 password: '12345678',
                 email: 'eliminado@hotmail.com',
                 telefono: '+542215555555',
-                dni: '567890123',
+                dni: '56789012',
                 nacimiento: '2001-01-01',
                 isActive: false
             },
@@ -54,7 +54,7 @@ export class InitializeUsers {
                 password: '12345678',
                 email: 'empleado@hotmail.com',
                 telefono: '+542215555555',
-                dni: '567890123',
+                dni: '56789012',
                 nacimiento: '2001-01-01'
             },
         ],

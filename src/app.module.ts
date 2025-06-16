@@ -10,6 +10,7 @@ import { RecoveryModule } from './recovery/recovery.module';
 import { ImagesController } from './files/images.controller';
 import { ReservaModule } from 'src/reserva/reserva.module';
 import { MercadoPagoModule } from './mercadoPago/mercadoPago.module';
+import { PreguntaModule } from './pregunta/pregunta.module';
 
 @Module({
   imports: [
@@ -20,7 +21,8 @@ import { MercadoPagoModule } from './mercadoPago/mercadoPago.module';
     AuthModule,
     RecoveryModule,
     RegisterModule,
-    MercadoPagoModule
+    MercadoPagoModule,
+    PreguntaModule
   ],
   controllers: [
     AppController,

@@ -30,7 +30,8 @@ export class PreguntaService {
     async findAll(): Promise<any[]> {
         return this.preguntaRepository
             .createQueryBuilder('pregunta')
-            .leftJoinAndSelect('pregunta.maquinaria', 'maquinaria')
+            .leftJoin('pregunta.maquinaria', 'maquinaria')
+            .addSelect(['maquinaria.id', 'maquinaria.nombre', 'maquinaria.marca', 'maquinaria.modelo'])
             .leftJoin('pregunta.usuario', 'usuario')
             .addSelect(['usuario.id', 'usuario.nombre', 'usuario.email'])
             .getMany();
@@ -52,7 +53,8 @@ export class PreguntaService {
     async findOne(id: number): Promise<any> {
         const pregunta = await this.preguntaRepository
             .createQueryBuilder('pregunta')
-            .leftJoinAndSelect('pregunta.maquinaria', 'maquinaria')
+            .leftJoin('pregunta.maquinaria', 'maquinaria')
+            .addSelect(['maquinaria.id', 'maquinaria.nombre', 'maquinaria.marca', 'maquinaria.modelo'])
             .leftJoin('pregunta.usuario', 'usuario')
             .addSelect(['usuario.id', 'usuario.nombre', 'usuario.email'])
             .where('pregunta.id = :id', { id })

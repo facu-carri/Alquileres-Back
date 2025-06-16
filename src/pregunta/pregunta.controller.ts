@@ -7,9 +7,10 @@ import { UserRole } from 'src/user/user.entity';
 export class PreguntaController {
     constructor(private readonly preguntaService: PreguntaService) {}
 
-    @UseGuards(RoleGuard.bind(RoleGuard, [UserRole.Empleado, UserRole.Admin]))
+    // @UseGuards(RoleGuard.bind(RoleGuard, [UserRole.Empleado, UserRole.Admin]))
     @Get()
     async findAll() {
+        console.log('Fetching all preguntas');
         return this.preguntaService.findAll();
     }
 
