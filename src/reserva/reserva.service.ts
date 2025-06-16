@@ -39,6 +39,19 @@ export class ReservaService {
             throw new BadRequestException('La fecha de inicio debe ser menor que la fecha de fin');
         }
 
+        // Generar codigo de reserva evitando coincidencias
+        let timestamp = Date.now();
+        let codigo_reserva = `${maquinaria.inventario}-${usuario.id}-${timestamp.toString(36)}`;
+        let existingReserva = await this.reservaRepository.findOne({where: {codigo_reserva}});
+
+        while (existingReserva) {
+            console.log(`Codigo de reserva ${codigo_reserva} ya existe, generando uno nuevo...`);
+            timestamp = Date.now();
+            codigo_reserva = `${maquinaria.inventario}-${usuario.id}-${timestamp.toString(36)}`;
+            existingReserva = await this.reservaRepository.findOne({where: {codigo_reserva}});
+        }
+
+
         return this.reservaRepository.save({
             fecha_inicio: dto.fecha_inicio,
             fecha_fin: dto.fecha_fin,
@@ -48,7 +61,7 @@ export class ReservaService {
             precio_total: maquinaria.precio * (dto.fecha_fin.getTime() - dto.fecha_inicio.getTime()) / (1000 * 60 * 60 * 24),
             politica: maquinaria.politica,
             sucursal: maquinaria.sucursal,
-            codigo_reserva: `${maquinaria.inventario}-${usuario.id}-${Date.now().toString().slice(-6)}`,
+            codigo_reserva: codigo_reserva,
             estado: ReservaStates.Activa,
         });
     }
