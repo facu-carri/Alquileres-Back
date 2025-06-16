@@ -12,11 +12,15 @@ import { UserInterceptor } from 'src/interceptors/user-interceptor';
 import { RoleGuard } from 'src/guards/role.guard';
 import { UserRole } from 'src/user/user.entity';
 import { EXT_IMAGES } from 'src/files/extensions';
+import { PreguntaService } from 'src/pregunta/pregunta.service';
 
 @Controller('maquinaria')
 export class MaquinariaController {
 
-    constructor(private readonly maquinariaService: MaquinariaService) {}
+    constructor(
+        private readonly maquinariaService: MaquinariaService,
+        private readonly preguntaService: PreguntaService
+    ) {}
 
     @Get()
     @UseInterceptors(UserInterceptor)
@@ -109,5 +113,17 @@ export class MaquinariaController {
         } catch (error) {
             return { error: error.message || 'Error al actualizar el estado' };
         }
+    }
+
+    @Post(':id/pregunta')
+    @UseGuards(RoleGuard.bind(RoleGuard, [UserRole.Cliente]))
+    async createQuestion(@Param('id', ParseIntPipe) id: number, @Body('pregunta') query: string, @Req() req): Promise<any> {
+        const user_id = req.user.id;
+        return await this.preguntaService.create(user_id, id, query);
+    }
+
+    @Get(':id/preguntas')
+    async getQuestions(@Param('id', ParseIntPipe) id: number): Promise<any> {
+        return await this.preguntaService.findByMaquinaria(id);
     }
 }

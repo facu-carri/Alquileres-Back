@@ -6,6 +6,7 @@ import { MaquinariaModule } from 'src/maquinaria/maquinaria.module';
 import { ReservaModule } from 'src/reserva/reserva.module';
 import { UserModule } from 'src/user/user.module';
 import { AlquilerModule } from 'src/alquiler/alquiler.module';
+import { PreguntaModule } from 'src/pregunta/pregunta.module';
 
 const initializeDB = true
 
@@ -32,6 +33,7 @@ const DatabaseDynamicModule = TypeOrmModule.forRoot({
             ReservaModule,
             UserModule,
             AlquilerModule,
+            PreguntaModule,
         ] : [])
     ],
     providers: [

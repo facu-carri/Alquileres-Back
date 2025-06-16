@@ -4,6 +4,13 @@ import { User } from "src/user/user.entity";
 
 @Entity({ name: 'preguntas' })
 export class Pregunta {
+    constructor(usuario?: User, maquinaria?: Maquinaria, pregunta?: string) {
+        this.pregunta = pregunta;
+        this.maquinaria = maquinaria;
+        this.usuario = usuario;
+        this.fecha_pregunta = new Date();
+    }
+
     @PrimaryGeneratedColumn()
     id: number;
 
@@ -13,10 +20,10 @@ export class Pregunta {
     @Column({ nullable: true })
     respuesta?: string;
 
-    @CreateDateColumn()
+    @Column({ type: 'timestamp' })
     fecha_pregunta: Date;
 
-    @UpdateDateColumn({ nullable: true })
+    @Column({ type: 'timestamp', nullable: true, default: null })
     fecha_respuesta?: Date;
 
     @ManyToOne(() => Maquinaria, maquinaria => maquinaria.preguntas)
