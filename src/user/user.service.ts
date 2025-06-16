@@ -124,4 +124,14 @@ export class UserService {
 
         return { message: "Usuario desactivado exitosamente"};
     }
+
+    async changeCreationDate(id: number, newDate: Date): Promise<any> {
+        const user = await this.getUserById(id);
+        if (!user) throw new NotFoundException('No se encontro el usuario');
+
+        user.fecha_creacion = newDate;
+        await this.userRepository.save(user);
+
+        return { message: "Fecha de creación actualizada exitosamente" };
+    }
 }

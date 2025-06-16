@@ -35,6 +35,9 @@ export class User {
     @Column()
     nacimiento: string
 
+    @Column({ type: 'date', nullable: false, default: () => 'CURRENT_DATE' })
+    fecha_creacion: Date
+
     @Column({ nullable: false, default: true })
     isActive: boolean
 }

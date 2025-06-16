@@ -22,7 +22,7 @@ export class DatabaseService {
     }
 
     async initDatabase() {
-        const initializeUsers = new InitializeUsers(this.registerService);
+        const initializeUsers = new InitializeUsers(this.registerService, this.userService);
         await initializeUsers.init();
         const initializeMaquinarias = new InitializeMaquinarias(this.maquinariaService);
         await initializeMaquinarias.init();

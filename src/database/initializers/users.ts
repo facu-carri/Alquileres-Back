@@ -1,6 +1,7 @@
 import { RegisterService } from "src/register/register.service"
 import { UserDto } from "src/user/dto/user.dto"
 import { UserRole } from "src/user/user.entity"
+import { UserService } from "src/user/user.service"
 
 export class InitializeUsers {
 
@@ -13,7 +14,7 @@ export class InitializeUsers {
                 email: 'mannimaquinarias@gmail.com',
                 telefono: '',
                 dni: '',
-                nacimiento: ''
+                nacimiento: '',
             }
         ],
         [UserRole.Cliente]: [
@@ -58,7 +59,7 @@ export class InitializeUsers {
             },
         ],
     }
-    constructor(private readonly registerService: RegisterService) {
+    constructor(private readonly registerService: RegisterService, private readonly userService: UserService) {
     }
     async init() {
         for (const [rol, users] of Object.entries(this.users)) {
@@ -70,6 +71,17 @@ export class InitializeUsers {
     async inyectUser(user:UserDto, rol:UserRole) {
         try {
             await this.registerService.register(user, rol)
+            if (rol === UserRole.Cliente){
+                const randomDays = Math.floor(Math.random() * 150)
+                await this.userService.changeCreationDate((
+                    await this.userService.findOneByEmail(user.email)).id, 
+                    new Date(Date.now() - randomDays * 24 * 60 * 60 * 1000))
+            }
+            else {
+                await this.userService.changeCreationDate((
+                    await this.userService.findOneByEmail(user.email)).id, 
+                    new Date(2025, 0, 1))
+            }
         } catch {}
     }
 }

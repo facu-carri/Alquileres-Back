@@ -5,6 +5,7 @@ import { CreateReservaDto } from "src/reserva/dto/create-reserva.dto";
 import { UserService } from "src/user/user.service";
 import { MaquinariaStates } from "src/maquinaria/maquinaria.entity";
 import { AlquilerService } from "src/alquiler/alquiler.service";
+import { ReseñaDto } from "src/alquiler/dto/reseña.dto";
 
 export class InitializeReservas {
     private readonly HARDCODED_EMAIL = 'cliente@hotmail.com';
@@ -50,9 +51,10 @@ export class InitializeReservas {
             const res = await this.reservaService.create(reserva);
             await this.reservaService.confirmarReserva(res.id);
 
-            const alquiler = await this.alquilerService.getOneByCode(res.codigo_reserva);
+            const alquiler = await this.alquilerService.findOneByCode(res.codigo_reserva);
             await this.alquilerService.confirm(alquiler.id, 'Observacion');
-            await this.alquilerService.reseñar(alquiler.id, user.id, 5, 'Excelente');
+            let dto = new ReseñaDto(5, 'Excelente');
+            await this.alquilerService.reseñar(alquiler.id, dto, user.id);
         });
 
 
