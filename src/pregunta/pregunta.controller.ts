@@ -10,7 +10,6 @@ export class PreguntaController {
     // @UseGuards(RoleGuard.bind(RoleGuard, [UserRole.Empleado, UserRole.Admin]))
     @Get()
     async findAll() {
-        console.log('Fetching all preguntas');
         return this.preguntaService.findAll();
     }
 
