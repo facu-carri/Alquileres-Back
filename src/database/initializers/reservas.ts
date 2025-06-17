@@ -25,39 +25,33 @@ export class InitializeReservas {
     }
 
     async genHard() {
-        const maquinaria = await this.maquinariaService.findAll({state: MaquinariaStates.Disponible}, UserRole.Admin);
+        const maquinaria = await this.maquinariaService.findAll({ state: MaquinariaStates.Disponible }, UserRole.Admin);
         const user = await this.userService.findOneByEmail(this.HARDCODED_EMAIL);
         if (!user) {
             console.log('No se encontro el usuario');
             return;
         }
-
-        maquinaria.forEach(async element => {
+        for (const element of maquinaria) {
             const reserva = new CreateReservaDto();
             reserva.id_maquinaria = element.id;
             reserva.email = user.email;
-            reserva.fecha_inicio = new Date(Date.now() + 86400000*10);
+            reserva.fecha_inicio = new Date(Date.now() + 86400000 * 10);
             reserva.fecha_fin = new Date(reserva.fecha_inicio.getTime() + 86400000);
-            this.reservaService.create(reserva);
-        });
-
-        maquinaria.forEach(async element => {
+            await this.reservaService.create(reserva);
+        }
+        for (const element of maquinaria) {
             const reserva = new CreateReservaDto();
             reserva.id_maquinaria = element.id;
             reserva.email = user.email;
-            reserva.fecha_inicio = new Date(Date.now() - 86400000*50);
+            reserva.fecha_inicio = new Date(Date.now() - 86400000 * 50);
             reserva.fecha_fin = new Date(reserva.fecha_inicio.getTime() + 86400000);
-
             const res = await this.reservaService.create(reserva);
             await this.reservaService.confirmarReserva(res.id);
-
             const alquiler = await this.alquilerService.findOneByCode(res.codigo_reserva);
             await this.alquilerService.confirm(alquiler.id, 'Observacion');
             let dto = new ReseñaDto(5, 'Excelente');
             await this.alquilerService.reseñar(alquiler.id, dto, user.id);
-        });
-
-
+        }
     }
 
     async genRandom() {
