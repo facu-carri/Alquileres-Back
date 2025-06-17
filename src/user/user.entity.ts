@@ -36,7 +36,7 @@ export class User {
     nacimiento: string
 
     @Column({ type: 'timestamp', nullable: false, default: () => 'CURRENT_TIMESTAMP' })
-    fecha: Date;
+    fecha_creacion: Date;
 
     @Column({ nullable: false, default: true })
     isActive: boolean
