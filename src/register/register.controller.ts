@@ -1,7 +1,8 @@
-import { Controller, Post, Body } from '@nestjs/common';
+import { Controller, Post, Body, UseInterceptors, Req, BadRequestException, HttpStatus, HttpCode } from '@nestjs/common';
 import { RegisterService } from './register.service';
 import { UserDto } from 'src/user/dto/user.dto';
 import { UserRole } from 'src/user/user.entity';
+import { UserInterceptor } from 'src/interceptors/user-interceptor';
 
 @Controller('register')
 export class RegisterController {
@@ -24,8 +25,19 @@ export class RegisterController {
         } catch {}
     }
 
+    @UseInterceptors(UserInterceptor)
     @Post()
-    async register(@Body() clientData: UserDto) {
-        return await this.registerService.register(clientData, UserRole.Cliente)
+    @HttpCode(HttpStatus.CREATED)
+    async register(@Body() userData: UserDto, @Req() req) {
+        switch (req.user.rol) {
+            case 'visitante':
+                return await this.registerService.register(userData, UserRole.Cliente);
+            case UserRole.Empleado:
+                return await this.registerService.registerRandomPassword(userData, UserRole.Cliente);
+            case UserRole.Admin:
+                return await this.registerService.registerRandomPassword(userData, UserRole.Empleado);
+            default:
+                throw new BadRequestException('Rol no valido');
+        }
     }
 }

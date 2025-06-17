@@ -1,4 +1,4 @@
-import { IsString, IsEmail, IsNotEmpty, MinLength, IsPhoneNumber } from 'class-validator';
+import { IsString, IsEmail, IsNotEmpty, MinLength, IsPhoneNumber, IsOptional } from 'class-validator';
 import { validationMessage, ValidatorTypes } from 'src/utils/ValidatorMessages';
 
 export class UserDto {
@@ -8,9 +8,10 @@ export class UserDto {
     @IsEmail({}, validationMessage(ValidatorTypes.IsEmail))
     readonly email: string;
 
+    @IsOptional()
     @IsString(validationMessage(ValidatorTypes.IsString))
     @MinLength(8, validationMessage(ValidatorTypes.MinLength))
-    readonly password: string;
+    password?: string;
 
     @IsString(validationMessage(ValidatorTypes.IsString))
     readonly dni: string
