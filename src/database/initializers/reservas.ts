@@ -39,6 +39,7 @@ export class InitializeReservas {
             reserva.fecha_fin = new Date(reserva.fecha_inicio.getTime() + 86400000);
             await this.reservaService.create(reserva);
         }
+        let c = 0;
         for (const element of maquinaria) {
             const reserva = new CreateReservaDto();
             reserva.id_maquinaria = element.id;
@@ -47,10 +48,13 @@ export class InitializeReservas {
             reserva.fecha_fin = new Date(reserva.fecha_inicio.getTime() + 86400000);
             const res = await this.reservaService.create(reserva);
             await this.reservaService.confirmarReserva(res.id);
-            const alquiler = await this.alquilerService.findOneByCode(res.codigo_reserva);
-            await this.alquilerService.confirm(alquiler.id, 'Observacion');
-            let dto = new ReseñaDto(5, 'Excelente');
-            await this.alquilerService.reseñar(alquiler.id, dto, user.id);
+            if (c % 2 === 0) {
+                const alquiler = await this.alquilerService.findOneByCode(res.codigo_reserva);
+                await this.alquilerService.confirm(alquiler.id, 'Observacion');
+                let dto = new ReseñaDto(5, 'Excelente');
+                await this.alquilerService.reseñar(alquiler.id, dto, user.id);
+            }
+            c++;
         }
     }
 
