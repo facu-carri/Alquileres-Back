@@ -11,6 +11,7 @@ import { ImagesController } from './files/images.controller';
 import { ReservaModule } from 'src/reserva/reserva.module';
 import { MercadoPagoModule } from './mercadoPago/mercadoPago.module';
 import { PreguntaModule } from './pregunta/pregunta.module';
+import { AlquilerModule } from './alquiler/alquiler.module';
 
 @Module({
   imports: [
@@ -22,7 +23,8 @@ import { PreguntaModule } from './pregunta/pregunta.module';
     RecoveryModule,
     RegisterModule,
     MercadoPagoModule,
-    PreguntaModule
+    PreguntaModule,
+    AlquilerModule
   ],
   controllers: [
     AppController,
