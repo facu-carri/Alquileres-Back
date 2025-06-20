@@ -3,8 +3,9 @@ import { InjectRepository } from "@nestjs/typeorm";
 import { Alquiler, AlquilerStates } from "./alquiler.entity";
 import { Repository } from "typeorm";
 import { Reseña } from "./reseña.entity";
-import { User } from "src/user/user.entity";
+import { User, UserRole } from "src/user/user.entity";
 import { ReseñaDto } from "./dto/reseña.dto";
+import { FilterAlquilerDto } from "./dto/filter-alquiler.dto";
 
 @Injectable()
 export class AlquilerService {
@@ -17,8 +18,26 @@ export class AlquilerService {
         private readonly userRepository: Repository<User>,
     ) {}
 
-    async findAll(): Promise<Alquiler[]> {
-        return await this.alquilerRepository.find();
+    async findAll(filters?: Partial<FilterAlquilerDto>, rol?: UserRole): Promise<Alquiler[]> {
+        const queryBuilder = this.alquilerRepository.createQueryBuilder('alquiler')
+            .leftJoinAndSelect('alquiler.maquinaria', 'maquinaria')
+            .leftJoin('alquiler.usuario', 'usuario')
+            .addSelect(['usuario.id', 'usuario.email', 'usuario.nombre']);
+
+        const validStates = this.getValidStates();
+        queryBuilder.andWhere('alquiler.estado IN (:...validStates)', { validStates });
+
+        if (filters) {
+            if (filters.id) queryBuilder.andWhere('alquiler.id = :id', { id: filters.id });
+            if (filters.codigo_reserva) queryBuilder.andWhere('alquiler.codigo_reserva = :codigo_reserva', { codigo_reserva: filters.codigo_reserva });
+            if (filters.estado) queryBuilder.andWhere('alquiler.estado = :estado', { estado: filters.estado });
+            if (filters.user_id) queryBuilder.andWhere('alquiler.id_usuario = :user_id', { user_id: filters.user_id });
+            if (filters.user_email) queryBuilder.andWhere('usuario.email = :user_email', { user_email: filters.user_email });
+            if (filters.maquinaria_id) queryBuilder.andWhere('alquiler.id_maquinaria = :maquinaria_id', { maquinaria_id: filters.maquinaria_id });
+            if (filters.maquinaria_inventario) queryBuilder.andWhere('maquinaria.inventario = :maquinaria_inventario', { maquinaria_inventario: filters.maquinaria_inventario });
+        }
+
+        return queryBuilder.getMany();
     }
 
     async findOne(id: number): Promise<Alquiler> {

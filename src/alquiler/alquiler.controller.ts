@@ -1,16 +1,23 @@
-import { Body, Controller, Get, Param, Patch, Req, UseGuards } from "@nestjs/common";
+import { Body, Controller, Get, Param, Patch, Query, Req, UseGuards } from "@nestjs/common";
 import { AlquilerService } from "./alquiler.service";
 import { ReseñaDto } from "./dto/reseña.dto";
 import { RoleGuard } from "src/guards/role.guard";
 import { UserRole } from "src/user/user.entity";
+import { FilterAlquilerDto } from "./dto/filter-alquiler.dto";
 
 @Controller('alquiler')
 export class AlquilerController {
     constructor(private readonly alquilerService: AlquilerService) {}
 
     @Get()
-    async findAll() {
-        return this.alquilerService.findAll();
+    @UseGuards(RoleGuard.bind(RoleGuard, [UserRole.Cliente, UserRole.Empleado, UserRole.Admin]))
+    async findAlquileres(@Query() filters: FilterAlquilerDto, @Req() req) {
+        const user = req.user;
+        if (user.rol === UserRole.Cliente) {
+            filters.user_email = user.email;
+            if (user.id) filters.user_id = user.id;
+        }
+        return this.alquilerService.findAll(filters, user.rol);
     }
 
     @Get('estados')
