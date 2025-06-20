@@ -21,7 +21,8 @@ export class Alquiler {
             this.usuario = reserva.usuario;
             this.fecha_inicio = reserva.fecha_inicio;
             this.fecha_fin = reserva.fecha_fin;
-            this.sucursal = reserva.sucursal;        
+            this.sucursal = reserva.sucursal;      
+            this.precio = reserva.precio_total;  
         }
         this.estado = estado || AlquilerStates.Activo;
     }
@@ -32,10 +33,10 @@ export class Alquiler {
     @Column({ nullable: false, unique: true })
     codigo_reserva: string
 
-      @Column({ name: 'id_usuario' })
+    @Column({ name: 'id_usuario' })
     usuarioId: number;
 
-  @Column({ name: 'id_maquinaria' })
+    @Column({ name: 'id_maquinaria' })
     maquinariaId: number;
 
     @ManyToOne(() => Maquinaria, { nullable: false })
@@ -51,6 +52,9 @@ export class Alquiler {
 
     @Column({ nullable: false })
     fecha_fin: Date;
+
+    @Column({ nullable: false })
+    precio: number;
 
     @Column({ 
         type: 'enum',

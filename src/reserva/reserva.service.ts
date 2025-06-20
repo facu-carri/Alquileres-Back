@@ -181,11 +181,11 @@ export class ReservaService {
     getValidStates(rol: UserRole): string[] {
         switch (rol) {
             case UserRole.Cliente:
-                return [ReservaStates.Activa, ReservaStates.Cancelada];
+                return [ReservaStates.Activa, ReservaStates.Cancelada, ReservaStates.Reembolsada];
             case UserRole.Empleado:
                 return [ReservaStates.Activa, ReservaStates.Cancelada];
             case UserRole.Admin:
-                return [ReservaStates.Activa, ReservaStates.Cancelada, ReservaStates.Finalizada, ReservaStates.Reembolsada];
+                return [ReservaStates.Activa, ReservaStates.Cancelada, ReservaStates.Reembolsada];
             default:
                 throw new BadRequestException('Rol no válido para obtener estados de reserva');
         }
