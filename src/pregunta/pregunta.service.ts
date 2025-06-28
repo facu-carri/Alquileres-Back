@@ -46,7 +46,7 @@ export class PreguntaService {
             .createQueryBuilder('pregunta')
             .leftJoin('pregunta.usuario', 'usuario')
             .addSelect(['usuario.id', 'usuario.nombre', 'usuario.email'])
-            .where('pregunta.maquinaria = :maquinaria', { maquinaria })
+            .where('maquinariaId = :id_maquinaria', { id_maquinaria: maquinaria.id })
             .getMany();
     }
 
