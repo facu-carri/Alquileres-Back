@@ -1,4 +1,4 @@
-import { IsNotEmpty, IsNumber } from 'class-validator';
+import { IsNotEmpty, IsNumber, IsOptional, IsString } from 'class-validator';
 
 export class PagoDto {
 
@@ -15,4 +15,8 @@ export class PagoDto {
 
     @IsNotEmpty()
     endDate: Date
+
+    @IsOptional()
+    @IsString()
+    user_email?: string;
 }

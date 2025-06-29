@@ -3,11 +3,15 @@ import { MercadoPagoService } from './mercadoPago.service';
 import { PagoDto } from './dto/pago.dto';
 import { AuthGuard } from 'src/auth/auth.guard';
 import { JwtPayload } from 'src/auth/jwt/jwtPayload';
+import { UserService } from 'src/user/user.service';
 
 @Controller('mercadoPago')
 export class MercadoPagoController {
 
-    constructor(private readonly mercadoPagoService: MercadoPagoService) {}
+    constructor(
+        private readonly mercadoPagoService: MercadoPagoService,
+        private readonly userService: UserService
+    ) {}
 
     @Get('preferenceId')
     @UseGuards(AuthGuard)
@@ -16,8 +20,21 @@ export class MercadoPagoController {
         @Query() data: PagoDto
     ) {
         const user: JwtPayload = req['user']
-        const id = await this.mercadoPagoService.getPreferenceId(data, user.email)
-        return { id };
+
+        if (user.rol === 'cliente') {
+            const id = await this.mercadoPagoService.getPreferenceId(data, user.email)
+            return { id };
+        }
+        else {
+            if (!data.user_email) {
+                throw new Error('Se requiere el email del cliente');
+            }
+            if (!this.userService.existBy({ email: data.user_email })) {
+                throw new Error('Email del cliente inválido');
+            }
+            const id = await this.mercadoPagoService.getPreferenceId(data, data.user_email)
+            return { id };
+        }
     }
 
     @Post('notification')
