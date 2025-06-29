@@ -12,6 +12,7 @@ import { ReservaModule } from 'src/reserva/reserva.module';
 import { MercadoPagoModule } from './mercadoPago/mercadoPago.module';
 import { PreguntaModule } from './pregunta/pregunta.module';
 import { AlquilerModule } from './alquiler/alquiler.module';
+import { EstadisticasModule } from './estadisticas/estadisticas.module';
 
 @Module({
   imports: [
@@ -24,7 +25,8 @@ import { AlquilerModule } from './alquiler/alquiler.module';
     RegisterModule,
     MercadoPagoModule,
     PreguntaModule,
-    AlquilerModule
+    AlquilerModule,
+    EstadisticasModule
   ],
   controllers: [
     AppController,

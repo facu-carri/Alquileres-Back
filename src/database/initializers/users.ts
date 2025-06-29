@@ -5,6 +5,8 @@ import { UserService } from "src/user/user.service"
 
 export class InitializeUsers {
 
+    readonly randomUserCount = 10;
+
     private users: Record<UserRole, UserDto[]> = {
         [UserRole.Admin]: [
             {
@@ -65,6 +67,20 @@ export class InitializeUsers {
         for (const [rol, users] of Object.entries(this.users)) {
             if (users.length == 0) continue
             users.forEach(async(user) => await this.inyectUser(user, rol as UserRole))
+        }
+
+        let i: number;
+        for ( i = 0; i < this.randomUserCount; i++) {
+            const user: UserDto = {
+                nombre: `Test${i}`,
+                apellido: `Tester${i}`,
+                password: '12345678',
+                email: `test${i}@hotmail.com`,
+                telefono: '+542215555555',
+                dni: '56789012',
+                nacimiento: '2001-01-01'
+            }
+            await this.inyectUser(user, UserRole.Cliente)
         }
     }
 
