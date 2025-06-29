@@ -9,6 +9,7 @@ import { ReseñaDto } from "src/alquiler/dto/reseña.dto";
 
 export class InitializeReservas {
     private readonly HARDCODED_EMAIL = 'cliente@hotmail.com';
+    private readonly DAY_CONSTANT = 86400000; // 24 * 60 * 60 * 1000
 
     constructor(
         private readonly reservaService: ReservaService,
@@ -35,8 +36,8 @@ export class InitializeReservas {
             const reserva = new CreateReservaDto();
             reserva.id_maquinaria = element.id;
             reserva.email = user.email;
-            reserva.fecha_inicio = new Date(Date.now() + 86400000 * 10);
-            reserva.fecha_fin = new Date(reserva.fecha_inicio.getTime() + 86400000);
+            reserva.fecha_inicio = new Date(Date.now() + this.DAY_CONSTANT * 10);
+            reserva.fecha_fin = new Date(reserva.fecha_inicio.getTime() + this.DAY_CONSTANT * 5);
             await this.reservaService.create(reserva);
         }
         let c = 0;
@@ -44,8 +45,8 @@ export class InitializeReservas {
             const reserva = new CreateReservaDto();
             reserva.id_maquinaria = element.id;
             reserva.email = user.email;
-            reserva.fecha_inicio = new Date(Date.now() - 86400000 * 50);
-            reserva.fecha_fin = new Date(reserva.fecha_inicio.getTime() + 86400000);
+            reserva.fecha_inicio = new Date(Date.now() - this.DAY_CONSTANT * 50);
+            reserva.fecha_fin = new Date(reserva.fecha_inicio.getTime() + this.DAY_CONSTANT * 5);
             const res = await this.reservaService.create(reserva);
             await this.reservaService.confirmarReserva(res.id);
             if (c % 2 === 0) {
