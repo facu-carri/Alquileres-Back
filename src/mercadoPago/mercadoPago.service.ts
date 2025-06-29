@@ -10,6 +10,7 @@ import { generateCode } from 'src/utils/Utils';
 import { ReservaService } from 'src/reserva/reserva.service';
 import { CreateReservaDto } from 'src/reserva/dto/create-reserva.dto';
 import { NotificationQuery } from './dto/notification.dto';
+import { UserService } from 'src/user/user.service';
 
 @Injectable()
 export class MercadoPagoService {
@@ -20,7 +21,8 @@ export class MercadoPagoService {
     
     constructor(
         private maquinariaService: MaquinariaService,
-        private reservaService: ReservaService
+        private reservaService: ReservaService,
+        private userService: UserService
     ){
         this.client = new MercadoPagoConfig({ accessToken: process.env.MERCADO_PAGO_TOKEN })
         this.preference = new Preference(this.client)
@@ -30,6 +32,7 @@ export class MercadoPagoService {
     async getPreferenceId(pagoData: PagoDto, email: string) {
         const maq = await this.maquinariaService.findOne(pagoData.maq_id)
         
+        if (!this.userService.existBy({ email: email })) { throw new BadRequestException('No se pudo encontrar el usuario') }
         if (!maq) throw new BadRequestException('No se pudo encontrar la maquinaria')
         if (pagoData.days <= 0) throw new BadRequestException('Cantidad de dias invalida')
         

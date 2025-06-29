@@ -29,9 +29,6 @@ export class MercadoPagoController {
             if (!data.user_email) {
                 throw new Error('Se requiere el email del cliente');
             }
-            if (!this.userService.existBy({ email: data.user_email })) {
-                throw new Error('Email del cliente inválido');
-            }
             const id = await this.mercadoPagoService.getPreferenceId(data, data.user_email)
             return { id };
         }
