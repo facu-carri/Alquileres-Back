@@ -12,9 +12,9 @@ export class UserController {
     constructor(private readonly userService: UserService) { }
 
     @Get()
-    @UseGuards(RoleGuard.bind(RoleGuard, [UserRole.Admin]))
-    async getAllUsers(): Promise<User[]> {
-        return await this.userService.findAll()
+    @UseGuards(RoleGuard.bind(RoleGuard, [UserRole.Empleado, UserRole.Admin]))
+    async getAllUsers(@Req() req: Request): Promise<User[]> {
+        return await this.userService.findAll(req['user'].rol);
     }
 
     @Get(':id')

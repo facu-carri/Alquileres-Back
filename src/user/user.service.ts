@@ -1,6 +1,6 @@
 import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository, In } from 'typeorm';
+import { Repository, In, Not } from 'typeorm';
 import { User, UserRole } from './user.entity';
 import { UserDto } from './dto/user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
@@ -22,8 +22,19 @@ export class UserService {
         return await this.userRepository.save({ ...userDto, rol: rol });
     }
 
-    async findAll(): Promise<User[]> {
-        return await this.userRepository.find();
+    async findAll(rol: UserRole): Promise<User[]> {
+        if (rol === UserRole.Admin) {
+            return await this.userRepository.find({ 
+                where: { rol: Not(UserRole.Admin) }, 
+                select: ['id', 'email', 'dni', 'nombre', 'apellido', 'nacimiento', 'telefono', 'isActive', 'fecha_creacion', 'rol']
+            });
+        }
+        if (rol === UserRole.Empleado) {
+            return await this.userRepository.find({ 
+                where: { rol: In([UserRole.Cliente]), isActive: true }, 
+                select: ['id', 'email']
+            });
+        }
     }
 
     async findAllByRol(rol: UserRole): Promise<User[]> {
