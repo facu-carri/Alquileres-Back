@@ -21,6 +21,8 @@ export class MercadoPagoController {
     ) {
         const user: JwtPayload = req['user']
 
+        console.log(user, data)
+
         if (user.rol === 'cliente') {
             const id = await this.mercadoPagoService.getPreferenceId(data, user.email)
             return { id };
