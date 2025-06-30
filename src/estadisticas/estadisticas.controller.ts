@@ -13,9 +13,9 @@ export class EstadisticasController {
         return this.estadisticasService.getUserStats(query);
     }
 
-    @Get('/maquinarias')
-    async getEstadisticasMaquinarias(@Query () query: EstadisticasDto): Promise<any> {
-        // return this.estadisticasService.getMaquinariaStats(query);
+    @Get('/alquileres')
+    async getEstadisticasAlquileres(@Query () query: EstadisticasDto): Promise<any> {
+        return this.estadisticasService.getAlquilerStats(query);
     }
 
     @Get('/ingresos')

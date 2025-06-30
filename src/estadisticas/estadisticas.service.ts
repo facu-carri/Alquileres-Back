@@ -11,6 +11,9 @@ import { UserRole } from 'src/user/user.entity';
 
 @Injectable()
 export class EstadisticasService {
+
+    // define si mandar o no los campos que tienen valor 0. False para testear la salida, True para hacer mas facil la implementacion en front
+    readonly SEND_ALL = false;
     constructor(
         @InjectRepository(User)
         private readonly userRepository: Repository<User>,
@@ -55,7 +58,46 @@ export class EstadisticasService {
         ) {
             const dateStr = d.toISOString().slice(0, 10);
             const cantidad = users.filter(u => u.fecha_creacion.toISOString().slice(0, 10) === dateStr).length;
-            result.push({ fecha: dateStr, cantidad });
+            if  (cantidad > 0 || this.SEND_ALL) result.push({ fecha: dateStr, cantidad });
+        }
+
+        return result;
+    }
+
+    async getAlquilerStats(query: EstadisticasDto): Promise<{ fecha: string, cantidad: number }[]> {
+        let { fecha_inicio, fecha_fin } = query;
+
+        if (!fecha_inicio) { 
+            const primerAlquiler = await this.alquilerRepository.findOne({
+                where: {},
+                order: { fecha_inicio: 'ASC' },
+                select: ['fecha_inicio'],
+            })
+            fecha_inicio = primerAlquiler ? primerAlquiler.fecha_inicio : new Date('2020-01-01');
+
+            console.log('primerAlquiler', primerAlquiler);
+        }
+        if (!fecha_fin) { fecha_fin = new Date(); }
+
+        const alquileres = await this.alquilerRepository.find({
+            where: {
+                fecha_inicio: Between(fecha_inicio, fecha_fin)
+            },
+            select: ['fecha_inicio']
+        });
+
+        const start = new Date(fecha_inicio);
+        const end = new Date(fecha_fin);
+        const result: { fecha: string, cantidad: number }[] = [];
+
+        for (
+            let d = new Date(start);
+            d <= end;
+            d.setDate(d.getDate() + 1)
+        ) {
+            const dateStr = d.toISOString().slice(0, 10);
+            const cantidad = alquileres.filter(u => u.fecha_inicio.toISOString().slice(0, 10) === dateStr).length;
+            if (cantidad > 0 || this.SEND_ALL) result.push({ fecha: dateStr, cantidad });
         }
 
         return result;
