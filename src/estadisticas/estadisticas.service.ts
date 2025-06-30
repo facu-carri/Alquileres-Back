@@ -3,7 +3,7 @@ import { EstadisticasDto } from './dto/estadisticas.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Between, Not, Repository } from 'typeorm';
 import { User } from 'src/user/user.entity';
-import { Alquiler } from 'src/alquiler/alquiler.entity';
+import { Alquiler, AlquilerStates } from 'src/alquiler/alquiler.entity';
 import { Maquinaria } from 'src/maquinaria/maquinaria.entity';
 import { Reserva } from 'src/reserva/reserva.entity';
 import { UserRole } from 'src/user/user.entity';
@@ -96,6 +96,45 @@ export class EstadisticasService {
             const dateStr = d.toISOString().slice(0, 10);
             const cantidad = alquileres.filter(u => u.fecha_inicio.toISOString().slice(0, 10) === dateStr).length;
             if (cantidad > 0 || this.SEND_ALL) result.push({ fecha: dateStr, cantidad });
+        }
+
+        return result;
+    }
+
+    async getIngresos(query: EstadisticasDto): Promise<{ fecha: string, monto: number }[]> {
+        console.log("entered")
+
+        let { fecha_inicio, fecha_fin } = query;
+
+        if (!fecha_inicio) { 
+            const primerAlquiler = await this.alquilerRepository.findOne({
+                where: {},
+                order: { fecha_inicio: 'ASC' },
+                select: ['fecha_inicio'],
+            })
+            fecha_inicio = primerAlquiler ? primerAlquiler.fecha_inicio : new Date('2020-01-01');
+        }
+        if (!fecha_fin) { fecha_fin = new Date(); }
+
+        const alquileres = await this.alquilerRepository.find({
+            where: {
+                fecha_inicio: Between(fecha_inicio, fecha_fin)
+            },
+            select: ['fecha_inicio', 'estado', 'precio']
+        });
+
+        const start = new Date(fecha_inicio);
+        const end = new Date(fecha_fin);
+        const result: { fecha: string, monto: number }[] = [];
+
+        for (
+            let d = new Date(start);
+            d <= end;
+            d.setDate(d.getDate() + 1)
+        ) {
+            const dateStr = d.toISOString().slice(0, 10);
+            const monto = alquileres.filter(u => u.fecha_inicio.toISOString().slice(0, 10) === dateStr).reduce((total, alquiler) => total + alquiler.precio, 0);
+            if (monto > 0 || this.SEND_ALL) result.push({ fecha: dateStr, monto });
         }
 
         return result;

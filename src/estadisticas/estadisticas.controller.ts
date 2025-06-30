@@ -20,6 +20,6 @@ export class EstadisticasController {
 
     @Get('/ingresos')
     async getEstadisticasIngresos(@Query () query: EstadisticasDto): Promise<any> {
-        // return this.estadisticasService.getIngresos(query);
+        return this.estadisticasService.getIngresos(query);
     }
 }
