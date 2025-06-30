@@ -4,6 +4,8 @@ import { Politica } from "src/utils/enums";
 import { Pregunta } from "src/pregunta/pregunta.entity";
 import { Alquiler } from "src/alquiler/alquiler.entity";
 import { Reserva } from "src/reserva/reserva.entity";
+import { Expose } from "class-transformer";
+import { Reseña } from "src/alquiler/reseña.entity";
 
 export enum MaquinariaStates {
     Disponible = 'Disponible',
@@ -76,5 +78,20 @@ export class Maquinaria {
     reservas: Reserva[]
 
     @OneToMany(() => Alquiler, alquiler => alquiler.maquinaria)
-    alquileres: Alquiler[]
+    alquileres: Partial<Alquiler>[]
+
+    @OneToMany(() => Reseña, reseña => reseña.maquinaria)
+    reseñas: Partial<Reseña>[];
+
+    puntaje_promedio? : number
+
+    @Expose()
+    get averageScore(): number | null {
+        if (!this.reseñas || this.reseñas.length === 0) return null;
+        const scores = this.reseñas
+            .filter(r => r.puntaje && typeof r.puntaje === 'number')
+            .map(r => r.puntaje);
+        if (scores.length === 0) return null;
+        return scores.reduce((a, b) => a + b, 0) / scores.length;
+    }
 }

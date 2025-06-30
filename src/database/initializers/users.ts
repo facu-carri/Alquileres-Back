@@ -43,7 +43,7 @@ export class InitializeUsers {
                 nombre: 'Facundo',
                 apellido: 'Carrizo',
                 password: '12345678',
-                email: 'facuc4rr@gmail.com',
+                email: 'fakecarri@gmail.com',
                 telefono: '+5491122221111',
                 dni: '11223344',
                 nacimiento: '2001-10-10'

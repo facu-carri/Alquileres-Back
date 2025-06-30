@@ -23,6 +23,7 @@ export class InitializeReservas {
         if (reservas.length > 0) return;
 
         this.genHard();
+        this.genRandom();
     }
 
     async genHard() {
@@ -60,7 +61,9 @@ export class InitializeReservas {
     }
 
     async genRandom() {
-        const maquinaria = await this.maquinariaService.findAll({state: MaquinariaStates.Disponible}, UserRole.Admin);
+        const reviewMessages = ['Malo', 'Regular', 'Bueno', 'Muy bueno', 'Excelente'];
+
+        const maquinaria = await this.maquinariaService.findAll({ }, UserRole.Admin);
         if (maquinaria.length === 0) {
             console.log('No hay maquinaria disponible para crear reservas');
             return;
@@ -72,7 +75,7 @@ export class InitializeReservas {
             console.log('No hay clientes para crear reservas');
             return;
         }
-        for (let i = 0; i < 10; i++) {
+        for (let i = 0; i < 100; i++) {
             let randomMaquinaria = maquinaria[Math.floor(Math.random() * maquinaria.length)];
 
             const randomUser = users[Math.floor(Math.random() * users.length)];
@@ -81,15 +84,27 @@ export class InitializeReservas {
             reserva.id_maquinaria = randomMaquinaria.id;
             reserva.email = randomUser.email;
 
-            reserva.fecha_inicio = new Date(Date.now() + Math.floor(Math.random() * 90) * 86400000);
+            reserva.fecha_inicio = new Date(Date.now() - Math.floor(Math.random() * 90) * 86400000);
             reserva.fecha_fin = new Date(reserva.fecha_inicio.getTime() + (Math.floor(Math.random() * 7) + 1) * 86400000);
 
-            while (!this.maquinariaService.checkAvailability(randomMaquinaria.id, reserva.fecha_inicio, reserva.fecha_fin)) {
-                reserva.fecha_inicio = new Date(reserva.fecha_inicio.getTime() + 86400000);
-                reserva.fecha_fin = new Date(reserva.fecha_fin.getTime() + 86400000);
-            }
+            let res = await this.reservaService.create(reserva);
+            await this.reservaService.confirmarReserva(res.id);
 
-            await this.reservaService.create(reserva);
+            const alquiler = await this.alquilerService.findOneByCode(res.codigo_reserva);
+            await this.alquilerService.confirm(alquiler.id, 'Observacion');
+            let score = Math.floor(Math.random() * 5);
+
+            if (score < 4) score++;
+
+            let dto
+            if (Math.random() < 0.5) {
+                dto = new ReseñaDto(score, reviewMessages[score]);   
+            }
+            else {
+                dto = new ReseñaDto(score);
+            }
+            
+            await this.alquilerService.reseñar(alquiler.id, dto, randomUser.id);
         }
     }
 }

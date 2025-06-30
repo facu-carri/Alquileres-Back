@@ -1,6 +1,7 @@
 import { Entity, PrimaryGeneratedColumn, Column, OneToOne, JoinColumn, ManyToOne, CreateDateColumn } from "typeorm";
 import { Alquiler } from "./alquiler.entity";
 import { User } from "src/user/user.entity";
+import { Maquinaria } from "src/maquinaria/maquinaria.entity";
 
 @Entity({ name: 'reseñas' })
 export class Reseña {
@@ -29,10 +30,20 @@ export class Reseña {
     @OneToOne(() => Alquiler, alquiler => alquiler.reseña, { onDelete: 'CASCADE' })
     @JoinColumn({ name: 'alquiler_id' })
     alquiler: Alquiler;
+    
+    @Column({ name: 'maquinaria_id' })
+    maquinariaId: number;
+
+    @ManyToOne(() => Maquinaria , maquinaria => maquinaria.reseñas, { onDelete: 'CASCADE' })
+    @JoinColumn({ name: 'maquinaria_id' })
+    maquinaria: Partial<Maquinaria>;
+
+    @Column({ name: 'autor_id' })
+    autorId: number;
 
     @ManyToOne(() => User)
     @JoinColumn({ name: 'autor_id' })
-    autor: User;
+    autor: Partial<User>;
 
     @CreateDateColumn()
     fecha: Date;

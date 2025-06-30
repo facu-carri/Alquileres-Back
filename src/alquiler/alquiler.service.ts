@@ -66,7 +66,8 @@ export class AlquilerService {
 
     async reseñar(id: number, reseñaDto: ReseñaDto, user_id: number): Promise<Reseña> {
         let alquiler = await this.alquilerRepository.findOne({
-            where: { id: id}
+            where: { id: id },
+            relations: ['usuario', 'maquinaria', 'reseña'],
         });
         
         if (!alquiler) {
@@ -93,7 +94,10 @@ export class AlquilerService {
         if (reseñaDto.comentario) {
             reseña.comentario = reseñaDto.comentario;
         }
+
         alquiler.reseña = reseña;
+        reseña.maquinaria = alquiler.maquinaria;
+        reseña.autor = alquiler.usuario;
 
         await this.reseñaRepository.save(reseña);
         await this.alquilerRepository.save(alquiler);

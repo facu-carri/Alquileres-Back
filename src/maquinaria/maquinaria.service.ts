@@ -14,6 +14,7 @@ import { response } from 'express';
 import { User, UserRole } from 'src/user/user.entity';
 import { ReservaService } from 'src/reserva/reserva.service';
 import { Reseña } from 'src/alquiler/reseña.entity';
+import { plainToInstance } from 'class-transformer';
 
 @Injectable()
 export class MaquinariaService {
@@ -85,7 +86,12 @@ export class MaquinariaService {
             }, { fechaInicio: fechaInicio.toISOString(), fechaFin: fechaFin.toISOString() });
         }
         
-        return query.getMany();
+        const maquinarias = await query.getMany();
+        for (let maquinaria of maquinarias) {
+            const maq_temp = await this.maquinariaRepository.findOne({ where: { id: maquinaria.id }, relations: ['reseñas'] });
+            maquinaria.puntaje_promedio = maq_temp?.averageScore || null;
+        }
+        return maquinarias;
     }
 
     async checkAvailability(id: number, fecha_inicio: Date, fecha_fin: Date): Promise<boolean> {
@@ -150,10 +156,24 @@ export class MaquinariaService {
     }
 
     async findOne(id: number): Promise<Maquinaria> {
-        const maquinaria = await this.maquinariaRepository.findOneBy({ id });
+        const maquinaria = await this.maquinariaRepository
+            .createQueryBuilder('maquinaria')
+            .leftJoinAndSelect('maquinaria.preguntas', 'pregunta')
+            .leftJoinAndSelect('maquinaria.alquileres', 'alquiler')
+            .leftJoinAndSelect('maquinaria.reseñas', 'reseña')
+            .leftJoinAndSelect('reseña.autor', 'autor')
+            .where('maquinaria.id = :id', { id })
+            .getOne();
         if (!maquinaria) {
             throw new NotFoundException(`No se encontró la maquinaria con id ${id}`);
         }
+        maquinaria.reseñas = maquinaria.reseñas.map(reseña => {
+            reseña.autor = { id : reseña.autor.id, nombre: reseña.autor.nombre, email: reseña.autor.email} as Partial<User>;
+            return reseña;
+        });
+        
+        maquinaria.puntaje_promedio = maquinaria.averageScore;
+
         return maquinaria;
     }
 
