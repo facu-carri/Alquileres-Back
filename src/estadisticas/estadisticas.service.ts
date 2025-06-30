@@ -74,8 +74,6 @@ export class EstadisticasService {
                 select: ['fecha_inicio'],
             })
             fecha_inicio = primerAlquiler ? primerAlquiler.fecha_inicio : new Date('2020-01-01');
-
-            console.log('primerAlquiler', primerAlquiler);
         }
         if (!fecha_fin) { fecha_fin = new Date(); }
 
