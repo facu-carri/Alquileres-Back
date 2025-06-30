@@ -139,7 +139,8 @@ export class ReservaService {
                 }
                 else reserva.estado = ReservaStates.Cancelada;
                 break;
-            case UserRole.Admin || UserRole.Empleado:
+            case UserRole.Empleado:
+            case UserRole.Admin:
                 reserva.politica = Politica.devolucion_100;
                 reserva.estado = ReservaStates.Cancelada;
                 break;
