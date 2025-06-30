@@ -132,14 +132,20 @@ export class ReservaService {
                 if (reserva.usuario.id !== user.id) {
                     throw new BadRequestException('No tienes permiso para cancelar esta reserva');
                 }
+                if (reserva.fecha_inicio <= new Date()) {
+                    throw new BadRequestException('No se puede cancelar la reserva después de la fecha de inicio');
+                }
                 if (reserva.politica === Politica.devolucion_0) {
                     // Tal vez sea util mas adelante
-                    // reserva.estado = ReservaStates.Reembolsada;
+                    reserva.estado = ReservaStates.Reembolsada;
                     reserva.estado = ReservaStates.Cancelada;
                 }
                 else reserva.estado = ReservaStates.Cancelada;
                 break;
             case UserRole.Empleado:
+                reserva.politica = Politica.devolucion_100;
+                reserva.estado = ReservaStates.Cancelada;
+                break;
             case UserRole.Admin:
                 reserva.politica = Politica.devolucion_100;
                 reserva.estado = ReservaStates.Cancelada;

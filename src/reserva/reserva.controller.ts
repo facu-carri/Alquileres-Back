@@ -51,12 +51,7 @@ export class ReservaController {
         const user = req.user;
         if (!user) return { error: 'User not found' };
 
-        try {
-            await this.reservaService.cancelarReserva(id, user);
-            return { message: 'Reserva cancelada exitosamente.' };
-        } catch (error) {
-            return { error: error.message || 'Error al cancelar la reserva.' };
-        }
+        return await this.reservaService.cancelarReserva(id, user);
     }
 
     @Post()
