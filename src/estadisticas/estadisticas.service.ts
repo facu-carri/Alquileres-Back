@@ -102,8 +102,6 @@ export class EstadisticasService {
     }
 
     async getIngresos(query: EstadisticasDto): Promise<{ fecha: string, monto: number }[]> {
-        console.log("entered")
-
         let { fecha_inicio, fecha_fin } = query;
 
         if (!fecha_inicio) { 
