@@ -190,7 +190,7 @@ export class ReservaService {
             case UserRole.Cliente:
                 return [ReservaStates.Activa, ReservaStates.Cancelada, ReservaStates.Reembolsada];
             case UserRole.Empleado:
-                return [ReservaStates.Activa, ReservaStates.Cancelada];
+                return [ReservaStates.Activa, ReservaStates.Cancelada, ReservaStates.Reembolsada];
             case UserRole.Admin:
                 return [ReservaStates.Activa, ReservaStates.Cancelada, ReservaStates.Reembolsada];
             default:
