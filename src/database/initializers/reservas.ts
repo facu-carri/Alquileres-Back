@@ -33,6 +33,15 @@ export class InitializeReservas {
             console.log('No se encontro el usuario');
             return;
         }
+        // Reserva en curso
+        const reserva = new CreateReservaDto();
+        reserva.id_maquinaria = maquinaria[0].id;
+        reserva.email = user.email;
+        reserva.fecha_inicio = new Date(Date.now() - this.DAY_CONSTANT * 2);
+        reserva.fecha_fin = new Date(reserva.fecha_inicio.getTime() + this.DAY_CONSTANT * 5);
+        await this.reservaService.create(reserva);
+
+        // Reservas futuras (en 10 dias)
         for (const element of maquinaria) {
             const reserva = new CreateReservaDto();
             reserva.id_maquinaria = element.id;
@@ -41,6 +50,8 @@ export class InitializeReservas {
             reserva.fecha_fin = new Date(reserva.fecha_inicio.getTime() + this.DAY_CONSTANT * 5);
             await this.reservaService.create(reserva);
         }
+
+        // Alquileres finalizados
         let c = 0;
         for (const element of maquinaria) {
             const reserva = new CreateReservaDto();
