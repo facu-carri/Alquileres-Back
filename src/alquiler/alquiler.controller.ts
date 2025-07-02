@@ -40,13 +40,9 @@ export class AlquilerController {
     }
 
     @UseGuards(RoleGuard.bind(RoleGuard, [UserRole.Cliente]))
-    @Patch(':id/reseñar')
+    @Patch(':id/puntuar')
     async reseñarAlquiler(@Param('id') id: number, @Body() reseñaDto: ReseñaDto, @Req() req) {
-        try {
-            const user_id = req.user.id;
-            return await this.alquilerService.reseñar(id, reseñaDto, user_id);
-        } catch (error) {
-            return { error: error.message || 'Error al reseñar el alquiler.' };
-        }
+        const user_id = req.user.id;
+        return await this.alquilerService.reseñar(id, reseñaDto, user_id);
     }
 }

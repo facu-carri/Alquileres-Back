@@ -1,7 +1,7 @@
-import { Injectable } from "@nestjs/common";
+import { BadRequestException, Injectable, NotFoundException } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Alquiler, AlquilerStates } from "./alquiler.entity";
-import { Repository } from "typeorm";
+import { Not, Repository } from "typeorm";
 import { Reseña } from "./reseña.entity";
 import { User, UserRole } from "src/user/user.entity";
 import { ReseñaDto } from "./dto/reseña.dto";
@@ -22,6 +22,7 @@ export class AlquilerService {
         const queryBuilder = this.alquilerRepository.createQueryBuilder('alquiler')
             .leftJoinAndSelect('alquiler.maquinaria', 'maquinaria')
             .leftJoin('alquiler.usuario', 'usuario')
+            .leftJoinAndSelect('alquiler.reseña', 'reseña')
             .addSelect(['usuario.id', 'usuario.email', 'usuario.nombre']);
 
         const validStates = this.getValidStates();
@@ -71,23 +72,23 @@ export class AlquilerService {
         });
         
         if (!alquiler) {
-            throw new Error('Alquiler not found');
+            throw new NotFoundException('Alquiler not found');
         }
         const user = await this.userRepository.findOne({
             where: { id: user_id },
         });
         if (!user) {
-            throw new Error('User not found');
+            throw new NotFoundException('User not found');
         }
 
         if (alquiler.reseña) {
-            throw new Error('Alquiler ya tiene reseña');
+            throw new BadRequestException('Alquiler ya tiene reseña');
         }
         if (alquiler.estado !== AlquilerStates.Finalizado) {
-            throw new Error('El Alquiler no está Finalizado');
+            throw new BadRequestException('El Alquiler no está Finalizado');
         }
         if (user.id !== alquiler.usuarioId) {
-            throw new Error('No tenés permiso para reseñar');
+            throw new BadRequestException('No tenés permiso para reseñar');
         }
 
         const reseña = new Reseña(user, alquiler, reseñaDto.puntaje);
@@ -95,12 +96,10 @@ export class AlquilerService {
             reseña.comentario = reseñaDto.comentario;
         }
 
-        alquiler.reseña = reseña;
         reseña.maquinaria = alquiler.maquinaria;
         reseña.autor = alquiler.usuario;
 
         await this.reseñaRepository.save(reseña);
-        await this.alquilerRepository.save(alquiler);
 
         return reseña;
     }
