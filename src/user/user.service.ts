@@ -6,6 +6,8 @@ import { UserDto } from './dto/user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { response } from 'express';
 import { Reserva, ReservaStates } from 'src/reserva/reserva.entity';
+import { AlquilerService } from 'src/alquiler/alquiler.service';
+import { AlquilerStates } from 'src/alquiler/alquiler.entity';
 
 @Injectable()
 export class UserService {
@@ -15,7 +17,9 @@ export class UserService {
         private readonly userRepository: Repository<User>,
 
         @InjectRepository(Reserva)
-        private readonly reservaRepository: Repository<Reserva>
+        private readonly reservaRepository: Repository<Reserva>,
+
+        private readonly alquilerService: AlquilerService
     ) {}
 
     async create(userDto: UserDto, rol: UserRole): Promise<User> {
@@ -126,6 +130,17 @@ export class UserService {
         });
         if (reservas.length > 0){
             throw new BadRequestException('No se puede eliminar la cuenta porque tiene reservas pendientes.');
+        }
+
+        const alquileres = await this.alquilerService.find({
+            where: {
+                usuario: userToDeactivate,
+                estado: AlquilerStates.Activo
+            }
+        })
+
+        if (alquileres.length > 0) {
+            throw new BadRequestException('No se puede eliminar la cuenta porque tiene alquileres activos.');
         }
 
         // Cuando modelemos alquiler, hacer algo parecido para alquileres activos
