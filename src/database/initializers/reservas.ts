@@ -41,6 +41,18 @@ export class InitializeReservas {
         reserva.fecha_fin = new Date(reserva.fecha_inicio.getTime() + this.DAY_CONSTANT * 5);
         await this.reservaService.create(reserva);
 
+        // Alquiler finalizado sin puntuar
+        const reserva2 = new CreateReservaDto();
+        reserva2.id_maquinaria = maquinaria[1].id;
+        reserva2.email = user.email;
+        reserva2.fecha_inicio = new Date(Date.now() - this.DAY_CONSTANT * 50);
+        reserva2.fecha_fin = new Date(reserva2.fecha_inicio.getTime() + this.DAY_CONSTANT * 5);
+        const res = await this.reservaService.create(reserva2);
+        await this.reservaService.confirmarReserva(res.id);
+        const alquiler = await this.alquilerService.findOneByCode(res.codigo_reserva);
+        await this.alquilerService.confirm(alquiler.id, 'Observacion');
+
+
         // Reservas futuras (en 10 dias)
         for (const element of maquinaria) {
             const reserva = new CreateReservaDto();
