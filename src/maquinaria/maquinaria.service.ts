@@ -10,11 +10,10 @@ import { UpdateMaquinariaDto } from './dto/update-maquinaria.dto';
 import { FilterMaquinariaDto } from './dto/filter-maquinaria.dto';
 import { Reserva, ReservaStates } from 'src/reserva/reserva.entity';
 import { getEnumValues } from 'src/utils/EnumUtils';
-import { response } from 'express';
 import { User, UserRole } from 'src/user/user.entity';
 import { ReservaService } from 'src/reserva/reserva.service';
-import { Reseña } from 'src/alquiler/reseña.entity';
-import { plainToInstance } from 'class-transformer';
+import { AlquilerService } from 'src/alquiler/alquiler.service';
+import { Alquiler, AlquilerStates } from 'src/alquiler/alquiler.entity';
 
 @Injectable()
 export class MaquinariaService {
@@ -25,7 +24,8 @@ export class MaquinariaService {
         private readonly maquinariaRepository: Repository<Maquinaria>,
         @InjectRepository(Reserva)
         private readonly reservaRepository: Repository<Reserva>,
-        private readonly reservaService: ReservaService
+        private readonly reservaService: ReservaService,
+        private readonly alquilerService: AlquilerService
     ) {}
 
     async create(maquinariaDto: MaquinariaDto): Promise<Maquinaria> {
@@ -134,23 +134,36 @@ export class MaquinariaService {
         if (maquinaria.state !== MaquinariaStates.Disponible) {
             throw new BadRequestException(`La maquinaria con id ${id} no está Disponible`);
         }
+
+        const alquileres = await this.alquilerService.find({
+            where: {
+                maquinariaId: id,
+                estado: AlquilerStates.Activo
+            }
+        })
+
         const reservas = await this.reservaRepository.find({
             where: {
                 maquinaria: { id },
                 estado: ReservaStates.Activa,
             },
         });
-        
-        return reservas.map((reserva) => {
-            const fecha_inicio = new Date(reserva.fecha_inicio);
-            fecha_inicio.setDate(fecha_inicio.getDate() - 3);
 
-            const fecha_fin = new Date(reserva.fecha_fin);
-            fecha_fin.setDate(fecha_fin.getDate() + 3);
+        const mergeObjs: Array<Alquiler | Reserva> = [...alquileres, ...reservas]
+
+        return mergeObjs.map((obj) => {
+
+            const daysOffset = 3
+
+            const fecha_inicio = new Date(obj.fecha_inicio);
+            fecha_inicio.setDate(fecha_inicio.getDate() - daysOffset);
+
+            const fecha_fin = new Date(obj.fecha_fin);
+            fecha_fin.setDate(fecha_fin.getDate() + daysOffset);
 
             return {
-            fecha_inicio: fecha_inicio.toISOString(),
-            fecha_fin: fecha_fin.toISOString(),
+                fecha_inicio: fecha_inicio.toISOString(),
+                fecha_fin: fecha_fin.toISOString(),
             };
         });
     }

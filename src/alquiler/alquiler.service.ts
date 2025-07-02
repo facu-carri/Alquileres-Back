@@ -1,7 +1,7 @@
 import { BadRequestException, Injectable, NotFoundException } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Alquiler, AlquilerStates } from "./alquiler.entity";
-import { Not, Repository } from "typeorm";
+import { FindManyOptions, Not, Repository } from "typeorm";
 import { Reseña } from "./reseña.entity";
 import { User, UserRole } from "src/user/user.entity";
 import { ReseñaDto } from "./dto/reseña.dto";
@@ -39,6 +39,10 @@ export class AlquilerService {
         }
 
         return queryBuilder.getMany();
+    }
+
+    async find(opts?: FindManyOptions<Alquiler>): Promise<Array<Alquiler>> {
+        return await this.alquilerRepository.find(opts)
     }
 
     async findOne(id: number): Promise<Alquiler> {
