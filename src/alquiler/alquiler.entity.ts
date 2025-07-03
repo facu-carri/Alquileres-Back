@@ -76,5 +76,5 @@ export class Alquiler {
     observacion?: string;
 
     @OneToOne(() => Reseña, reseña => reseña.alquiler, { cascade: true, nullable: true })
-    reseña?: Reseña;
+    resenia?: Reseña;
 }

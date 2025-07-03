@@ -88,7 +88,7 @@ export class MaquinariaService {
         
         const maquinarias = await query.getMany();
         for (let maquinaria of maquinarias) {
-            const maq_temp = await this.maquinariaRepository.findOne({ where: { id: maquinaria.id }, relations: ['reseñas'] });
+            const maq_temp = await this.maquinariaRepository.findOne({ where: { id: maquinaria.id }, relations: ['resenias'] });
             maquinaria.puntaje_promedio = maq_temp?.averageScore || null;
         }
         return maquinarias;
@@ -173,14 +173,14 @@ export class MaquinariaService {
             .createQueryBuilder('maquinaria')
             .leftJoinAndSelect('maquinaria.preguntas', 'pregunta')
             .leftJoinAndSelect('maquinaria.alquileres', 'alquiler')
-            .leftJoinAndSelect('maquinaria.reseñas', 'reseña')
-            .leftJoinAndSelect('reseña.autor', 'autor')
+            .leftJoinAndSelect('maquinaria.resenias', 'resenia')
+            .leftJoinAndSelect('resenia.autor', 'autor')
             .where('maquinaria.id = :id', { id })
             .getOne();
         if (!maquinaria) {
             throw new NotFoundException(`No se encontró la maquinaria con id ${id}`);
         }
-        maquinaria.reseñas = maquinaria.reseñas.map(reseña => {
+        maquinaria.resenias = maquinaria.resenias.map(reseña => {
             reseña.autor = { id : reseña.autor.id, nombre: reseña.autor.nombre, email: reseña.autor.email} as Partial<User>;
             return reseña;
         });

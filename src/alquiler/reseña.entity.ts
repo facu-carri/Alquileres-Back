@@ -3,7 +3,7 @@ import { Alquiler } from "./alquiler.entity";
 import { User } from "src/user/user.entity";
 import { Maquinaria } from "src/maquinaria/maquinaria.entity";
 
-@Entity({ name: 'reseñas' })
+@Entity({ name: 'resenias' })
 export class Reseña {
 
     constructor(usuario?: User, alquiler?: Alquiler, puntaje?: number, comentario?: string) {
@@ -27,14 +27,14 @@ export class Reseña {
     @Column({ default: 0 })
     likes: number;
 
-    @OneToOne(() => Alquiler, alquiler => alquiler.reseña, { onDelete: 'CASCADE' })
+    @OneToOne(() => Alquiler, alquiler => alquiler.resenia, { onDelete: 'CASCADE' })
     @JoinColumn({ name: 'alquiler_id' })
     alquiler: Alquiler;
     
     @Column({ name: 'maquinaria_id' })
     maquinariaId: number;
 
-    @ManyToOne(() => Maquinaria , maquinaria => maquinaria.reseñas, { onDelete: 'CASCADE' })
+    @ManyToOne(() => Maquinaria , maquinaria => maquinaria.resenias, { onDelete: 'CASCADE' })
     @JoinColumn({ name: 'maquinaria_id' })
     maquinaria: Partial<Maquinaria>;
 

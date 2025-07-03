@@ -22,7 +22,7 @@ export class AlquilerService {
         const queryBuilder = this.alquilerRepository.createQueryBuilder('alquiler')
             .leftJoinAndSelect('alquiler.maquinaria', 'maquinaria')
             .leftJoin('alquiler.usuario', 'usuario')
-            .leftJoinAndSelect('alquiler.reseña', 'reseña')
+            .leftJoinAndSelect('alquiler.resenia', 'resenia')
             .addSelect(['usuario.id', 'usuario.email', 'usuario.nombre']);
 
         const validStates = this.getValidStates();
@@ -72,7 +72,7 @@ export class AlquilerService {
     async reseñar(id: number, reseñaDto: ReseñaDto, user_id: number): Promise<Reseña> {
         let alquiler = await this.alquilerRepository.findOne({
             where: { id: id },
-            relations: ['usuario', 'maquinaria', 'reseña'],
+            relations: ['usuario', 'maquinaria', 'resenia'],
         });
         
         if (!alquiler) {
@@ -85,12 +85,13 @@ export class AlquilerService {
             throw new NotFoundException('User not found');
         }
 
-        if (alquiler.reseña) {
+        if (alquiler.resenia) {
             throw new BadRequestException('Alquiler ya tiene reseña');
         }
         if (alquiler.estado !== AlquilerStates.Finalizado) {
             throw new BadRequestException('El Alquiler no está Finalizado');
         }
+        
         if (user.id !== alquiler.usuarioId) {
             throw new BadRequestException('No tenés permiso para reseñar');
         }
