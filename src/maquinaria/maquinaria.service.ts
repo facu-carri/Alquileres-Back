@@ -184,6 +184,7 @@ export class MaquinariaService {
             reseña.autor = { id : reseña.autor.id, nombre: reseña.autor.nombre, email: reseña.autor.email} as Partial<User>;
             return reseña;
         });
+        maquinaria.resenias.sort((a, b) => b.fecha.getTime() - a.fecha.getTime());
         
         maquinaria.puntaje_promedio = maquinaria.averageScore;
 
