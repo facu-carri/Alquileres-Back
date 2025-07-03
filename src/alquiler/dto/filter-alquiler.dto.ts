@@ -11,7 +11,7 @@ export class FilterAlquilerDto {
     @IsOptional()
     @IsDefined()
     @IsString()
-    readonly codigo_reserva: string;
+    readonly texto?: string;
 
     @IsOptional()
     @IsDefined()

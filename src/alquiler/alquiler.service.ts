@@ -30,12 +30,15 @@ export class AlquilerService {
 
         if (filters) {
             if (filters.id) queryBuilder.andWhere('alquiler.id = :id', { id: filters.id });
-            if (filters.codigo_reserva) queryBuilder.andWhere('alquiler.codigo_reserva = :codigo_reserva', { codigo_reserva: filters.codigo_reserva });
             if (filters.estado) queryBuilder.andWhere('alquiler.estado = :estado', { estado: filters.estado });
             if (filters.user_id) queryBuilder.andWhere('alquiler.id_usuario = :user_id', { user_id: filters.user_id });
             if (filters.user_email) queryBuilder.andWhere('usuario.email = :user_email', { user_email: filters.user_email });
             if (filters.maquinaria_id) queryBuilder.andWhere('alquiler.id_maquinaria = :maquinaria_id', { maquinaria_id: filters.maquinaria_id });
             if (filters.maquinaria_inventario) queryBuilder.andWhere('maquinaria.inventario = :maquinaria_inventario', { maquinaria_inventario: filters.maquinaria_inventario });
+            if (filters.sucursal) queryBuilder.andWhere('maquinaria.sucursal = :sucursal', { sucursal: filters.sucursal });
+
+            // Potencialmente problematico
+            if (filters.texto) queryBuilder.andWhere('alquiler.codigo_reserva LIKE :texto OR maquinaria.nombre LIKE :texto', { texto: filters.texto });
         }
 
         return queryBuilder.getMany();

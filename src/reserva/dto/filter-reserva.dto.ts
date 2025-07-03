@@ -12,7 +12,7 @@ export class FilterReservaDto {
   @IsOptional()
   @IsDefined()
   @IsString()
-  readonly codigo_reserva: string;
+  readonly texto?: string;
 
   @IsOptional()
   @IsDefined()
