@@ -119,6 +119,15 @@ export class AlquilerService {
         await this.alquilerRepository.save(alquiler);
     }
 
+    async updateFechaReseña (id: number, fecha: Date): Promise<void> {
+        const res = await this.reseñaRepository.findOneBy({ id });
+        if (!res) {
+            throw new NotFoundException('Alquiler not found');
+        }
+        res.fecha = fecha;
+        await this.reseñaRepository.save(res);
+    }
+
     getValidStates(): string[] {
         return Object.values(AlquilerStates);
     }

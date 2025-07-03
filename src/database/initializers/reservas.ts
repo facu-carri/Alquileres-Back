@@ -51,7 +51,7 @@ export class InitializeReservas {
         const res = await this.reservaService.create(reserva2);
         await this.reservaService.confirmarReserva(res.id);
         const alquiler = await this.alquilerService.findOneByCode(res.codigo_reserva);
-        this.alquilerService.updateFechaInicio(alquiler.id, reserva.fecha_inicio);
+        this.alquilerService.updateFechaInicio(alquiler.id, reserva2.fecha_inicio);
         await this.alquilerService.confirm(alquiler.id, 'Observacion');
 
 
@@ -80,7 +80,8 @@ export class InitializeReservas {
             if (c % 2 === 0) {
                 await this.alquilerService.confirm(alquiler.id, 'Observacion');
                 let dto = new ReseñaDto(5, 'Excelente');
-                await this.alquilerService.reseñar(alquiler.id, dto, user.id);
+                let res = await this.alquilerService.reseñar(alquiler.id, dto, user.id);
+                this.alquilerService.updateFechaReseña(res.id, alquiler.fecha_fin);
             }
             c++;
         }
@@ -126,13 +127,14 @@ export class InitializeReservas {
 
             let dto
             if (Math.random() < 0.5) {
-                dto = new ReseñaDto(score, reviewMessages[score]);   
+                dto = new ReseñaDto(score, reviewMessages[score-1]);   
             }
             else {
                 dto = new ReseñaDto(score);
             }
             
-            await this.alquilerService.reseñar(alquiler.id, dto, randomUser.id);
+            let reseña = await this.alquilerService.reseñar(alquiler.id, dto, randomUser.id);
+            this.alquilerService.updateFechaReseña(reseña.id, alquiler.fecha_fin);
         }
     }
 }
