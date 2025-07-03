@@ -97,7 +97,7 @@ export class ReservaService {
             throw new NotFoundException('Reserva not found');
         }
 
-        if (reserva.fecha_inicio > new Date()) {
+        if (reserva.fecha_inicio > new Date() && reserva.estado === ReservaStates.Activa) {
             throw new BadRequestException('La reserva aun no ha comenzado.');
         }
 
