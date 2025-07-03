@@ -6,6 +6,7 @@ import { UserService } from "src/user/user.service";
 import { MaquinariaStates } from "src/maquinaria/maquinaria.entity";
 import { AlquilerService } from "src/alquiler/alquiler.service";
 import { ReseñaDto } from "src/alquiler/dto/reseña.dto";
+import { Alquiler } from "src/alquiler/alquiler.entity";
 
 export class InitializeReservas {
     private readonly HARDCODED_EMAIL = 'cliente@hotmail.com';
@@ -37,7 +38,7 @@ export class InitializeReservas {
         const reserva = new CreateReservaDto();
         reserva.id_maquinaria = maquinaria[0].id;
         reserva.email = user.email;
-        reserva.fecha_inicio = new Date(Date.now() - this.DAY_CONSTANT * 2);
+        reserva.fecha_inicio = new Date(Date.now());
         reserva.fecha_fin = new Date(reserva.fecha_inicio.getTime() + this.DAY_CONSTANT * 5);
         await this.reservaService.create(reserva);
 
@@ -50,6 +51,7 @@ export class InitializeReservas {
         const res = await this.reservaService.create(reserva2);
         await this.reservaService.confirmarReserva(res.id);
         const alquiler = await this.alquilerService.findOneByCode(res.codigo_reserva);
+        this.alquilerService.updateFechaInicio(alquiler.id, reserva.fecha_inicio);
         await this.alquilerService.confirm(alquiler.id, 'Observacion');
 
 
@@ -73,8 +75,9 @@ export class InitializeReservas {
             reserva.fecha_fin = new Date(reserva.fecha_inicio.getTime() + this.DAY_CONSTANT * 5);
             const res = await this.reservaService.create(reserva);
             await this.reservaService.confirmarReserva(res.id);
+            const alquiler = await this.alquilerService.findOneByCode(res.codigo_reserva);
+            this.alquilerService.updateFechaInicio(alquiler.id, reserva.fecha_inicio);
             if (c % 2 === 0) {
-                const alquiler = await this.alquilerService.findOneByCode(res.codigo_reserva);
                 await this.alquilerService.confirm(alquiler.id, 'Observacion');
                 let dto = new ReseñaDto(5, 'Excelente');
                 await this.alquilerService.reseñar(alquiler.id, dto, user.id);
@@ -114,6 +117,8 @@ export class InitializeReservas {
             await this.reservaService.confirmarReserva(res.id);
 
             const alquiler = await this.alquilerService.findOneByCode(res.codigo_reserva);
+            this.alquilerService.updateFechaInicio(alquiler.id, reserva.fecha_inicio);
+
             await this.alquilerService.confirm(alquiler.id, 'Observacion');
             let score = Math.floor(Math.random() * 5);
 

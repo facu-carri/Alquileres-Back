@@ -97,6 +97,10 @@ export class ReservaService {
             throw new NotFoundException('Reserva not found');
         }
 
+        if (reserva.fecha_inicio > new Date()) {
+            throw new BadRequestException('La reserva aun no ha comenzado.');
+        }
+
         switch (reserva.estado) {
             case ReservaStates.Cancelada:
                 reserva.estado = ReservaStates.Reembolsada;
