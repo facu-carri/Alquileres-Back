@@ -13,7 +13,7 @@ import { UserRole } from 'src/user/user.entity';
 export class EstadisticasService {
 
     // define si mandar o no los campos que tienen valor 0. False para testear la salida, True para hacer mas facil la implementacion en front
-    readonly SEND_ALL = false;
+    readonly SEND_ALL = true;
     constructor(
         @InjectRepository(User)
         private readonly userRepository: Repository<User>,

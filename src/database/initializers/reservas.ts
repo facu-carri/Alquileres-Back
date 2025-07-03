@@ -52,7 +52,7 @@ export class InitializeReservas {
         await this.reservaService.confirmarReserva(res.id);
         const alquiler = await this.alquilerService.findOneByCode(res.codigo_reserva);
         this.alquilerService.updateFechaInicio(alquiler.id, reserva2.fecha_inicio);
-        await this.alquilerService.confirm(alquiler.id, 'Observacion');
+        await this.alquilerService.confirm(alquiler.id);
 
 
         // Reservas futuras (en 10 dias)
@@ -78,7 +78,10 @@ export class InitializeReservas {
             const alquiler = await this.alquilerService.findOneByCode(res.codigo_reserva);
             this.alquilerService.updateFechaInicio(alquiler.id, reserva.fecha_inicio);
             if (c % 2 === 0) {
-                await this.alquilerService.confirm(alquiler.id, 'Observacion');
+                if (Math.random() < 0.1) {
+                    await this.alquilerService.confirm(alquiler.id, 'Revisar cubiertas');
+                }
+                else await this.alquilerService.confirm(alquiler.id);
                 let dto = new ReseñaDto(5, 'Excelente');
                 let res = await this.alquilerService.reseñar(alquiler.id, dto, user.id);
                 this.alquilerService.updateFechaReseña(res.id, alquiler.fecha_fin);
@@ -120,7 +123,12 @@ export class InitializeReservas {
             const alquiler = await this.alquilerService.findOneByCode(res.codigo_reserva);
             this.alquilerService.updateFechaInicio(alquiler.id, reserva.fecha_inicio);
 
-            await this.alquilerService.confirm(alquiler.id, 'Observacion');
+            if (Math.random() < 0.1) {
+                await this.alquilerService.confirm(alquiler.id, 'Revisar cubiertas');
+            }
+            else await this.alquilerService.confirm(alquiler.id);
+
+            await this.alquilerService.confirm(alquiler.id);
             let score = Math.floor(Math.random() * 5);
 
             if (score < 4) score++;
