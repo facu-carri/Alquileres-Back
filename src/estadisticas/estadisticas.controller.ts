@@ -10,16 +10,16 @@ export class EstadisticasController {
     ) {}
     @Get('/usuarios')
     async getEstadisticas(@Query () query: EstadisticasDto): Promise<any> {
-        return this.estadisticasService.getUserStats(query);
+        return await this.estadisticasService.getUserStats(query);
     }
 
     @Get('/alquileres')
     async getEstadisticasAlquileres(@Query () query: EstadisticasDto): Promise<any> {
-        return this.estadisticasService.getAlquilerStats(query);
+        return await this.estadisticasService.getAlquilerStats(query);
     }
 
     @Get('/ingresos')
     async getEstadisticasIngresos(@Query () query: EstadisticasDto): Promise<any> {
-        return this.estadisticasService.getIngresos(query);
+        return await this.estadisticasService.getIngresos(query);
     }
 }
