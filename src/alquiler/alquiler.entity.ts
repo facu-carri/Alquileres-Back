@@ -19,7 +19,7 @@ export class Alquiler {
             this.maquinaria = reserva.maquinaria;
             this.codigo_reserva = reserva.codigo_reserva;
             this.usuario = reserva.usuario;
-            this.fecha_inicio = reserva.fecha_inicio;
+            this.fecha_inicio = new Date();
             this.fecha_fin = reserva.fecha_fin;
             this.sucursal = reserva.sucursal;      
             this.precio = reserva.precio_total;  

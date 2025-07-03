@@ -37,12 +37,7 @@ export class ReservaController {
     @UseGuards(RoleGuard.bind(RoleGuard, [UserRole.Empleado]))
     @Patch(':id/confirmar')
     async confirmarReserva(@Param('id', ParseIntPipe) id: number) {
-        try {
-            await this.reservaService.confirmarReserva(id);
-            return { message: 'Reserva confirmada exitosamente.' };
-        } catch (error) {
-            return { error: error.message || 'Error al confirmar la reserva.' };
-        }
+        return await this.reservaService.confirmarReserva(id);
     }
 
     @UseGuards(RoleGuard.bind(RoleGuard, [UserRole.Cliente, UserRole.Empleado, UserRole.Admin]))

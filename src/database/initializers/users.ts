@@ -5,7 +5,7 @@ import { UserService } from "src/user/user.service"
 
 export class InitializeUsers {
 
-    readonly randomUserCount = 10;
+    readonly randomUserCount = 50;
 
     private users: Record<UserRole, UserDto[]> = {
         [UserRole.Admin]: [

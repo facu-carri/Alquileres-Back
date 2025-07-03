@@ -109,6 +109,16 @@ export class AlquilerService {
         return reseña;
     }
 
+    // Funcion para programar ejemplos
+    async updateFechaInicio(id: number, fecha_inicio: Date): Promise<void> {
+        const alquiler = await this.alquilerRepository.findOneBy({ id });
+        if (!alquiler) {
+            throw new NotFoundException('Alquiler not found');
+        }
+        alquiler.fecha_inicio = fecha_inicio;
+        await this.alquilerRepository.save(alquiler);
+    }
+
     getValidStates(): string[] {
         return Object.values(AlquilerStates);
     }
