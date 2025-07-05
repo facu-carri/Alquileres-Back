@@ -90,6 +90,6 @@ export class Alquiler {
     @OneToOne(() => Reseña, reseña => reseña.alquiler, { cascade: true, nullable: true })
     resenia?: Reseña;
 
-    @Column({ nullable: false })
+    @Column({ nullable: false, default: 0 })
     deuda?: number
 }
