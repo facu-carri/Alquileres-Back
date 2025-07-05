@@ -13,7 +13,8 @@ export enum ReservaStates {
     Activa = 'Activa',
     Cancelada = 'Cancelada',
     Finalizada = 'Finalizada',
-    Reembolsada = 'Reembolsada'
+    Reembolsada = 'Reembolsada',
+    Vencida = 'Vencida'
 }
 
 @Entity({ name: 'reservas' })

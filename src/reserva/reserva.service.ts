@@ -4,7 +4,7 @@ import { Maquinaria } from 'src/maquinaria/maquinaria.entity';
 import { Politica } from "src/utils/enums";
 import { User, UserRole } from 'src/user/user.entity';
 import { CreateReservaDto } from './dto/create-reserva.dto';
-import { Repository } from 'typeorm';
+import { LessThan, Repository } from 'typeorm';
 import { Reserva, ReservaStates } from './reserva.entity';
 import { FilterReservaDto } from './dto/filter-reserva.dto';
 import { sendMail } from 'src/utils/Mailer';
@@ -23,6 +23,14 @@ export class ReservaService {
         @InjectRepository(Alquiler)
         private readonly alquilerRepository: Repository<Alquiler>
     ) {}
+
+    async updateTimeout() {
+        let res = await this.reservaRepository.find({where: {estado: ReservaStates.Activa, fecha_fin: LessThan(new Date())}});
+        for (let reserva of res) {
+            reserva.estado = ReservaStates.Vencida;
+            await this.reservaRepository.save(reserva);
+        }
+    }
 
     async create(dto: CreateReservaDto): Promise<Reserva> {
         const maquinaria = await this.maquinariaRepository.findOneBy({ id: dto.id_maquinaria });
@@ -67,6 +75,8 @@ export class ReservaService {
     }
 
     async findAll(filters?: Partial<FilterReservaDto>, rol?: UserRole): Promise<Reserva[]> {
+        await this.updateTimeout();
+
         const queryBuilder = this.reservaRepository.createQueryBuilder('reserva')
             .leftJoinAndSelect('reserva.maquinaria', 'maquinaria')
             .leftJoin('reserva.usuario', 'usuario')
@@ -116,6 +126,8 @@ export class ReservaService {
                 throw new BadRequestException('La reserva ya está finalizada.');
             case ReservaStates.Reembolsada:
                 throw new BadRequestException('La reserva ya ha sido reembolsada.');
+            case ReservaStates.Vencida:
+                throw new BadRequestException('La reserva ya está vencida.');
             default:
                 // No se debería llegar a este punto
                 throw new BadRequestException('La reserva no puede ser confirmada.');
@@ -178,6 +190,7 @@ export class ReservaService {
     }
 
     async findOne(id: number): Promise<any> {
+        await this.updateTimeout();
         const reserva = await this.reservaRepository
             .createQueryBuilder('reserva')
             .leftJoinAndSelect('reserva.maquinaria', 'maquinaria')
@@ -195,11 +208,11 @@ export class ReservaService {
     getValidStates(rol: UserRole): string[] {
         switch (rol) {
             case UserRole.Cliente:
-                return [ReservaStates.Activa, ReservaStates.Cancelada, ReservaStates.Reembolsada];
+                return [ReservaStates.Activa, ReservaStates.Cancelada, ReservaStates.Reembolsada, ReservaStates.Vencida];
             case UserRole.Empleado:
-                return [ReservaStates.Activa, ReservaStates.Cancelada, ReservaStates.Reembolsada];
+                return [ReservaStates.Activa, ReservaStates.Cancelada, ReservaStates.Reembolsada, ReservaStates.Vencida];
             case UserRole.Admin:
-                return [ReservaStates.Activa, ReservaStates.Cancelada, ReservaStates.Reembolsada];
+                return [ReservaStates.Activa, ReservaStates.Cancelada, ReservaStates.Reembolsada, ReservaStates.Vencida];
             default:
                 throw new BadRequestException('Rol no válido para obtener estados de reserva');
         }

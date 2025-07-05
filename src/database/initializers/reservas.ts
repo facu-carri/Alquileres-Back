@@ -144,5 +144,16 @@ export class InitializeReservas {
             let reseña = await this.alquilerService.reseñar(alquiler.id, dto, randomUser.id);
             this.alquilerService.updateFechaReseña(reseña.id, alquiler.fecha_fin);
         }
+
+        // test reserva vencida
+        const reserva = new CreateReservaDto();
+
+        reserva.id_maquinaria = maquinaria[0].id;
+        reserva.email = users[0].email;
+
+        reserva.fecha_inicio = new Date(Date.now() - this.DAY_CONSTANT * 10);
+        reserva.fecha_fin = new Date(reserva.fecha_inicio.getTime() + 86400000);
+
+        let res = await this.reservaService.create(reserva);
     }
 }
