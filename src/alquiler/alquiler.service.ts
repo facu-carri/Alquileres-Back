@@ -1,7 +1,7 @@
 import { BadRequestException, Injectable, NotFoundException } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Alquiler, AlquilerStates } from "./alquiler.entity";
-import { FindManyOptions, Not, Repository } from "typeorm";
+import { FindManyOptions, LessThan, Not, Repository } from "typeorm";
 import { Reseña } from "./reseña.entity";
 import { User, UserRole } from "src/user/user.entity";
 import { ReseñaDto } from "./dto/reseña.dto";
@@ -18,7 +18,23 @@ export class AlquilerService {
         private readonly userRepository: Repository<User>,
     ) {}
 
+    async updateTimeout() {
+        let alq = await this.alquilerRepository.find({where: {estado: AlquilerStates.Retrasado, deuda: Not(0)}});
+        for (let alquiler of alq) {
+            alquiler.deuda = alquiler.calcularDeuda();
+            await this.alquilerRepository.save(alquiler);
+        }
+
+        alq = await this.alquilerRepository.find({where: {estado: AlquilerStates.Activo, fecha_fin: LessThan(new Date())}});
+        for (let alquiler of alq) {
+            alquiler.estado = AlquilerStates.Retrasado;
+            alquiler.deuda = alquiler.calcularDeuda();
+            await this.alquilerRepository.save(alquiler);
+        }
+    }
+
     async findAll(filters?: Partial<FilterAlquilerDto>, rol?: UserRole): Promise<Alquiler[]> {
+        this.updateTimeout();
         const queryBuilder = this.alquilerRepository.createQueryBuilder('alquiler')
             .leftJoinAndSelect('alquiler.maquinaria', 'maquinaria')
             .leftJoin('alquiler.usuario', 'usuario')
@@ -44,14 +60,18 @@ export class AlquilerService {
         return queryBuilder.getMany();
     }
 
+    // Este no se para que se usa, asi que no hago que actualice
     async find(opts?: FindManyOptions<Alquiler>): Promise<Array<Alquiler>> {
         return await this.alquilerRepository.find(opts)
     }
 
     async findOne(id: number): Promise<Alquiler> {
+        this.updateTimeout();
         return await this.alquilerRepository.findOneBy({ id });
     }
 
+
+    // Este es de uso interno asi que ignora los timeouts
     async findOneByCode(codigo_reserva: string): Promise<Alquiler> {
         let alquiler = await this.alquilerRepository.findOneBy({ codigo_reserva });
         if (!alquiler) {
@@ -64,6 +84,9 @@ export class AlquilerService {
         const alquiler = await this.alquilerRepository.findOneBy({ id });
         if (!alquiler) {
             throw new Error('Alquiler not found');
+        }
+        if (alquiler.estado === AlquilerStates.Retrasado) {
+            alquiler.precio = alquiler.precio + alquiler.deuda;
         }
         alquiler.estado = AlquilerStates.Finalizado;
         if (observacion && observacion.trim() !== '') {

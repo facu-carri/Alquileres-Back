@@ -7,7 +7,8 @@ import { Reserva } from "src/reserva/reserva.entity";
 
 export enum AlquilerStates {
     Activo = 'Activo',
-    Finalizado = 'Finalizado'
+    Finalizado = 'Finalizado',
+    Retrasado = 'Retrasado'
 }
 
 @Entity({ name: 'alquileres' })
@@ -25,6 +26,12 @@ export class Alquiler {
             this.precio = reserva.precio_total;  
         }
         this.estado = estado || AlquilerStates.Activo;
+    }
+
+    calcularDeuda(): number {
+        if (this.estado !== AlquilerStates.Retrasado) return 0;
+        let dias = Math.ceil((this.fecha_fin.getTime() - this.fecha_inicio.getTime()) / (1000 * 60 * 60 * 24)); 
+        return this.precio * dias * 1.5;
     }
 
     @PrimaryGeneratedColumn()
@@ -77,4 +84,7 @@ export class Alquiler {
 
     @OneToOne(() => Reseña, reseña => reseña.alquiler, { cascade: true, nullable: true })
     resenia?: Reseña;
+
+    @Column({ nullable: false })
+    deuda?: number
 }

@@ -154,6 +154,20 @@ export class InitializeReservas {
         reserva.fecha_inicio = new Date(Date.now() - this.DAY_CONSTANT * 10);
         reserva.fecha_fin = new Date(reserva.fecha_inicio.getTime() + 86400000);
 
-        let res = await this.reservaService.create(reserva);
+        await this.reservaService.create(reserva);
+
+        // test alquiler retrasado
+        const reserva2 = new CreateReservaDto();
+
+        reserva2.id_maquinaria = maquinaria[0].id;
+        reserva2.email = users[0].email;
+
+        reserva2.fecha_inicio = new Date(Date.now() - this.DAY_CONSTANT * 5);
+        reserva2.fecha_fin = new Date(reserva2.fecha_inicio.getTime() + 86400000);
+        
+        let res2 = await this.reservaService.create(reserva2);
+        await this.reservaService.confirmarReserva(res2.id);
+        const alquiler2 = await this.alquilerService.findOneByCode(res2.codigo_reserva);
+        this.alquilerService.updateFechaInicio(alquiler2.id, reserva2.fecha_inicio);
     }
 }
