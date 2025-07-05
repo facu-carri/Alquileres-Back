@@ -205,7 +205,7 @@ export class MaquinariaService {
         return await this.maquinariaRepository.save(maquinaria);
     }
 
-    async changeState(id: number, state: string, user: User): Promise<Maquinaria> {
+    async changeState(id: number, state: string, user: User, fecha?: Date): Promise<Maquinaria> {
         const maquinaria = await this.findOne(id);
         const rol = user.rol
 
@@ -218,14 +218,35 @@ export class MaquinariaService {
             throw new BadRequestException(`El estado ${state} no es válido para el rol ${rol}`);
         }
 
-        maquinaria.state = state as MaquinariaStates;
-
-        if (maquinaria.state !== MaquinariaStates.Disponible) {
-            const reservas = await this.reservaService.findAll({ maquinaria_id: maquinaria.id })
-            
-            reservas.filter(reserva => reserva.estado == ReservaStates.Activa).forEach(reserva => this.reservaService.cancelarReserva(reserva.id, user))
+        if (maquinaria.state === state) {
+            throw new BadRequestException(`La maquinaria ya se encuentra en el estado ${state}`);
         }
 
+        // Manejar cancelaciones
+        if ( maquinaria.state === MaquinariaStates.Disponible ) {
+            // Fetch reservas
+            let query = this.reservaRepository.createQueryBuilder('reserva')
+                .leftJoinAndSelect('reserva.maquinaria', 'maquinaria')
+                .where('maquinaria.id = :id', { id })
+                .andWhere('reserva.estado = :estado', { estado: ReservaStates.Activa })
+                // Si mantenimiento y se dio fecha de fin, tomar las anteriores a la fecha
+                if ( state === MaquinariaStates.Mantenimiento && fecha !== undefined ) {
+                    query.andWhere('reserva.fecha_inicio < :fecha', { fecha: fecha })
+
+                    // Actualizar mantenimiento
+                    maquinaria.fecha_mantenimiento = fecha
+                }
+
+            let reservas = await query.getMany()
+            for ( let reserva of reservas ) {
+                reserva.politica = Politica.devolucion_100
+                reserva.estado = ReservaStates.Cancelada
+                await this.reservaRepository.save(reserva)
+            }
+
+        
+        }
+        maquinaria.state = state as MaquinariaStates
         return await this.maquinariaRepository.save(maquinaria);
     }
 

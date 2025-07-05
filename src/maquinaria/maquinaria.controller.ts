@@ -102,13 +102,14 @@ export class MaquinariaController {
     async changeState(
         @Param('id', ParseIntPipe) id: number,
         @Body('estado') estado: string,
+        @Body('fecha') fecha: Date,
         @Req() req
     ): Promise<any> {
         if (!estado) throw new BadRequestException('Se requiere un estado válido');
         const user = req['user']
 
         try {
-            await this.maquinariaService.changeState(id, estado, req.user);
+            await this.maquinariaService.changeState(id, estado, req.user, fecha);
             return { message: 'Estado actualizado correctamente a ' + estado };
         } catch (error) {
             return { error: error.message || 'Error al actualizar el estado' };

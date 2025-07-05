@@ -85,6 +85,9 @@ export class Maquinaria {
 
     puntaje_promedio? : number
 
+    @Column({ nullable: true })
+    fecha_mantenimiento?: Date
+
     @Expose()
     get averageScore(): number | null {
         if (!this.resenias || this.resenias.length === 0) return null;
