@@ -23,15 +23,17 @@ export class Alquiler {
             this.fecha_inicio = new Date();
             this.fecha_fin = reserva.fecha_fin;
             this.sucursal = reserva.sucursal;      
-            this.precio = reserva.precio_total;  
+            this.precio = reserva.precio_total; 
+            this.precio_dia = reserva.precio_dia; 
         }
         this.estado = estado || AlquilerStates.Activo;
     }
 
     calcularDeuda(): number {
         if (this.estado !== AlquilerStates.Retrasado) return 0;
-        let dias = Math.ceil((this.fecha_fin.getTime() - this.fecha_inicio.getTime()) / (1000 * 60 * 60 * 24)); 
-        return this.precio * dias * 1.5;
+        let dias = Math.ceil((new Date().getTime() - this.fecha_fin.getTime()) / (1000 * 60 * 60 * 24)); 
+        let deuda = this.precio_dia * dias * 1.5;
+        return deuda;
     }
 
     @PrimaryGeneratedColumn()
@@ -59,6 +61,9 @@ export class Alquiler {
 
     @Column({ nullable: false })
     fecha_fin: Date;
+
+    @Column({ nullable: false })
+    precio_dia: number;
 
     @Column({ nullable: false })
     precio: number;
