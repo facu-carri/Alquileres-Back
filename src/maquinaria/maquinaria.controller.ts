@@ -2,7 +2,7 @@ import { Controller, Get, Post, Put, Body, Param, Patch, Query, UseInterceptors,
 import { Maquinaria } from './maquinaria.entity';
 import { MaquinariaDto } from './dto/maquinaria.dto';
 import { FilterMaquinariaDto } from './dto/filter-maquinaria.dto';
-import { UpdateMaquinariaDto } from './dto/update-maquinaria.dto';
+import { UpdateMaquinariaDto, UpdateStateDto } from './dto/update-maquinaria.dto';
 import { CheckAvailabilityDto } from './dto/check-availability.dto';
 import { MaquinariaService } from './maquinaria.service';
 import { FileInterceptor } from '@nestjs/platform-express';
@@ -101,15 +101,14 @@ export class MaquinariaController {
     @Patch(':id/estado')
     async changeState(
         @Param('id', ParseIntPipe) id: number,
-        @Body('estado') estado: string,
-        @Body('fecha') fecha: Date,
+        @Body() {estado, fecha}: UpdateStateDto,
         @Req() req
     ): Promise<any> {
         if (!estado) throw new BadRequestException('Se requiere un estado válido');
         const user = req['user']
 
         try {
-            await this.maquinariaService.changeState(id, estado, req.user, fecha);
+            await this.maquinariaService.changeState(id, estado, req.user, fecha ?? null);
             return { message: 'Estado actualizado correctamente a ' + estado };
         } catch (error) {
             return { error: error.message || 'Error al actualizar el estado' };
