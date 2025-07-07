@@ -14,13 +14,9 @@ export class CreateReservaDto {
     @IsNotEmpty()
     email: string;
 
-    @IsString()
-    @IsDateString()
     @IsNotEmpty()
     fecha_inicio: Date;
 
-    @IsString()
-    @IsDateString()
     @IsNotEmpty()
     fecha_fin: Date;
 
