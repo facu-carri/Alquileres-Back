@@ -52,7 +52,7 @@ export class ReservaController {
 
     @Post()
     @UseGuards(AuthGuard)
-    create(@Body() createReservaDto: CreateReservaDto) {
-        return this.reservaService.create(createReservaDto);
+    async create(@Body() createReservaDto: CreateReservaDto) {
+        return await this.reservaService.create(createReservaDto);
     }
 }
