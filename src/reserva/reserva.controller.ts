@@ -5,6 +5,7 @@ import { UserRole } from 'src/user/user.entity';
 import { RoleGuard } from 'src/guards/role.guard';
 import { FilterReservaDto } from './dto/filter-reserva.dto';
 import { UserInterceptor } from 'src/interceptors/user-interceptor';
+import { AuthGuard } from 'src/auth/auth.guard';
 
 @Controller('reserva')
 export class ReservaController {
@@ -50,7 +51,7 @@ export class ReservaController {
     }
 
     @Post()
-    @UseGuards(RoleGuard.bind(RoleGuard, [UserRole.Cliente, UserRole.Empleado]))
+    @UseGuards(AuthGuard)
     create(@Body() createReservaDto: CreateReservaDto) {
         return this.reservaService.create(createReservaDto);
     }
