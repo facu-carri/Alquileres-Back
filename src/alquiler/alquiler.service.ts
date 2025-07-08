@@ -41,7 +41,7 @@ export class AlquilerService {
             .leftJoinAndSelect('alquiler.resenia', 'resenia')
             .addSelect(['usuario.id', 'usuario.email', 'usuario.nombre']);
 
-        const validStates = this.getValidStates();
+        const validStates = this.getValidStates(rol || UserRole.Cliente);
         queryBuilder.andWhere('alquiler.estado IN (:...validStates)', { validStates });
 
         if (filters) {
@@ -154,7 +154,14 @@ export class AlquilerService {
         await this.reseñaRepository.save(res);
     }
 
-    getValidStates(): string[] {
-        return Object.values(AlquilerStates);
+    getValidStates(rol: UserRole): string[] {
+        switch (rol) {
+            case UserRole.Admin:
+                return Object.values(AlquilerStates);
+            case UserRole.Empleado:
+                return [AlquilerStates.Activo, AlquilerStates.Retrasado];
+            case UserRole.Cliente:
+                return [AlquilerStates.Activo, AlquilerStates.Retrasado, AlquilerStates.Finalizado];
+        }
     }
 }

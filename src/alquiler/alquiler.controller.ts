@@ -22,7 +22,7 @@ export class AlquilerController {
 
     @Get('estados')
     getStates(): string[] {
-        return this.alquilerService.getValidStates();
+        return this.alquilerService.getValidStates(UserRole.Cliente);
     }
 
     @Get(':id')
