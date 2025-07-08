@@ -123,7 +123,15 @@ export class MaquinariaService {
                 fecha_fin: MoreThanOrEqual(bufferInicio),
             },
         });
-        return reservas.length === 0;
+        const alquileres = await this.alquilerService.find({
+            where: {
+                maquinariaId: id,
+                estado: AlquilerStates.Activo,
+                fecha_inicio: LessThanOrEqual(bufferFin),
+                fecha_fin: MoreThanOrEqual(bufferInicio),
+            },
+        })
+        return reservas.length === 0 && alquileres.length === 0;
     }
 
     async getOccupiedDates(id: number): Promise<{ fecha_inicio: string, fecha_fin: string }[]> {
@@ -224,21 +232,29 @@ export class MaquinariaService {
 
         // Manejar cancelaciones
         if ( maquinaria.state === MaquinariaStates.Disponible ) {
+            // Check alquileres
+            const alquileres = await this.alquilerService.find({
+            where: {
+                maquinariaId: id,
+                estado: AlquilerStates.Activo
+            }})
+            if (alquileres.length > 0) {
+                throw new BadRequestException(`La maquinaria con id ${id} tiene alquileres activos`);
+            }
             // Fetch reservas
             let query = this.reservaRepository.createQueryBuilder('reserva')
-                .leftJoinAndSelect('reserva.maquinaria', 'maquinaria')
-                .where('maquinaria.id = :id', { id })
+                .where('reserva.maquinaria = :maquinaria', { maquinaria: id })
                 .andWhere('reserva.estado = :estado', { estado: ReservaStates.Activa })
-                // Si mantenimiento y se dio fecha de fin, tomar las anteriores a la fecha
                 if ( state === MaquinariaStates.Mantenimiento && fecha !== undefined ) {
-                    query.andWhere('reserva.fecha_inicio < :fecha', { fecha: fecha })
-
-                    // Actualizar mantenimiento
                     maquinaria.fecha_mantenimiento = fecha
                 }
 
             let reservas = await query.getMany()
             for ( let reserva of reservas ) {
+                // Si mantenimiento y se dio fecha de fin, tomar las anteriores a la fecha
+                if ( fecha !== undefined && reserva.fecha_inicio > fecha  && state === MaquinariaStates.Mantenimiento ) {
+                    continue;
+                }
                 reserva.politica = Politica.devolucion_100
                 reserva.estado = ReservaStates.Cancelada
                 await this.reservaRepository.save(reserva)
