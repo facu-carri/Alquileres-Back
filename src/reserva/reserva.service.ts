@@ -102,7 +102,6 @@ export class ReservaService {
 
         for (let reserva of lista) {
             let alquileres = await this.alquilerRepository.find({where: {maquinaria: reserva.maquinaria, estado: In([AlquilerStates.Activo, AlquilerStates.Retrasado])}});
-            console.log(alquileres);
             if (alquileres.length > 0) {
                 reserva.hideButton = true;
             }
