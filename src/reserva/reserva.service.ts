@@ -4,12 +4,12 @@ import { Maquinaria } from 'src/maquinaria/maquinaria.entity';
 import { Politica } from "src/utils/enums";
 import { User, UserRole } from 'src/user/user.entity';
 import { CreateReservaDto } from './dto/create-reserva.dto';
-import { LessThan, Repository } from 'typeorm';
+import { In, LessThan, Repository } from 'typeorm';
 import { Reserva, ReservaStates } from './reserva.entity';
 import { FilterReservaDto } from './dto/filter-reserva.dto';
 import { sendMail } from 'src/utils/Mailer';
 import { JwtPayload } from 'src/auth/jwt/jwtPayload';
-import { Alquiler } from 'src/alquiler/alquiler.entity';
+import { Alquiler, AlquilerStates } from 'src/alquiler/alquiler.entity';
 
 @Injectable()
 export class ReservaService {
@@ -98,7 +98,16 @@ export class ReservaService {
             if (filters.texto) queryBuilder.andWhere('reserva.codigo_reserva LIKE :texto OR maquinaria.nombre LIKE :texto', { texto: filters.texto });
         }
 
-        return queryBuilder.getMany();
+        let lista = await queryBuilder.getMany();
+
+        for (let reserva of lista) {
+            let alquileres = await this.alquilerRepository.find({where: {maquinaria: reserva.maquinaria, estado: In([AlquilerStates.Activo, AlquilerStates.Retrasado])}});
+            console.log(alquileres);
+            if (alquileres.length > 0) {
+                reserva.hideButton = true;
+            }
+        }
+        return lista;
     }
 
     async confirmarReserva(id: number): Promise<Reserva> {
@@ -119,6 +128,12 @@ export class ReservaService {
                 reserva.estado = ReservaStates.Reembolsada;
                 break;
             case ReservaStates.Activa:
+                const alquileres = await this.alquilerRepository.find({where: {maquinaria: reserva.maquinaria, estado: AlquilerStates.Activo || AlquilerStates.Retrasado}});
+                if (alquileres.length > 0) {
+                    console.log('Alquiler activo')
+                    console.log(alquileres)
+                    throw new BadRequestException('La maquinaria tiene un alquiler activo. Confirmá su devolución primero.');
+                }
                 reserva.estado = ReservaStates.Finalizada;
                 await this.alquilerRepository.save(new Alquiler(reserva));
                 break;

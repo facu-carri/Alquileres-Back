@@ -68,4 +68,6 @@ export class Reserva {
         nullable: false
     })
     estado: ReservaStates
+
+    hideButton: boolean = false
 }
