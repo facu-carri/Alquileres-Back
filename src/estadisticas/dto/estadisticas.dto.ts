@@ -9,5 +9,5 @@ export class EstadisticasDto {
     readonly fecha_fin?: Date;
 
     @IsOptional()
-    readonly tamaño?: string;
+    readonly tam?: string;
 }
