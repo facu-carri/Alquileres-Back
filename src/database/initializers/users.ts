@@ -71,13 +71,14 @@ export class InitializeUsers {
 
         let i: number;
         for ( i = 0; i < this.randomUserCount; i++) {
+            let dni = 10000000 + i;
             const user: UserDto = {
                 nombre: `Test${i}`,
                 apellido: `Tester${i}`,
                 password: '12345678',
                 email: `test${i}@hotmail.com`,
                 telefono: '+542215555555',
-                dni: '56789012',
+                dni: dni.toString(),
                 nacimiento: '2001-01-01'
             }
             await this.inyectUser(user, UserRole.Cliente)

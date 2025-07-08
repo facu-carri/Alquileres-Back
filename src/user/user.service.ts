@@ -53,6 +53,10 @@ export class UserService {
         return await this.userRepository.findOneBy({ email })
     }
 
+    async findOneByDni(dni: string): Promise<User> {
+        return await this.userRepository.findOneBy({ dni })
+    }
+
     async existBy(obj: Partial<User>): Promise<boolean> {
         return !!(await this.userRepository.findOneBy(obj))
     }
@@ -88,6 +92,8 @@ export class UserService {
 
     async modifyUser(obj: Partial<User>, updateUserDto: UpdateUserDto, role: UserRole): Promise<any> {
         await this.getTargetEmail(obj, role, [UserRole.Admin])
+        const temp = await this.findOneByDni(updateUserDto.dni)
+        if (temp && temp.id != obj.id) throw new BadRequestException('El DNI ya se encuentra registrado.')
         return await this.update(obj, updateUserDto)
     }
 

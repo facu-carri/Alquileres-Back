@@ -21,9 +21,14 @@ export class RegisterService {
     }
     
     async register(userData: UserDto, rol: UserRole) {
-        const client = await this.userService.findOneByEmail(userData.email)
+        let client = await this.userService.findOneByEmail(userData.email)
         if (client) {
             throw new BadRequestException('El email ya se encuentra registrado.')
+        }
+
+        client = await this.userService.findOneByDni(userData.dni)
+        if (client) {
+            throw new BadRequestException('El DNI ya se encuentra registrado.')
         }
         
         if (!userData.password) {
@@ -35,9 +40,13 @@ export class RegisterService {
     }
 
     async registerRandomPassword(userData: UserDto, rol: UserRole) {
-        const user = await this.userService.findOneByEmail(userData.email)
+        let user = await this.userService.findOneByEmail(userData.email)
         if (user) {
             throw new BadRequestException('El email ya se encuentra registrado.')
+        }
+        user = await this.userService.findOneByDni(userData.dni)
+        if (user) {
+            throw new BadRequestException('El DNI ya se encuentra registrado.')
         }
         userData.password = this.generateRandomPassword()
         await this.userService.create(userData, rol)
