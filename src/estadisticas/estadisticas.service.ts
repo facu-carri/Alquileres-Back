@@ -47,9 +47,17 @@ async getUserStats(query: EstadisticasDto): Promise<{ fecha: string, cantidad: n
         select: ['fecha_creacion']
     });
 
-    // Grouping logic
     const map = new Map<string, number>();
 
+    // Init en 0 para el retorno
+    let current = new Date(fecha_inicio);
+    while (current <= fecha_fin) {
+            const key = `${current.getFullYear()}-${(current.getMonth() + 1).toString().padStart(2, '0')}`;
+            map.set(key, 0);
+            current.setMonth(current.getMonth() + 1);
+    }
+
+    // Grupos
     for (const user of users) {
         const date = new Date(user.fecha_creacion);
         let key: string;
@@ -92,9 +100,17 @@ async getUserStats(query: EstadisticasDto): Promise<{ fecha: string, cantidad: n
             select: ['fecha_inicio']
         });
         
-        // Grouping logic
         const map = new Map<string, number>();
 
+        // Init en 0 para el retorno
+        let current = new Date(fecha_inicio);
+        while (current <= fecha_fin) {
+            const key = `${current.getFullYear()}-${(current.getMonth() + 1).toString().padStart(2, '0')}`;
+            map.set(key, 0);
+            current.setMonth(current.getMonth() + 1);
+        }
+
+        // Grupos
         for (const alquiler of alquileres) {
             const date = new Date(alquiler.fecha_inicio);
             let key: string;
@@ -137,9 +153,17 @@ async getUserStats(query: EstadisticasDto): Promise<{ fecha: string, cantidad: n
             select: ['fecha_inicio', 'estado', 'precio']
         });
 
-        // Grouping logic
         const map = new Map<string, number>();
 
+        // Init en 0 para el retorno
+        let current = new Date(fecha_inicio);
+        while (current <= fecha_fin) {
+            const key = `${current.getFullYear()}-${(current.getMonth() + 1).toString().padStart(2, '0')}`;
+            map.set(key, 0);
+            current.setMonth(current.getMonth() + 1);
+        }
+
+        // Grupos
         for (const alquiler of alquileres) {
             const date = new Date(alquiler.fecha_inicio);
             let key: string;
