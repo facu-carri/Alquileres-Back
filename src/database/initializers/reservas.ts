@@ -12,6 +12,8 @@ export class InitializeReservas {
     private readonly HARDCODED_EMAIL = 'cliente@hotmail.com';
     private readonly DAY_CONSTANT = 86400000; // 24 * 60 * 60 * 1000
 
+    private readonly randomReservaCount = 500;
+
     constructor(
         private readonly reservaService: ReservaService,
         private readonly maquinariaService: MaquinariaService,
@@ -23,8 +25,8 @@ export class InitializeReservas {
         const reservas = await this.reservaService.findAll();
         if (reservas.length > 0) return;
 
-        this.genHard();
-        // this.genRandom();
+        await this.genHard();
+        await this.genRandom();
     }
 
     async genHard() {
@@ -133,7 +135,7 @@ export class InitializeReservas {
             console.log('No hay clientes para crear reservas');
             return;
         }
-        for (let i = 0; i < 100; i++) {
+        for (let i = 0; i < this.randomReservaCount; i++) {
             let randomMaquinaria = maquinaria[Math.floor(Math.random() * maquinaria.length)];
 
             const randomUser = users[Math.floor(Math.random() * users.length)];
@@ -142,11 +144,11 @@ export class InitializeReservas {
             reserva.id_maquinaria = randomMaquinaria.id;
             reserva.email = randomUser.email;
 
-            reserva.fecha_inicio = new Date(Date.now() - Math.floor(Math.random() * 90) * 86400000);
-            reserva.fecha_fin = new Date(reserva.fecha_inicio.getTime() + (Math.floor(Math.random() * 7) + 1) * 86400000);
+            reserva.fecha_inicio = new Date(Date.now() - Math.floor(Math.random() * 365) * this.DAY_CONSTANT - 7 * this.DAY_CONSTANT);
+            reserva.fecha_fin = new Date(reserva.fecha_inicio.getTime() + (Math.floor(Math.random() * 7) + 1) * this.DAY_CONSTANT);
 
             let res = await this.reservaService.create(reserva);
-            await this.reservaService.confirmarReserva(res.id);
+            await this.reservaService.confirmarReservaHard(res.id);
 
             const alquiler = await this.alquilerService.findOneByCode(res.codigo_reserva);
             this.alquilerService.updateFechaInicio(alquiler.id, reserva.fecha_inicio);

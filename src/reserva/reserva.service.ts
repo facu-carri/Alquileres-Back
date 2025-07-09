@@ -147,7 +147,20 @@ export class ReservaService {
                 throw new BadRequestException('La reserva no puede ser confirmada.');
         }
         return this.reservaRepository.save(reserva);
-}
+    }
+
+    async confirmarReservaHard(id: number): Promise<Reserva> {
+        const reserva = await this.reservaRepository.findOne({
+            where: { id },
+            relations: ['usuario', 'maquinaria']
+        });
+        if (!reserva) {
+            throw new NotFoundException('Reserva not found');
+        }
+        reserva.estado = ReservaStates.Finalizada;
+        await this.alquilerRepository.save(new Alquiler(reserva));
+        return this.reservaRepository.save(reserva);
+    }
 
     async cancelarReserva(id: number, user: JwtPayload): Promise<Reserva> {
         const reserva = await this.reservaRepository.findOne({

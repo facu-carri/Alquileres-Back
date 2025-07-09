@@ -5,7 +5,7 @@ import { UserService } from "src/user/user.service"
 
 export class InitializeUsers {
 
-    readonly randomUserCount = 50;
+    readonly randomUserCount = 250;
 
     private users: Record<UserRole, UserDto[]> = {
         [UserRole.Admin]: [
@@ -89,7 +89,7 @@ export class InitializeUsers {
         try {
             await this.registerService.register(user, rol)
             if (rol === UserRole.Cliente){
-                const randomDays = Math.floor(Math.random() * 150)
+                const randomDays = Math.floor(Math.random() * 600)
                 await this.userService.changeCreationDate((
                     await this.userService.findOneByEmail(user.email)).id, 
                     new Date(Date.now() - randomDays * 24 * 60 * 60 * 1000))
@@ -97,7 +97,7 @@ export class InitializeUsers {
             else {
                 await this.userService.changeCreationDate((
                     await this.userService.findOneByEmail(user.email)).id, 
-                    new Date(2025, 0, 1))
+                    new Date(2000, 0, 1))
             }
         } catch {}
     }
