@@ -47,6 +47,8 @@ async getUserStats(query: EstadisticasDto): Promise<{ fecha: string, cantidad: n
         select: ['fecha_creacion']
     });
 
+    if (users.length === 0) throw new NotFoundException('No se encontraron usuarios');
+
     const map = new Map<string, number>();
 
     // Init en 0 para el retorno
@@ -103,6 +105,8 @@ async getUserStats(query: EstadisticasDto): Promise<{ fecha: string, cantidad: n
             select: ['fecha_inicio']
         });
         
+        if (alquileres.length === 0) throw new NotFoundException('No se encontraron alquileres');
+
         const map = new Map<string, number>();
 
         // Init en 0 para el retorno
@@ -158,6 +162,8 @@ async getUserStats(query: EstadisticasDto): Promise<{ fecha: string, cantidad: n
             },
             select: ['fecha_inicio', 'estado', 'precio']
         });
+
+        if (alquileres.length === 0) throw new NotFoundException('No se encontraron ingresos');
 
         const map = new Map<string, number>();
 
