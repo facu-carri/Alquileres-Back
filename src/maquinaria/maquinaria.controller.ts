@@ -107,12 +107,7 @@ export class MaquinariaController {
         if (!estado) throw new BadRequestException('Se requiere un estado válido');
         const user = req['user']
 
-        try {
-            await this.maquinariaService.changeState(id, estado, req.user, fecha ?? null);
-            return { message: 'Estado actualizado correctamente a ' + estado };
-        } catch (error) {
-            return { error: error.message || 'Error al actualizar el estado' };
-        }
+        await this.maquinariaService.changeState(id, estado, req.user, fecha ?? null);
     }
 
     @Post(':id/pregunta')
