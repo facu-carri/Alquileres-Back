@@ -157,6 +157,15 @@ export class UserService {
         return { message: "Usuario desactivado exitosamente"};
     }
 
+    async activateUser(id: number) {
+        const user = await this.getUserById(id);
+        if (!user.isActive) {
+            await this.userRepository.save({ ...user, isActive: true })
+            return response.status(200)
+        }
+        throw new BadRequestException('El usuario se encuentra activado')
+    }
+
     async changeCreationDate(id: number, newDate: Date): Promise<any> {
         const user = await this.getUserById(id);
         if (!user) throw new NotFoundException('No se encontro el usuario');

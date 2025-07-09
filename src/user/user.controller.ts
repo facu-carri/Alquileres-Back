@@ -45,6 +45,14 @@ export class UserController {
         return await this.userService.deactivateUser(id, { email, rol });
     }
 
+    @Delete(':id/activate')
+    @UseGuards(RoleGuard.bind(RoleGuard, [UserRole.Admin]))
+    async activateUser(
+        @Param('id', ParseIntPipe) id: number,
+    ) {
+        return await this.userService.activateUser(id);
+    }
+
     @Delete(':id')
     @UseGuards(AuthGuard)
     async deleteUser(
