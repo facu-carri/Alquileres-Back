@@ -230,6 +230,12 @@ export class MaquinariaService {
             throw new BadRequestException(`La maquinaria ya se encuentra en el estado ${state}`);
         }
 
+        const haveRetrasado = maquinaria.alquileres.find((alquiler) => alquiler.estado == AlquilerStates.Retrasado)
+
+        if (haveRetrasado) {
+            throw new BadRequestException('La maquinaria posee alquileres retrasados')
+        }
+
         // Manejar cancelaciones
         if ( maquinaria.state === MaquinariaStates.Disponible ) {
             // Check alquileres
