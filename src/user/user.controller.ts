@@ -45,7 +45,7 @@ export class UserController {
         return await this.userService.deactivateUser(id, { email, rol });
     }
 
-    @Delete(':id/activate')
+    @Put(':id/activate')
     @UseGuards(RoleGuard.bind(RoleGuard, [UserRole.Admin]))
     async activateUser(
         @Param('id', ParseIntPipe) id: number,
