@@ -1,6 +1,6 @@
 import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Brackets, LessThanOrEqual, MoreThanOrEqual, Repository } from 'typeorm';
+import { Brackets, In, LessThanOrEqual, MoreThanOrEqual, Repository } from 'typeorm';
 import { Maquinaria, MaquinariaStates} from './maquinaria.entity';
 import { Categoria } from "src/utils/enums";
 import { Sucursal } from "src/utils/enums";
@@ -230,22 +230,16 @@ export class MaquinariaService {
             throw new BadRequestException(`La maquinaria ya se encuentra en el estado ${state}`);
         }
 
-        const haveRetrasado = maquinaria.alquileres.find((alquiler) => alquiler.estado == AlquilerStates.Retrasado)
-
-        if (haveRetrasado) {
-            throw new BadRequestException('La maquinaria posee alquileres retrasados')
-        }
-
         // Manejar cancelaciones
         if ( maquinaria.state === MaquinariaStates.Disponible ) {
             // Check alquileres
             const alquileres = await this.alquilerService.find({
             where: {
                 maquinariaId: id,
-                estado: AlquilerStates.Activo
+                estado: In([AlquilerStates.Activo, AlquilerStates.Retrasado])
             }})
             if (alquileres.length > 0) {
-                throw new BadRequestException(`La maquinaria con id ${id} tiene alquileres activos`);
+                throw new BadRequestException(`La maquinaria tiene alquileres pendientes`);
             }
             // Fetch reservas
             let query = this.reservaRepository.createQueryBuilder('reserva')
