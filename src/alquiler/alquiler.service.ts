@@ -159,7 +159,7 @@ export class AlquilerService {
             case UserRole.Admin:
                 return Object.values(AlquilerStates);
             case UserRole.Empleado:
-                return [AlquilerStates.Activo, AlquilerStates.Retrasado];
+                return [AlquilerStates.Activo, AlquilerStates.Retrasado, AlquilerStates.Finalizado];
             case UserRole.Cliente:
                 return [AlquilerStates.Activo, AlquilerStates.Retrasado, AlquilerStates.Finalizado];
         }
