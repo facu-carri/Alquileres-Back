@@ -131,7 +131,7 @@ export class UserService {
         const reservas = await this.reservaRepository.find({
             where: {
             usuario: userToDeactivate,
-            estado: In([ReservaStates.Activa])
+            estado: In([ReservaStates.Activa, ReservaStates.Cancelada])
             }
         });
         if (reservas.length > 0){
@@ -141,15 +141,13 @@ export class UserService {
         const alquileres = await this.alquilerService.find({
             where: {
                 usuario: userToDeactivate,
-                estado: AlquilerStates.Activo
+                estado: In([AlquilerStates.Activo, AlquilerStates.Retrasado])
             }
         })
 
         if (alquileres.length > 0) {
-            throw new BadRequestException('No se puede eliminar la cuenta porque tiene alquileres activos.');
+            throw new BadRequestException('No se puede eliminar la cuenta porque tiene alquileres pendientes.');
         }
-
-        // Cuando modelemos alquiler, hacer algo parecido para alquileres activos
 
         userToDeactivate.isActive = false;
         await this.userRepository.save(userToDeactivate);

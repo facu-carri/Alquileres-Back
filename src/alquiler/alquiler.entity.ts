@@ -31,7 +31,7 @@ export class Alquiler {
 
     calcularDeuda(): number {
         if (this.estado !== AlquilerStates.Retrasado) return 0;
-        let dias = Math.ceil((new Date().getTime() - this.fecha_fin.getTime()) / (1000 * 60 * 60 * 24)); 
+        let dias = Math.floor((new Date().getTime() - this.fecha_fin.getTime()) / (1000 * 60 * 60 * 24)); 
         let deuda = this.precio_dia * dias * 1.5;
         return deuda;
     }
