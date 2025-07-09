@@ -52,9 +52,12 @@ async getUserStats(query: EstadisticasDto): Promise<{ fecha: string, cantidad: n
     // Init en 0 para el retorno
     let current = new Date(fecha_inicio);
     while (current <= fecha_fin) {
-            const key = `${current.getFullYear()}-${(current.getMonth() + 1).toString().padStart(2, '0')}`;
+            let key: string;
+            if (tam === 'anio') key = current.getFullYear().toString();
+            else if (tam === 'mes') key = `${current.getFullYear()}-${(current.getMonth() + 1).toString().padStart(2, '0')}`;
+            else key = current.toISOString().slice(0, 10);
             map.set(key, 0);
-            current.setMonth(current.getMonth() + 1);
+            current.setDate(current.getDate() + 1);
     }
 
     // Grupos
@@ -105,9 +108,12 @@ async getUserStats(query: EstadisticasDto): Promise<{ fecha: string, cantidad: n
         // Init en 0 para el retorno
         let current = new Date(fecha_inicio);
         while (current <= fecha_fin) {
-            const key = `${current.getFullYear()}-${(current.getMonth() + 1).toString().padStart(2, '0')}`;
-            map.set(key, 0);
-            current.setMonth(current.getMonth() + 1);
+                let key: string;
+                if (tam === 'anio') key = current.getFullYear().toString();
+                else if (tam === 'mes') key = `${current.getFullYear()}-${(current.getMonth() + 1).toString().padStart(2, '0')}`;
+                else key = current.toISOString().slice(0, 10);
+                map.set(key, 0);
+                current.setDate(current.getDate() + 1);
         }
 
         // Grupos
@@ -158,9 +164,12 @@ async getUserStats(query: EstadisticasDto): Promise<{ fecha: string, cantidad: n
         // Init en 0 para el retorno
         let current = new Date(fecha_inicio);
         while (current <= fecha_fin) {
-            const key = `${current.getFullYear()}-${(current.getMonth() + 1).toString().padStart(2, '0')}`;
-            map.set(key, 0);
-            current.setMonth(current.getMonth() + 1);
+                let key: string;
+                if (tam === 'anio') key = current.getFullYear().toString();
+                else if (tam === 'mes') key = `${current.getFullYear()}-${(current.getMonth() + 1).toString().padStart(2, '0')}`;
+                else key = current.toISOString().slice(0, 10);
+                map.set(key, 0);
+                current.setDate(current.getDate() + 1);
         }
 
         // Grupos
