@@ -57,15 +57,21 @@ export class InitializeReservas {
         await this.alquilerService.confirm(alquiler.id);
 
 
-        // Reservas futuras (en 10 dias)
-        for (const element of maquinaria) {
-            const reserva = new CreateReservaDto();
-            reserva.id_maquinaria = element.id;
-            reserva.email = user.email;
-            reserva.fecha_inicio = new Date(Date.now() + this.DAY_CONSTANT * 10);
-            reserva.fecha_fin = new Date(reserva.fecha_inicio.getTime() + this.DAY_CONSTANT * 5);
-            await this.reservaService.create(reserva);
-        }
+        // Reserva futura (10 dias)
+        const reserva5 = new CreateReservaDto();
+        reserva5.id_maquinaria = maquinaria[1].id;
+        reserva5.email = user.email;
+        reserva5.fecha_inicio = new Date(Date.now() + this.DAY_CONSTANT * 10);
+        reserva5.fecha_fin = new Date(reserva5.fecha_inicio.getTime() + this.DAY_CONSTANT * 5);
+        await this.reservaService.create(reserva5);
+
+        // Reserva futura (20 dias)
+        const reserva6 = new CreateReservaDto();
+        reserva6.id_maquinaria = maquinaria[1].id;
+        reserva6.email = user.email;
+        reserva6.fecha_inicio = new Date(Date.now() + this.DAY_CONSTANT * 25);
+        reserva6.fecha_fin = new Date(reserva6.fecha_inicio.getTime() + this.DAY_CONSTANT * 5);
+        await this.reservaService.create(reserva6);
 
         // Alquileres finalizados
         let c = 0;
