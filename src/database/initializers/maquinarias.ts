@@ -36,9 +36,9 @@ export class InitializeMaquinarias {
         },
         {
             inventario: "AB232",
-            nombre: 'Cosechadora',
-            marca: 'John Deere',
-            modelo: 'S670',
+            nombre: 'Arado',
+            marca: 'Tachito',
+            modelo: '1814',
             precio: 10,
             anio_adquisicion: 2021,
             sucursal: Sucursal.LaPlata,
